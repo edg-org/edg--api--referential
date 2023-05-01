@@ -1,8 +1,8 @@
-ARG PYTHON_TAG=3.9
+ARG PYTHON_TAG="3.10"
 ARG GH_USER=soulbah
 ARG GH_REPO=REPO
 
-FROM python:${PYTHON_TAG} AS builder
+FROM python:3.10 AS builder
 
 RUN pip install --user pipenv
 
@@ -14,13 +14,13 @@ WORKDIR /app
 
 RUN /root/.local/bin/pipenv install --system --deploy --ignore-pipfile
 
-FROM tiangolo/uvicorn-gunicorn-fastapi:python${PYTHON_TAG}-slim
+FROM tiangolo/uvicorn-gunicorn-fastapi:python3.10
 
 LABEL org.opencontainers.image.source=https://github.com/${GH_USER}/${GH_REPO}
 
 RUN apt-get update && apt-get install -y default-libmysqlclient-dev \
  && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
+COPY --from=builder /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
 
 COPY api /app/api
