@@ -10,21 +10,14 @@ class InfosSchema(BaseModel):
     previous_metadata: Dict[str, Any]
     current_metadata: Dict[str, Any]
 
-class LoggerBaseSchema(BaseModel):
+class LoggerBase(BaseModel):
     infos: InfosSchema
-
-class LogsUpdateSchema(LoggerBaseSchema):
-    id: int
-
-class LoggerCreateSchema(LoggerBaseSchema):
-    pass
-
-class LoggerSchema(LoggerBaseSchema):
-    id: int
-    created_at: datetime
 
     class Config:
         orm_mode = True
-
-class LoggerRtrErrorSchema(BaseModel):
+class CreateLogger(LoggerBase):
     pass
+
+class LoggerSchema(LoggerBase):
+    id: int
+    created_at: datetime

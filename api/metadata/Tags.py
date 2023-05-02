@@ -16,8 +16,8 @@ Tags = [
         "description": "Contains CRUD operation on Invoicing Frequencies",
     },
     {
-        "name": "Meter Models",
-        "description": "Contains CRUD operation on Meter Models",
+        "name": "Meter Types",
+        "description": "Contains CRUD operation on Meter Types",
     },
     {
         "name": "Tracking Types",

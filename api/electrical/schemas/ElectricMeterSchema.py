@@ -2,7 +2,7 @@ from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
 
-class MeterInfos(BaseModel):
+class ElectricMeterInfos(BaseModel):
     factory_name: str
     index_reading: float
     manufacturing_country: str
@@ -10,7 +10,9 @@ class MeterInfos(BaseModel):
 class ElectricMeterBase(BaseModel):
     code: int
     name: str
-    infos: MeterInfos
+    type_id: int
+    power_mode_id: int
+    infos: ElectricMeterInfos
     
     class Config:
         orm_mode = True

@@ -3,25 +3,27 @@ from fastapi import FastAPI
 from api.metadata.Tags import Tags
 from api.configs.BaseModel import init
 from api.configs.Environment import get_env_var
+
+from api.sales_financial.routers.v1.ContactType import contacttypeRouter
+from api.sales_financial.routers.v1.TrackingType import trackingtypeRouter
+from api.sales_financial.routers.v1.InvoiceStatus import invoicestatusRouter
+from api.sales_financial.routers.v1.PricingHistory import pricinghistoryRouter
+from api.sales_financial.routers.v1.SubscriptionType import subscriptiontypeRouter
+from api.sales_financial.routers.v1.SubscriptionLevel import subscriptionlevelRouter
+from api.sales_financial.routers.v1.InvoicingFrequency import invoicingfrequencyRouter
+from api.sales_financial.routers.v1.SubscriptionStatus import subscriptionstatusRouter
+
 from api.geographical.routers.v1.Area import areaRouter
 from api.geographical.routers.v1.City import cityRouter
 from api.geographical.routers.v1.Agency import agencyRouter
 from api.geographical.routers.v1.Region import regionRouter
-
-from api.sales.routers.v1.ContactType import contacttypeRouter
-from api.sales.routers.v1.TrackingType import trackingtypeRouter
-from api.sales.routers.v1.InvoiceStatus import invoicestatusRouter
-from api.sales.routers.v1.PricingHistory import pricinghistoryRouter
-from api.sales.routers.v1.SubscriptionType import subscriptiontypeRouter
-from api.sales.routers.v1.SubscriptionLevel import subscriptionlevelRouter
-from api.sales.routers.v1.InvoicingFrequency import invoicingfrequencyRouter
-from api.sales.routers.v1.SubscriptionStatus import subscriptionstatusRouter
-
 from api.geographical.routers.v1.NaturalZone import zoneRouter
 from api.geographical.routers.v1.AreaType import areatypeRouter
 from api.geographical.routers.v1.CityType import citytypeRouter
 from api.geographical.routers.v1.CityLevel import citylevelRouter
 from api.geographical.routers.v1.Prefecture import prefectureRouter
+
+from api.loggers.routers.v1.Logger import loggerRouter
 
 # Application Environment Configuration
 env = get_env_var()
@@ -53,6 +55,8 @@ app.include_router(areatypeRouter)
 app.include_router(cityRouter)
 app.include_router(areaRouter)
 app.include_router(agencyRouter)
+
+app.include_router(loggerRouter)
 
 # Initialize Data Model
 init()
