@@ -1,30 +1,44 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
+from api.electrical.schemas.DeliveryPointSchema import (
+    DeliveryPointSchema,
+)
 
-class ConnectionPointCoordinates(BaseModel):
-    altitude: str
-    latitude: str
-    longitude: str
 
-class ConnectionPointInfos(BaseModel):
+class ConnectionCoordinates(BaseModel):
+    altitude: float
+    latitude: float
+    longitude: float
+
+
+class ConnectionInfos(BaseModel):
     name: str
     address: str
-    coordinates: ConnectionPointCoordinates
+    coordinates: ConnectionCoordinates
+
 
 class ConnectionPointBase(BaseModel):
-    connection_point_number: int
+    connection_point_number: str
     name: Optional[str]
-    infos: ConnectionPointInfos
-    
+    transformer_id: int
+    area_id: int
+    infos: ConnectionInfos
+
     class Config:
         orm_mode = True
 
+
 class CreateConnectionPoint(ConnectionPointBase):
     pass
+
 
 class ConnectionPointSchema(ConnectionPointBase):
     id: int
     is_activated: bool
     created_at: datetime
     updated_at: Optional[datetime]
+
+
+class ConnectionPointItemSchema(ConnectionPointSchema):
+    tranformers: list[DeliveryPointSchema] = []

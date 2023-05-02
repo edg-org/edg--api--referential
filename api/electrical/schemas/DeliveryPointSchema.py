@@ -2,26 +2,33 @@ from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
 
-class DeliveryPointCoordinates(BaseModel):
-    altitude: str
-    latitude: str
-    longitude: str
 
-class DeliveryPointInfos(BaseModel):
+class DeliveryCoordinates(BaseModel):
+    altitude: float
+    latitude: float
+    longitude: float
+
+
+class DeliveryInfos(BaseModel):
     name: str
     address: str
-    coordinates: DeliveryPointCoordinates
+    coordinates: DeliveryCoordinates
+
 
 class DeliveryPointBase(BaseModel):
-    delivery_point_number: int
+    delivery_point_number: str
     name: Optional[str]
-    infos: DeliveryPointInfos
-    
+    area_id: int
+    connection_point_id: int
+    infos: DeliveryInfos
+
     class Config:
         orm_mode = True
 
+
 class CreateDeliveryPoint(DeliveryPointBase):
     pass
+
 
 class DeliveryPointSchema(DeliveryPointBase):
     id: int

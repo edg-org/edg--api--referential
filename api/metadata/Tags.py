@@ -24,8 +24,8 @@ Tags = [
         "description": "Contains CRUD operation on Tracking Types",
     },
     {
-        "name": "Meter Power Modes",
-        "description": "Contains CRUD operation on Meter Power Modes",
+        "name": "Power Modes",
+        "description": "Contains CRUD operation on Power Modes",
     },
     {
         "name": "Subscription Levels",
@@ -80,7 +80,11 @@ Tags = [
         "description": "Contains CRUD operation on Electric Meters",
     },
     {
+        "name": "Meter Delivery Points",
+        "description": "Contains CRUD operation on Meter Delivery Points",
+    },
+    {
         "name": "Loggers",
         "description": "Contains CRUD operation on Logs",
-    }
+    },
 ]

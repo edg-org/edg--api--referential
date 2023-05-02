@@ -4,24 +4,76 @@ from api.metadata.Tags import Tags
 from api.configs.BaseModel import init
 from api.configs.Environment import get_env_var
 
-from api.sales_financial.routers.v1.ContactType import contacttypeRouter
-from api.sales_financial.routers.v1.TrackingType import trackingtypeRouter
-from api.sales_financial.routers.v1.InvoiceStatus import invoicestatusRouter
-from api.sales_financial.routers.v1.PricingHistory import pricinghistoryRouter
-from api.sales_financial.routers.v1.SubscriptionType import subscriptiontypeRouter
-from api.sales_financial.routers.v1.SubscriptionLevel import subscriptionlevelRouter
-from api.sales_financial.routers.v1.InvoicingFrequency import invoicingfrequencyRouter
-from api.sales_financial.routers.v1.SubscriptionStatus import subscriptionstatusRouter
+from api.salesfinancial.routers.v1.ContactType import (
+    contacttypeRouter,
+)
+from api.salesfinancial.routers.v1.TrackingType import (
+    trackingtypeRouter,
+)
+from api.salesfinancial.routers.v1.InvoiceStatus import (
+    invoicestatusRouter,
+)
+from api.salesfinancial.routers.v1.PricingHistory import (
+    pricinghistoryRouter,
+)
+from api.salesfinancial.routers.v1.SubscriptionType import (
+    subscriptiontypeRouter,
+)
+from api.salesfinancial.routers.v1.SubscriptionLevel import (
+    subscriptionlevelRouter,
+)
+from api.salesfinancial.routers.v1.InvoicingFrequency import (
+    invoicingfrequencyRouter,
+)
+from api.salesfinancial.routers.v1.SubscriptionStatus import (
+    subscriptionstatusRouter,
+)
 
-from api.geographical.routers.v1.Area import areaRouter
-from api.geographical.routers.v1.City import cityRouter
-from api.geographical.routers.v1.Agency import agencyRouter
-from api.geographical.routers.v1.Region import regionRouter
-from api.geographical.routers.v1.NaturalZone import zoneRouter
-from api.geographical.routers.v1.AreaType import areatypeRouter
-from api.geographical.routers.v1.CityType import citytypeRouter
-from api.geographical.routers.v1.CityLevel import citylevelRouter
-from api.geographical.routers.v1.Prefecture import prefectureRouter
+from api.egeographical.routers.v1.Area import areaRouter
+from api.egeographical.routers.v1.City import cityRouter
+from api.egeographical.routers.v1.Agency import agencyRouter
+from api.egeographical.routers.v1.Region import regionRouter
+from api.egeographical.routers.v1.NaturalZone import (
+    zoneRouter,
+)
+from api.egeographical.routers.v1.AreaType import (
+    areatypeRouter,
+)
+from api.egeographical.routers.v1.CityType import (
+    citytypeRouter,
+)
+from api.egeographical.routers.v1.CityLevel import (
+    citylevelRouter,
+)
+from api.egeographical.routers.v1.Prefecture import (
+    prefectureRouter,
+)
+
+from api.electrical.routers.v1.MeterType import (
+    metertypeRouter,
+)
+from api.electrical.routers.v1.PowerMode import (
+    powermodeRouter,
+)
+from api.electrical.routers.v1.EnergyDeparture import (
+    departureRouter,
+)
+from api.electrical.routers.v1.Transformer import (
+    transformerRouter,
+)
+from api.electrical.routers.v1.ConnectionPoint import (
+    connectionRouter,
+)
+from api.electrical.routers.v1.DeliveryPoint import (
+    deliveryRouter,
+)
+from api.electrical.routers.v1.ElectricMeter import (
+    meterRouter,
+)
+
+from api.electrical.routers.v1.MeterDeliveryPoint import (
+    meterdeliveryRouter,
+)
 
 from api.loggers.routers.v1.Logger import loggerRouter
 
@@ -32,7 +84,7 @@ env = get_env_var()
 app = FastAPI(
     title=env.app_name,
     description=env.app_desc,
-    version="0.0."+env.api_version,
+    version="0.0." + env.api_version,
     openapi_tags=Tags,
 )
 
@@ -55,6 +107,16 @@ app.include_router(areatypeRouter)
 app.include_router(cityRouter)
 app.include_router(areaRouter)
 app.include_router(agencyRouter)
+
+
+app.include_router(powermodeRouter)
+app.include_router(metertypeRouter)
+app.include_router(departureRouter)
+app.include_router(transformerRouter)
+app.include_router(connectionRouter)
+app.include_router(deliveryRouter)
+app.include_router(meterRouter)
+app.include_router(meterdeliveryRouter)
 
 app.include_router(loggerRouter)
 

@@ -5,11 +5,11 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        PYTHON_TAG: 3.10
+        PYTHON_TAG: 3.11
         GH_USER: edg-org
         GH_REPO: edg--template
     ports:
-      - "8001:80"
+      - "8002:80"
     env_file:
       - api/.env
     restart: on-failure
