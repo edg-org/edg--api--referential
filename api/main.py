@@ -1,56 +1,58 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 
-from api.configs.Environment import get_environment_variables
 from api.metadata.Tags import Tags
-from api.models.BaseModel import init
-from api.routers.v1.LogsRouter import LogsRouter
-from api.routers.v1.RefMicroServicesRouter import RefMicroServicesRouter
-from api.routers.v1.RefRegionalDelegationsRouter import RefRegionalDelegationsRouter
-from api.routers.v1.RefNaturalRegionsRouter import RefNaturalRegionsRouter
-from api.routers.v1.RefCityTypesRouter import RefCityTypesRouter
-from api.routers.v1.RefCityLevelsRouter import RefCityLevelsRouter
-from api.routers.v1.RefPrefecturesRouter import RefPrefecturesRouter
-from api.routers.v1.RefAdmRegionsRouter import RefAdmRegionsRouter
-from api.routers.v1.RefCitiesRouter import RefCitiesRouter
-from api.routers.v1.RefAreasRouter import RefAreasRouter
-from api.routers.v1.RefAgenciesRouter import RefAgenciesRouter
-from api.routers.v1.RefTypeAreasRouter import RefTypeAreasRouter
+from api.configs.BaseModel import init
+from api.configs.Environment import get_env_var
+from api.geographical.routers.v1.Area import areaRouter
+from api.geographical.routers.v1.City import cityRouter
+from api.geographical.routers.v1.Agency import agencyRouter
+from api.geographical.routers.v1.Region import regionRouter
 
-# Application Environment Configuration 
-env = get_environment_variables()
+from api.sales.routers.v1.ContactType import contacttypeRouter
+from api.sales.routers.v1.TrackingType import trackingtypeRouter
+from api.sales.routers.v1.InvoiceStatus import invoicestatusRouter
+from api.sales.routers.v1.PricingHistory import pricinghistoryRouter
+from api.sales.routers.v1.SubscriptionType import subscriptiontypeRouter
+from api.sales.routers.v1.SubscriptionLevel import subscriptionlevelRouter
+from api.sales.routers.v1.InvoicingFrequency import invoicingfrequencyRouter
+from api.sales.routers.v1.SubscriptionStatus import subscriptionstatusRouter
 
-origins = ["http://localhost:3000", "*",]
+from api.geographical.routers.v1.NaturalZone import zoneRouter
+from api.geographical.routers.v1.AreaType import areatypeRouter
+from api.geographical.routers.v1.CityType import citytypeRouter
+from api.geographical.routers.v1.CityLevel import citylevelRouter
+from api.geographical.routers.v1.Prefecture import prefectureRouter
 
-# Core Application Instance 
+# Application Environment Configuration
+env = get_env_var()
+
+# Core Application Instance
 app = FastAPI(
-    title="EDG référentiel géographique API",
-    # title=env.APP_NAME,
-    version=env.API_VERSION,
+    title=env.app_name,
+    description=env.app_desc,
+    version="0.0."+env.api_version,
     openapi_tags=Tags,
 )
 
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=origins,
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
-
 # Add Routers
-app.include_router(RefTypeAreasRouter)
-app.include_router(RefAgenciesRouter)
-app.include_router(RefAreasRouter)
-app.include_router(RefCitiesRouter)
-app.include_router(RefCityLevelsRouter)
-app.include_router(RefCityTypesRouter)
-app.include_router(RefPrefecturesRouter)
-app.include_router(RefAdmRegionsRouter)
-app.include_router(RefNaturalRegionsRouter)
-# app.include_router(RefRegionalDelegationsRouter)
-app.include_router(RefMicroServicesRouter)
-app.include_router(LogsRouter)
+app.include_router(contacttypeRouter)
+app.include_router(trackingtypeRouter)
+app.include_router(invoicestatusRouter)
+app.include_router(pricinghistoryRouter)
+app.include_router(subscriptiontypeRouter)
+app.include_router(subscriptionlevelRouter)
+app.include_router(invoicingfrequencyRouter)
+app.include_router(subscriptionstatusRouter)
 
-# Initialise Data Model Attributes
+app.include_router(zoneRouter)
+app.include_router(regionRouter)
+app.include_router(prefectureRouter)
+app.include_router(citytypeRouter)
+app.include_router(citylevelRouter)
+app.include_router(areatypeRouter)
+app.include_router(cityRouter)
+app.include_router(areaRouter)
+app.include_router(agencyRouter)
+
+# Initialize Data Model
 init()

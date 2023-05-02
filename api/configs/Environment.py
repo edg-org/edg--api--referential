@@ -1,25 +1,24 @@
+from os import getenv
 from functools import lru_cache
-import os
-
 from pydantic import BaseSettings
-
 
 @lru_cache
 def get_env_filename():
-    runtime_env = os.getenv("ENV")
+    runtime_env = getenv("ENV")
     return f".env.{runtime_env}" if runtime_env else ".env"
 
-
-class EnvironmentSettings(BaseSettings):
-    API_VERSION: str
-    APP_NAME: str
-    DATABASE_DIALECT: str
-    DATABASE_HOSTNAME: str
-    DATABASE_NAME: str
-    DATABASE_PASSWORD: str
-    DATABASE_PORT: int
-    DATABASE_USERNAME: str
-    DEBUG_MODE: bool
+class __EnvironmentSettings(BaseSettings):
+    app_name: str
+    app_desc: str
+    api_version: str
+    db_dialect: str
+    db_hostname: str
+    db_username: str
+    db_password:str
+    db_name: str
+    db_port: int
+    api_routers_prefix: str
+    debug_mode: bool
 
     class Config:
         env_file = get_env_filename()
@@ -27,5 +26,5 @@ class EnvironmentSettings(BaseSettings):
 
 
 @lru_cache
-def get_environment_variables():
-    return EnvironmentSettings()
+def get_env_var():
+    return __EnvironmentSettings()
