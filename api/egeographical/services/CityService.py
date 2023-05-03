@@ -55,7 +55,7 @@ class CityService:
         zipcode_step = 0
         prefecture_code = 0
         for item in data:
-            maxcode = self.city.maxcode_byzone(
+            maxcode = self.city.maxcodebyzone(
                 item.infos.prefecture_code
             )
             maxzipcode = self.city.maxzipcode_byzone(

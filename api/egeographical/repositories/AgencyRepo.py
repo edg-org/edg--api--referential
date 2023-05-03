@@ -18,7 +18,7 @@ class AgencyRepo:
         self.db = db
 
     # get max id of agency by area
-    def maxcode_byzone(self, area_code: int) -> int:
+    def maxcodebyzone(self, area_code: int) -> int:
         return (
             self.db.query(func.max(AgencyModel.code))
             .where(

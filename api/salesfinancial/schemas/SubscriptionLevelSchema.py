@@ -1,15 +1,15 @@
-from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
+from typing import Optional, List
 
 class PaymentMode(BaseModel):
-    code: int
+    code: str
     name: str
 
 class SubscriptionLevelBase(BaseModel):
     code: int
     name: str
-    payment_mode: PaymentMode
+    payment_mode: List[PaymentMode]
 
     class Config:
         orm_mode = True

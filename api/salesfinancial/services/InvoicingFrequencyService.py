@@ -44,6 +44,12 @@ class InvoicingFrequencyService:
         self, name: str
     ) -> InvoicingFrequencyBase:
         return self.invoicingfrequency.getbyname(name=name)
+    
+    # get invoicing frequency by shortname function
+    async def getbyname(
+        self, shortname: str
+    ) -> InvoicingFrequencyBase:
+        return self.invoicingfrequency.getbyshortname(shortname=shortname)
 
     # create invoicing frequency function
     async def create(

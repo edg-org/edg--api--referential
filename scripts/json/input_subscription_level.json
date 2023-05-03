@@ -1,0 +1,50 @@
+[
+    {
+        "code": 1,
+        "name": "Tout mode de paiement",
+        "payment_mode": [
+            {
+                "code": "pm1",
+                "name": "Prélèvement automatique"
+            },
+            {
+                "code": "pm2",
+                "name": "carte bancaire"
+            },
+            {
+                "code": "pm3",
+                "name": "paiement mobile web"
+            },
+            {
+                "code": "pm5",
+                "name": "espèce"
+            },
+            {
+                "code": "pm5",
+                "name": "chèque bancaire"
+            }
+        ]
+    },
+    {
+        "code": 2,
+        "name": "Tout mode excepté Chèque bancaire",
+        "payment_mode": [
+            {
+                "code": "pm1",
+                "name": "Prélèvement automatique"
+            },
+            {
+                "code": "pm2",
+                "name": "carte bancaire"
+            },
+            {
+                "code": "pm3",
+                "name": "paiement mobile web"
+            },
+            {
+                "code": "pm5",
+                "name": "espèce"
+            }
+        ]
+    }
+]

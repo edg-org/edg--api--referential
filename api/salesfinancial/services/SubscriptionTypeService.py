@@ -11,6 +11,12 @@ from api.salesfinancial.schemas.SubscriptionTypeSchema import (
     CreateSubscriptionType,
 )
 
+from api.salesfinancial.repositories.TrackingTypeRepo import (
+    TrackingTypeRepo,
+)
+from api.electrical.repositories.PowerModeRepo import (
+    PowerModeRepo,
+)
 
 class SubscriptionTypeService:
     subscriptiontype: SubscriptionTypeRepo
@@ -50,6 +56,15 @@ class SubscriptionTypeService:
         self, data: List[CreateSubscriptionType]
     ) -> List[CreateSubscriptionType]:
         for item in data:
+
+            item.power_mode_id = PowerModeRepo.getidbyname(
+                self.subscriptiontype, item.infos.power_mode
+            )
+
+            item.tracking_type_id = TrackingTypeRepo.getidbyname(
+                self.subscriptiontype, item.infos.tracking_type
+            )
+
             subscriptiontype = (
                 self.subscriptiontype.getbycode(
                     code=item.code

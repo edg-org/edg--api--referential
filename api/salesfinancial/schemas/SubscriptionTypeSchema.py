@@ -36,18 +36,21 @@ class PowerToSubscribe(BaseModel):
 
 
 class TypeInfos(BaseModel):
+    tracking_type: str
+    power_mode: str
     payment_deadline: int
     deadline_measurement_unit: str
     tva: float
     currency: str
+    power_measurement_unit: str
     power_to_subscribe: List[PowerToSubscribe]
 
 
 class SubscriptionTypeBase(BaseModel):
     code: int
     name: str
-    tracking_type_id: int
-    power_mode_id: int
+    tracking_type_id: Optional[int]
+    power_mode_id: Optional[int]
     infos: TypeInfos
     pricing: Pricing
     dunning: List[Dunning]

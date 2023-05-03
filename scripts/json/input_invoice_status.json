@@ -1,0 +1,30 @@
+[
+    {
+        "code": 0,
+        "name": "À encaisser"
+    },
+    {
+        "code": 1,
+        "name": "Partiellement payée"
+    },
+    {
+        "code": 2,
+        "name": "Payée"
+    },
+    {
+        "code": 3,
+        "name": "Relancée"
+    },
+    {
+        "code": 4,
+        "name": "Impayée"
+    },
+    {
+        "code": 5,
+        "name": "Transaction refusée"
+    },
+    {
+        "code": 6,
+        "name": "En contentieux"
+    }
+]

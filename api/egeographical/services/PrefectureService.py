@@ -55,7 +55,7 @@ class PrefectureService:
 
         for item in data:
             step += 1
-            item.region_id = RegionRepo.getid_bycode(
+            item.region_id = RegionRepo.getidbycode(
                 self.prefecture, item.infos.region_code
             )
             basecode = prefecture_basecode(

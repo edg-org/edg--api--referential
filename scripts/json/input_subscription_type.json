@@ -1,0 +1,97 @@
+[
+    {
+        "code": 1,
+        "name": "Basse Tension Domestique Monophasé",
+        "infos": {
+            "tracking_type": "post-payé",
+            "power_mode": "monophasé",
+            "payment_deadline": 30,
+            "deadline_measurement_unit": "day",
+            "tva": 18,
+            "currency": "GNF",
+            "power_measurement_unit": "ampère",
+            "power_to_subscribe": [
+                {
+                    "power": 5,
+                    "deposit_to_pay": 89694
+                },
+                {
+                    "power": 10,
+                    "deposit_to_pay": 179388
+                },
+                {
+                    "power": 15,
+                    "deposit_to_pay": 269082
+                },
+                {
+                    "power": 20,
+                    "deposit_to_pay": 358776
+                },
+                {
+                    "power": 20,
+                    "deposit_to_pay": 448470
+                },
+                {
+                    "power": 30,
+                    "deposit_to_pay": 538164
+                },
+                {
+                    "power": 35,
+                    "deposit_to_pay": 627858
+                },
+                {
+                    "power": 40,
+                    "deposit_to_pay": 717552
+                },
+                {
+                    "power": 45,
+                    "deposit_to_pay": 807246
+                }
+            ]
+        },
+        "pricing": {
+            "code": "btd-230105",
+            "name": "tarif domestique basse tension",
+            "start_date": "2023-01-05",
+            "subscription_fee": 4850,
+            "slices": [
+                {
+                    "name": "Tranche 1",
+                    "unit_price": 90,
+                    "lower_index": 1,
+                    "upper_index": 40
+                },
+                {
+                    "name": "Tranche 2",
+                    "unit_price": 293,
+                    "lower_index": 41,
+                    "upper_index": 330
+                },
+                {
+                    "name": "Tranche 3",
+                    "unit_price": 336,
+                    "lower_index": 41,
+                    "upper_index": null
+                }
+            ]
+        },
+        "dunning": [
+            {
+                "code": "t1r1",
+                "rank": 1,
+                "name": "1ère relance",
+                "payment_deadline": 20,
+                "deadline_unit_time": "day",
+                "delay_penality_rate": 0
+            },
+            {
+                "code": "t1r2",
+                "rank": 2,
+                "name": "2ère relance",
+                "payment_deadline": 15,
+                "deadline_unit_time": "day",
+                "delay_penality_rate": 5
+            }
+        ]
+    }
+]

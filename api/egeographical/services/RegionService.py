@@ -49,7 +49,7 @@ class RegionService:
         step = 0
         zone_code = 0
         for item in data:
-            maxcode = self.region.maxcode_byzone(
+            maxcode = self.region.maxcodebyzone(
                 item.infos.zone_code
             )
             if maxcode is None:

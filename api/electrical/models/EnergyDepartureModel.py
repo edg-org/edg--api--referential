@@ -44,7 +44,7 @@ class EnergyDepartureModel(EntityMeta):
         "AreaModel", back_populates="energy_departures"
     )
 
-    transfomers = relationship(
+    transformers = relationship(
         "TransformerModel",
         back_populates="energy_departure",
     )

@@ -8,6 +8,14 @@ Tags = [
         "description": "Contains CRUD operation on Contract Status",
     },
     {
+        "name": "Subscription Levels",
+        "description": "Contains CRUD operation on Subscription Levels",
+    },
+    {
+        "name": "Subscription Types",
+        "description": "Contains CRUD operation on Subscription Types",
+    },
+    {
         "name": "Invoice Status",
         "description": "Contains CRUD operation on Invoice Status",
     },
@@ -16,24 +24,16 @@ Tags = [
         "description": "Contains CRUD operation on Invoicing Frequencies",
     },
     {
-        "name": "Meter Types",
-        "description": "Contains CRUD operation on Meter Types",
-    },
-    {
         "name": "Tracking Types",
         "description": "Contains CRUD operation on Tracking Types",
     },
     {
+        "name": "Meter Types",
+        "description": "Contains CRUD operation on Meter Types",
+    },
+    {
         "name": "Power Modes",
         "description": "Contains CRUD operation on Power Modes",
-    },
-    {
-        "name": "Subscription Levels",
-        "description": "Contains CRUD operation on Subscription Levels",
-    },
-    {
-        "name": "Subscription Types",
-        "description": "Contains CRUD operation on Subscription Types",
     },
     {
         "name": "Pricing Histories",

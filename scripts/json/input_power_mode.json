@@ -1,0 +1,10 @@
+[
+    {
+        "code": 1,
+        "name": "Monophasé"
+    },
+    {
+        "code": 2,
+        "name": "Triphasé"
+    }
+]

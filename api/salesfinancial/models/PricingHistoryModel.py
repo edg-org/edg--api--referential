@@ -11,6 +11,6 @@ class PricingHistoryModel(EntityMeta):
     name = Column(String(20), index=True, unique=True, nullable=False)
     start_date = Column(Date, nullable=False)
     end_date = Column(Date, nullable=False)
-    subscription_type_code = Column(TINYINT(unsigned=True), ForeignKey("subscription_types.id"), nullable=False)
+    subscription_type_code = Column(TINYINT(unsigned=True), index=True, nullable=False)
     infos = Column(JSON, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=datetime.utcnow().isoformat(), nullable=False)

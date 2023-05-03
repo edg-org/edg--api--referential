@@ -63,6 +63,14 @@ class PowerModeRepo:
             .first()
         )
 
+    # get power mode id by name function
+    def getidbyname(self, name: str) -> PowerModeModel:
+        return (
+            self.db.query(PowerModeModel.id)
+            .where(func.lower(PowerModeModel.name) == name.lower())
+            .one()[0]
+        )
+    
     # create power mode function
     def create(
         self, data: List[CreatePowerMode]

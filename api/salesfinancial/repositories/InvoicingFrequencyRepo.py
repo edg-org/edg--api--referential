@@ -67,6 +67,19 @@ class InvoicingFrequencyRepo:
             .first()
         )
 
+     # get invoicing frequency shortname function
+    def getbyshortname(
+        self, shortname: str
+    ) -> InvoicingFrequencyModel:
+        return (
+            self.db.query(InvoicingFrequencyModel)
+            .where(
+                func.lower(InvoicingFrequencyModel.shortname)
+                == shortname.lower()
+            )
+            .first()
+        )
+    
     # create invoicing frequency function
     def create(
         self, data: List[CreateInvoicingFrequency]

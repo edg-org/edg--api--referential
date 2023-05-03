@@ -24,7 +24,7 @@ class PrefectureRepo:
         return self.db.query(PrefectureModel).count()
 
     # get max code of prefecture by region
-    def maxcode_byzone(self, zone_code: int) -> int:
+    def maxcodebyzone(self, zone_code: int) -> int:
         return (
             self.db.query(func.max(PrefectureModel.code))
             .where(

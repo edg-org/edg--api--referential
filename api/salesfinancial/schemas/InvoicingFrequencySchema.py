@@ -5,6 +5,7 @@ from pydantic import BaseModel
 class InvoicingFrequencyBase(BaseModel):
     code: int
     name: str
+    shortname: str
     
     class Config:
         orm_mode = True

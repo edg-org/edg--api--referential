@@ -18,7 +18,7 @@ class RegionRepo:
         self.db = db
 
     # count total rows of administative region by natural region
-    def countrows_byzone(self, zone_code: int) -> int:
+    def countrowsbyzone(self, zone_code: int) -> int:
         return (
             self.db.query(RegionModel)
             .where(
@@ -28,7 +28,7 @@ class RegionRepo:
         )
 
     # get max id of administrative region by natural region
-    def maxcode_byzone(self, zone_code: int) -> int:
+    def maxcodebyzone(self, zone_code: int) -> int:
         return (
             self.db.query(func.max(RegionModel.code))
             .where(
@@ -38,7 +38,7 @@ class RegionRepo:
         )
 
     # get administrative region id by code function
-    def getid_bycode(self, code: int) -> RegionModel:
+    def getidbycode(self, code: int) -> RegionModel:
         return (
             self.db.query(RegionModel.id)
             .where(RegionModel.code == code)

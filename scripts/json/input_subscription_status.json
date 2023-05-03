@@ -1,0 +1,22 @@
+[
+    {
+        "code": 1,
+        "name": "Créé"
+    },
+    {
+        "code": 2,
+        "name": "En attente d’activation"
+    },
+    {
+        "code": 3,
+        "name": "Activé"
+    },
+    {
+        "code": 4,
+        "name": "Suspendu"
+    },
+    {
+        "code": 5,
+        "name": "Clôturé"
+    }
+]

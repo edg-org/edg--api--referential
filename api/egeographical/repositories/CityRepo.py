@@ -16,7 +16,7 @@ class CityRepo:
         self.db = db
 
     # get max code of city by prefecture
-    def maxcode_byzone(self, prefecture_code: int) -> int:
+    def maxcodebyzone(self, prefecture_code: int) -> int:
         return (
             self.db.query(func.max(CityModel.code))
             .where(

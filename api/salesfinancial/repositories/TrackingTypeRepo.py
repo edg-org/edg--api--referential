@@ -63,6 +63,14 @@ class TrackingTypeRepo:
             .first()
         )
 
+    # get tracking type id by name function
+    def getidbyname(self, name: str) -> TrackingTypeModel:
+        return (
+            self.db.query(TrackingTypeModel.id)
+            .where(func.lower(TrackingTypeModel.name) == name.lower())
+            .one()[0]
+        )
+
     # create tracking type function
     def create(
         self, data: List[CreateTrackingType]
