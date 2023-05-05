@@ -29,23 +29,23 @@ from api.salesfinancial.routers.v1.SubscriptionStatus import (
     subscriptionstatusRouter,
 )
 
-from api.egeographical.routers.v1.Area import areaRouter
-from api.egeographical.routers.v1.City import cityRouter
-from api.egeographical.routers.v1.Agency import agencyRouter
-from api.egeographical.routers.v1.Region import regionRouter
-from api.egeographical.routers.v1.NaturalZone import (
+from api.ageographical.routers.v1.Area import areaRouter
+from api.ageographical.routers.v1.City import cityRouter
+from api.ageographical.routers.v1.Agency import agencyRouter
+from api.ageographical.routers.v1.Region import regionRouter
+from api.ageographical.routers.v1.NaturalZone import (
     zoneRouter,
 )
-from api.egeographical.routers.v1.AreaType import (
+from api.ageographical.routers.v1.AreaType import (
     areatypeRouter,
 )
-from api.egeographical.routers.v1.CityType import (
+from api.ageographical.routers.v1.CityType import (
     citytypeRouter,
 )
-from api.egeographical.routers.v1.CityLevel import (
+from api.ageographical.routers.v1.CityLevel import (
     citylevelRouter,
 )
-from api.egeographical.routers.v1.Prefecture import (
+from api.ageographical.routers.v1.Prefecture import (
     prefectureRouter,
 )
 

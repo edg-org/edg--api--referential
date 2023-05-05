@@ -1,11 +1,9 @@
 from typing import List
 from fastapi import Depends, HTTPException, status
-from api.electrical.models.TransformerModel import (
-    TransformerModel,
-)
-from api.electrical.repositories.TransformerRepo import (
-    TransformerRepo,
-)
+from api.ageographical.repositories.AreaRepo import AreaRepo
+from api.ageographical.repositories.CityRepo import CityRepo
+from api.electrical.models.TransformerModel import TransformerModel
+from api.electrical.repositories.TransformerRepo import TransformerRepo
 from api.electrical.schemas.TransformerSchema import (
     TransformerBase,
     CreateTransformer,
@@ -46,6 +44,16 @@ class TransformerService:
         self, data: List[CreateTransformer]
     ) -> List[CreateTransformer]:
         for item in data:
+            if (hasattr(item.infos, "area_code") and item.infos.area_code is not None):
+                item.area_id = AreaRepo.getidbycode(
+                    self.transformer, item.infos.area_code
+                )
+            
+            if (hasattr(item.infos, "city_code") and item.infos.city_code is not None):
+                item.city_id = CityRepo.getidbycode(
+                    self.transformer, item.infos.city_code
+                )
+
             transformer = self.transformer.getbycode(
                 code=item.code
             )

@@ -17,28 +17,13 @@ from sqlalchemy import (
 class SubscriptionDeliveryPointHistoryModel(EntityMeta):
     __tablename__ = "subscription_delivery_point_histories"
 
-    id = Column(
-        TINYINT(unsigned=True), primary_key=True, index=True
-    )
-    contract_number = Column(
-        String(15),
-        index=True,
-        unique=True,
-        nullable=False,
-    )
-    delivery_point_number = Column(
-        String(15),
-        index=True,
-        unique=True,
-        nullable=False,
-    )
+    id = Column(TINYINT(unsigned=True), primary_key=True, index=True)
+    contract_number = Column(String(15), index=True, unique=True, nullable=False)
+    delivery_point_number = Column(String(15), index=True, unique=True, nullable=False)
     opening_date = Column(Date, nullable=False)
     closing_date = Column(Date, nullable=False)
-    created_at = Column(
-        DateTime(timezone=True),
-        server_default=datetime.utcnow().isoformat(),
-        nullable=False,
-    )
+    created_at = Column(DateTime(timezone=True), server_default=datetime.utcnow().isoformat(), nullable=False)
+    
     UniqueConstraint(
         "contract_number",
         "delivery_point_number",

@@ -1,11 +1,7 @@
 from typing import List
 from fastapi import Depends, HTTPException, status
-from api.electrical.models.ElectricMeterModel import (
-    ElectricMeterModel,
-)
-from api.electrical.repositories.ElectricMeterRepo import (
-    ElectricMeterRepo,
-)
+from api.electrical.models.ElectricMeterModel import ElectricMeterModel
+from api.electrical.repositories.ElectricMeterRepo import ElectricMeterRepo
 from api.electrical.schemas.ElectricMeterSchema import (
     ElectricMeterBase,
     CreateElectricMeter,

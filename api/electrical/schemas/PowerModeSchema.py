@@ -2,7 +2,6 @@ from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
 
-
 class PowerModeBase(BaseModel):
     code: int
     name: str

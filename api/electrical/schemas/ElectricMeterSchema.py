@@ -2,9 +2,10 @@ from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
 
-
 class ElectricMeterInfos(BaseModel):
     name: Optional[str]
+    meter_type: str
+    power_mode: str
     factory_name: str
     index_reading: float
     manufacturing_country: str
@@ -12,8 +13,8 @@ class ElectricMeterInfos(BaseModel):
 
 class ElectricMeterBase(BaseModel):
     meter_number: str
-    type_id: int
-    power_mode_id: int
+    type_id: Optional[int]
+    power_mode_id: Optional[int]
     infos: ElectricMeterInfos
 
     class Config:

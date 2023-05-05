@@ -1,11 +1,9 @@
 from typing import List
 from fastapi import Depends, HTTPException, status
-from api.electrical.models.EnergyDepartureModel import (
-    EnergyDepartureModel,
-)
-from api.electrical.repositories.EnergyDepartureRepo import (
-    EnergyDepartureRepo,
-)
+from api.ageographical.repositories.AreaRepo import AreaRepo
+from api.ageographical.repositories.CityRepo import CityRepo
+from api.electrical.models.EnergyDepartureModel import EnergyDepartureModel
+from api.electrical.repositories.EnergyDepartureRepo import EnergyDepartureRepo
 from api.electrical.schemas.EnergyDepartureSchema import (
     EnergyDepartureBase,
     CreateEnergyDeparture,
@@ -48,6 +46,16 @@ class EnergyDepartureService:
         self, data: List[CreateEnergyDeparture]
     ) -> List[CreateEnergyDeparture]:
         for item in data:
+            if (hasattr(item.infos, "area_code") and item.infos.area_code is not None):
+                item.area_id = AreaRepo.getidbycode(
+                    self.departure, item.infos.area_code
+                )
+            
+            if (hasattr(item.infos, "city_code") and item.infos.city_code is not None):
+                item.city_id = CityRepo.getidbycode(
+                    self.departure, item.infos.city_code
+                )
+
             departure = self.departure.getbycode(
                 code=item.code
             )

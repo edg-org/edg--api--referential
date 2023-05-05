@@ -1,12 +1,12 @@
 from datetime import datetime
 from sqlalchemy.orm import relationship
 from api.configs.BaseModel import EntityMeta
-from sqlalchemy.dialects.mysql import TINYINT, MEDIUMINT
+from sqlalchemy.dialects.mysql import TINYINT, SMALLINT, MEDIUMINT
 from sqlalchemy import (
-    Column,
-    DateTime,
     JSON,
+    Column,
     String,
+    DateTime,
     ForeignKey,
 )
 
@@ -14,37 +14,15 @@ from sqlalchemy import (
 class EnergyDepartureModel(EntityMeta):
     __tablename__ = "energy_departures"
 
-    id = Column(
-        TINYINT(unsigned=True), primary_key=True, index=True
-    )
-    code = Column(
-        String(15),
-        index=True,
-        unique=True,
-        nullable=False,
-    )
-    area_id = Column(
-        MEDIUMINT(unsigned=True),
-        ForeignKey("areas.id"),
-        nullable=False,
-    )
+    id = Column(TINYINT(unsigned=True), primary_key=True, index=True)
+    code = Column(String(15), index=True, unique=True, nullable=False)
+    city_id = Column(SMALLINT(unsigned=True), ForeignKey("areas.id"), nullable=True)
+    area_id = Column(MEDIUMINT(unsigned=True), ForeignKey("areas.id"), nullable=True)
     infos = Column(JSON, nullable=False)
-    created_at = Column(
-        DateTime(timezone=True),
-        server_default=datetime.utcnow().isoformat(),
-        nullable=False,
-    )
-    updated_at = Column(
-        DateTime(timezone=True),
-        onupdate=datetime.utcnow().isoformat(),
-        nullable=True,
-    )
+    created_at = Column(DateTime(timezone=True), server_default=datetime.utcnow().isoformat(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), onupdate=datetime.utcnow().isoformat(), nullable=True)
 
-    area = relationship(
-        "AreaModel", back_populates="energy_departures"
-    )
+    city = relationship("CityModel", back_populates="transformers")
+    area = relationship("AreaModel", back_populates="energy_departures")
 
-    transformers = relationship(
-        "TransformerModel",
-        back_populates="energy_departure",
-    )
+    transformers = relationship("TransformerModel", back_populates="energy_departure")

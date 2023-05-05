@@ -1,10 +1,7 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
-from api.electrical.schemas.DeliveryPointSchema import (
-    DeliveryPointSchema,
-)
-
+from api.electrical.schemas.DeliveryPointSchema import DeliveryPointSchema
 
 class ConnectionCoordinates(BaseModel):
     altitude: float
@@ -14,6 +11,8 @@ class ConnectionCoordinates(BaseModel):
 
 class ConnectionInfos(BaseModel):
     name: str
+    area_code: int
+    transformer_number: str
     address: str
     coordinates: ConnectionCoordinates
 
@@ -21,8 +20,8 @@ class ConnectionInfos(BaseModel):
 class ConnectionPointBase(BaseModel):
     connection_point_number: str
     name: Optional[str]
-    transformer_id: int
-    area_id: int
+    transformer_id: Optional[int]
+    area_id: Optional[int]
     infos: ConnectionInfos
 
     class Config:

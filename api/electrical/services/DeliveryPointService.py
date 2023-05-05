@@ -1,11 +1,7 @@
 from typing import List
 from fastapi import Depends, HTTPException, status
-from api.electrical.models.DeliveryPointModel import (
-    DeliveryPointModel,
-)
-from api.electrical.repositories.DeliveryPointRepo import (
-    DeliveryPointRepo,
-)
+from api.electrical.models.DeliveryPointModel import DeliveryPointModel
+from api.electrical.repositories.DeliveryPointRepo import DeliveryPointRepo
 from api.electrical.schemas.DeliveryPointSchema import (
     DeliveryPointBase,
     CreateDeliveryPoint,

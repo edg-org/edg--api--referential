@@ -19,5 +19,5 @@ class SubscriptionTypeModel(EntityMeta):
     updated_at = Column(DateTime(timezone=True), onupdate=datetime.utcnow().isoformat(), nullable=True)
     deleted_at = Column(DateTime(timezone=True), nullable=True)
 
-    tracking_type = relationship("TrackingTypeModel", back_populates="subscription_types")
     power_mode = relationship("PowerModeModel", back_populates="subscription_types")
+    tracking_type = relationship("TrackingTypeModel", back_populates="subscription_types")

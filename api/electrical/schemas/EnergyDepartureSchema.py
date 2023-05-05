@@ -1,10 +1,7 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
-from api.electrical.schemas.TransformerSchema import (
-    TransformerSchema,
-)
-
+from api.electrical.schemas.TransformerSchema import TransformerSchema
 
 class DepartureCoordinates(BaseModel):
     altitude: float
@@ -14,13 +11,16 @@ class DepartureCoordinates(BaseModel):
 
 class DepartureInfos(BaseModel):
     name: str
+    city_code: Optional[int]
+    area_code: Optional[int]
     address: str
     coordinates: DepartureCoordinates
 
 
 class EnergyDepartureBase(BaseModel):
     code: str
-    area_id: int
+    city_id: Optional[int]
+    area_id: Optional[int]
     infos: DepartureInfos
 
     class Config:

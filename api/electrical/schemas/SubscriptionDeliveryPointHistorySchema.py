@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime, date
 
-
 class SubscriptionDeliveryPointBase(BaseModel):
     contract_number: str
     delivery_point_number: str
@@ -11,12 +10,10 @@ class SubscriptionDeliveryPointBase(BaseModel):
     class Config:
         orm_mode = True
 
-
 class CreateSubscriptionDeliveryPoint(
     SubscriptionDeliveryPointBase
 ):
     pass
-
 
 class SubscriptionDeliveryPointSchema(
     SubscriptionDeliveryPointBase

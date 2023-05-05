@@ -2,7 +2,6 @@ from typing import Optional
 from pydantic import BaseModel
 from datetime import datetime, date
 
-
 class MeterDeliveryPointBase(BaseModel):
     meter_number: str
     delivery_point_number: str

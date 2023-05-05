@@ -1,16 +1,11 @@
 from typing import List
 from fastapi import Depends, HTTPException, status
-from api.electrical.models.PowerModeModel import (
-    PowerModeModel,
-)
-from api.electrical.repositories.PowerModeRepo import (
-    PowerModeRepo,
-)
+from api.electrical.models.PowerModeModel import PowerModeModel
+from api.electrical.repositories.PowerModeRepo import PowerModeRepo
 from api.electrical.schemas.PowerModeSchema import (
     PowerModeBase,
     CreatePowerMode,
 )
-
 
 #
 class PowerModeService:

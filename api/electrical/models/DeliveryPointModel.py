@@ -14,40 +14,13 @@ from sqlalchemy import (
 class DeliveryPointModel(EntityMeta):
     __tablename__ = "delivery_points"
 
-    id = Column(
-        MEDIUMINT(unsigned=True),
-        primary_key=True,
-        index=True,
-    )
-    delivery_point_number = Column(
-        String(15), index=True, unique=True, nullable=False
-    )
-    connection_point_id = Column(
-        MEDIUMINT(unsigned=True),
-        ForeignKey("connection_points.id"),
-        nullable=False,
-    )
-    area_id = Column(
-        MEDIUMINT(unsigned=True),
-        ForeignKey("areas.id"),
-        nullable=False,
-    )
+    id = Column(MEDIUMINT(unsigned=True), primary_key=True, index=True)
+    delivery_point_number = Column(String(15), index=True, unique=True, nullable=False)
+    connection_point_id = Column(MEDIUMINT(unsigned=True), ForeignKey("connection_points.id"), nullable=False)
+    area_id = Column(MEDIUMINT(unsigned=True), ForeignKey("areas.id"), nullable=False)
     infos = Column(JSON, nullable=False)
-    created_at = Column(
-        DateTime(timezone=True),
-        server_default=datetime.utcnow().isoformat(),
-        nullable=False,
-    )
-    updated_at = Column(
-        DateTime(timezone=True),
-        onupdate=datetime.utcnow().isoformat(),
-        nullable=True,
-    )
+    created_at = Column(DateTime(timezone=True), server_default=datetime.utcnow().isoformat(), nullable=False)
+    updated_at = Column(DateTime(timezone=True), onupdate=datetime.utcnow().isoformat(), nullable=True)
 
-    area = relationship(
-        "AreaModel", back_populates="delivery_points"
-    )
-    connection_point = relationship(
-        "ConnectionPointModel",
-        back_populates="delivery_points",
-    )
+    area = relationship("AreaModel", back_populates="delivery_points")
+    connection_point = relationship("ConnectionPointModel", back_populates="delivery_points")

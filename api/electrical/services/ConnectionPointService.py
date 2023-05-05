@@ -1,11 +1,7 @@
 from typing import List
 from fastapi import Depends, HTTPException, status
-from api.electrical.models.ConnectionPointModel import (
-    ConnectionPointModel,
-)
-from api.electrical.repositories.ConnectionPointRepo import (
-    ConnectionPointRepo,
-)
+from api.electrical.models.ConnectionPointModel import ConnectionPointModel
+from api.electrical.repositories.ConnectionPointRepo import ConnectionPointRepo
 from api.electrical.schemas.ConnectionPointSchema import (
     ConnectionPointBase,
     CreateConnectionPoint,
