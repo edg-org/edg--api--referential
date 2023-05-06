@@ -30,7 +30,7 @@ transformerRouter = APIRouter(
     "/",
     summary="Getting router for all transformers",
     description="This router allows to get all transformers",
-    response_model=List[TransformerSchema],
+    # response_model=List[TransformerSchema],
 )
 async def list(
     skip: int = 0,

@@ -19,8 +19,9 @@ class ConnectionInfos(BaseModel):
 
 
 class ConnectionPointBase(BaseModel):
+    code: str
     connection_point_number: str
-    name: Optional[str]
+    # name: Optional[str]
     transformer_id: int
     area_id: int
     infos: ConnectionInfos

@@ -50,21 +50,31 @@ class TransformerService:
                 code=item.code
             )
             if transformer:
-                raise HTTPException(
+                raise HTTPException( 
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="Transformer already registered with code "
                     + str(item.code),
                 )
 
-            transformer = self.transformer.getbyname(
-                name=item.name
+            transformer = self.transformer.getbytransformernumber(
+                number=item.transformer_number
             )
             if transformer:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Transformer already registered with name "
-                    + item.name,
+                    detail="Transformer already registered with transformer_number "
+                    + str(item.transformer_number),
                 )
+
+            # transformer = self.transformer.getbyname(
+            #     name=item.infos.name
+            # )
+            # if transformer:
+            #     raise HTTPException(
+            #         status_code=status.HTTP_400_BAD_REQUEST,
+            #         detail="Transformer already registered with name "
+            #         + item.infos.name,
+            #     )
 
         return self.transformer.create(data=data)
 

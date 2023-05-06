@@ -20,6 +20,8 @@ class SubscriptionTypeModel(EntityMeta):
     deleted_at = Column(DateTime(timezone=True), nullable=True)
 
     tracking_type = relationship("TrackingTypeModel", back_populates="subscription_types")
-    power_mode = relationship("MeterPowerModeModel", back_populates="subscription_types")
+
+    power_mode = relationship("PowerModeModel", back_populates="subscription_types")
 
     pricing_histories = relationship("PricingHistoryModel", back_populates="subscription_type")
+    

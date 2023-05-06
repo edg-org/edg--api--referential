@@ -19,6 +19,9 @@ class TransformerModel(EntityMeta):
         primary_key=True,
         index=True,
     )
+    code = Column(
+        String(5), index=True, unique=True, nullable=False
+    )
     transformer_number = Column(
         String(15), index=True, unique=True, nullable=False
     )

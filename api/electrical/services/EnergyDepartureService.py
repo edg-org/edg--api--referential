@@ -58,14 +58,15 @@ class EnergyDepartureService:
                     + str(item.code),
                 )
 
+
             departure = self.departure.getbyname(
-                name=item.name
+                name=item.infos.name
             )
             if departure:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="Energy Departure already registered with name "
-                    + item.name,
+                    + item.infos.name,
                 )
 
         return self.departure.create(data=data)

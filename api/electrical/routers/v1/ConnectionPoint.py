@@ -30,7 +30,7 @@ connectionRouter = APIRouter(
     "/",
     summary="Getting router for all connection points",
     description="This router allows to get all connection points ",
-    response_model=List[ConnectionPointSchema],
+    # response_model=List[ConnectionPointSchema],
 )
 async def list(
     skip: int = 0,

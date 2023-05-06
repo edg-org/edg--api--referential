@@ -38,48 +38,48 @@ class AreaService:
     async def create(
         self, data: List[CreateArea]
     ) -> List[CreateArea]:
-        city_code = 0
-        for item in data:
-            maxcode = self.area.maxcode_bycity(
-                item.infos.city_code
-            )
-            if maxcode is None:
-                maxcode = 0
+        # city_code = 0
+        # for item in data:
+        #     maxcode = self.area.maxcode_bycity(
+        #         item.infos.city_code
+        #     )
+        #     if maxcode is None:
+        #         maxcode = 0
 
-            item.city_id = CityRepo.getid_bycode(
-                self.area, item.infos.city_code
-            )
+        #     item.city_id = CityRepo.getid_bycode(
+        #         self.area, item.infos.city_code
+        #     )
 
-            if maxcode > 0:
-                step += 1
-                basecode = maxcode
-            else:
-                basecode = area_basecode(
-                    item.infos.city_code
-                )
-                if city_code == item.infos.city_code:
-                    step += 1
-                else:
-                    step = 0
+        #     if maxcode > 0:
+        #         step += 1
+        #         basecode = maxcode
+        #     else:
+        #         basecode = area_basecode(
+        #             item.infos.city_code
+        #         )
+        #         if city_code == item.infos.city_code:
+        #             step += 1
+        #         else:
+        #             step = 0
 
-            area_code = basecode + step
-            city_code = item.infos.city_code
-            item.code = area_code
-            area = self.area.getbycode(code=item.code)
-            if area:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Area already registered with code "
-                    + str(item.code),
-                )
+        #     area_code = basecode + step
+        #     city_code = item.infos.city_code
+        #     item.code = area_code
+        #     area = self.area.getbycode(code=item.code)
+        #     if area:
+        #         raise HTTPException(
+        #             status_code=status.HTTP_400_BAD_REQUEST,
+        #             detail="Area already registered with code "
+        #             + str(item.code),
+        #         )
 
-            area = self.area.getbyname(name=item.infos.name)
-            if area:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Area already registered with name "
-                    + item.infos.name,
-                )
+        #     area = self.area.getbyname(name=item.infos.name)
+        #     if area:
+        #         raise HTTPException(
+        #             status_code=status.HTTP_400_BAD_REQUEST,
+        #             detail="Area already registered with name "
+        #             + item.infos.name,
+        #         )
 
         return self.area.create(data=data)
 

@@ -1,4 +1,5 @@
 Tags = [
+   
     {
         "name": "Contact Types",
         "description": "Contains CRUD operation on Contact Types",

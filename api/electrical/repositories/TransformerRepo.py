@@ -54,17 +54,15 @@ class TransformerRepo:
             )
             .first()
         )
-
-    # get transformer name function
+  
     def getbyname(self, name: str) -> TransformerModel:
         return (
             self.db.query(TransformerModel)
             .where(
-                func.lower(TransformerModel.infos["name"])
-                == name.lower()
+                TransformerModel.infos['name'] == name               
             )
-            .first()
-        )
+            .first()            
+        )        
 
     # create transformer function
     def create(
@@ -90,3 +88,24 @@ class TransformerRepo:
     def delete(self, meter: TransformerModel) -> None:
         self.db.delete(meter)
         self.db.commit()
+
+    # get transformer code function
+    def getbycode(self, code: str) -> TransformerModel:
+        return (
+            self.db.query(TransformerModel)
+            .where(
+                func.lower(TransformerModel.code)
+                == code.lower()
+            )
+            .first()
+        )
+    # get transformer_number function
+    def getbytransformernumber(self, number: str) -> TransformerModel:
+        return (
+            self.db.query(TransformerModel)
+            .where(
+                func.lower(TransformerModel.transformer_number)
+                == number.lower()
+            )
+            .first()
+        )

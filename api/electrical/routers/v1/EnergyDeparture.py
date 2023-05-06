@@ -30,7 +30,7 @@ departureRouter = APIRouter(
     "/",
     summary="Getting router for all energy departures",
     description="This router allows to get all energy departures",
-    response_model=List[EnergyDepartureSchema],
+    # response_model=List[EnergyDepartureSchema],
 )
 async def list(
     skip: int = 0,

@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from api.metadata.Tags import Tags
 from api.configs.BaseModel import init
 from api.configs.Environment import get_env_var
-
+ 
 from api.salesfinancial.routers.v1.ContactType import (
     contacttypeRouter,
 )
@@ -119,6 +119,8 @@ app.include_router(meterRouter)
 app.include_router(meterdeliveryRouter)
 
 app.include_router(loggerRouter)
+
+
 
 # Initialize Data Model
 init()

@@ -52,19 +52,31 @@ class EnergyDepartureRepo:
             .first()
         )
 
-    # get energy departure name function
+
+    # # get energy departure name function
+    # def getbyname(self, name: str) -> EnergyDepartureModel:
+
+    #     return (
+    #         self.db.query(EnergyDepartureModel)
+    #         .where(
+    #             func.lower(
+    #                 EnergyDepartureModel.infos["name"]
+    #             )
+    #             == name.lower()
+    #         )
+    #         .first()
+    #     )
+
+  
     def getbyname(self, name: str) -> EnergyDepartureModel:
         return (
             self.db.query(EnergyDepartureModel)
             .where(
-                func.lower(
-                    EnergyDepartureModel.infos["name"]
-                )
-                == name.lower()
+                EnergyDepartureModel.infos['name'] == name               
             )
-            .first()
-        )
-
+            .first()            
+        )    
+        
     # create energy departure function
     def create(
         self, data: List[CreateEnergyDeparture]

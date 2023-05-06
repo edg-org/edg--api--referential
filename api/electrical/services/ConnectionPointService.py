@@ -53,28 +53,36 @@ class ConnectionPointService:
         self, data: List[CreateConnectionPoint]
     ) -> List[CreateConnectionPoint]:
         for item in data:
-            connectionpoint = (
-                self.connectionpoint.getbycode(
-                    code=item.code
-                )
+            connectionpoint = self.connectionpoint.getbycode(
+                code=item.code
             )
             if connectionpoint:
-                raise HTTPException(
+                raise HTTPException( 
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="Connection Point already registered with code "
                     + str(item.code),
                 )
 
+            connectionpoint = self.connectionpoint.getbyconnectionpointnumber(
+                number=item.connection_point_number
+            )
+            if connectionpoint:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Connection Point already registered with connection_point_number "
+                    + str(item.connection_point_number),
+                )
+
             connectionpoint = (
                 self.connectionpoint.getbyname(
-                    name=item.name
+                    name=item.infos.name
                 )
             )
             if connectionpoint:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="Connection Point already registered with name "
-                    + item.name,
+                    + item.infos.name,
                 )
 
         return self.connectionpoint.create(data=data)

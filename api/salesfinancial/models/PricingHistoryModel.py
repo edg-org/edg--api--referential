@@ -2,6 +2,7 @@ from datetime import datetime
 from api.configs.BaseModel import EntityMeta
 from sqlalchemy.dialects.mysql import TINYINT
 from sqlalchemy import (Column, DateTime, Date, JSON, String, ForeignKey)
+from sqlalchemy.orm import relationship
 
 class PricingHistoryModel(EntityMeta):
     __tablename__ = "pricing_histories"
@@ -14,3 +15,5 @@ class PricingHistoryModel(EntityMeta):
     subscription_type_code = Column(TINYINT(unsigned=True), ForeignKey("subscription_types.id"), nullable=False)
     infos = Column(JSON, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=datetime.utcnow().isoformat(), nullable=False)
+
+    subscription_type = relationship("SubscriptionTypeModel", back_populates="pricing_histories")

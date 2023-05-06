@@ -62,12 +62,9 @@ class ConnectionPointRepo:
         return (
             self.db.query(ConnectionPointModel)
             .where(
-                func.lower(
-                    ConnectionPointModel.infos["name"]
-                )
-                == name.lower()
+                ConnectionPointModel.infos['name'] == name               
             )
-            .first()
+            .first()            
         )
 
     # create connection point function
@@ -94,3 +91,25 @@ class ConnectionPointRepo:
     def delete(self, meter: ConnectionPointModel) -> None:
         self.db.delete(meter)
         self.db.commit()
+
+
+    # get transformer code function
+    def getbycode(self, code: str) -> ConnectionPointModel:
+        return (
+            self.db.query(ConnectionPointModel)
+            .where(
+                func.lower(ConnectionPointModel.code)
+                == code.lower()
+            )
+            .first()
+        )
+    # get connection_point_number function
+    def getbyconnectionpointnumber(self, number: str) -> ConnectionPointModel:
+        return (
+            self.db.query(ConnectionPointModel)
+            .where(
+                func.lower(ConnectionPointModel.connection_point_number)
+                == number.lower()
+            )
+            .first()
+        )

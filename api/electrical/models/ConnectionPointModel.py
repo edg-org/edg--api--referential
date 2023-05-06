@@ -22,6 +22,14 @@ class ConnectionPointModel(EntityMeta):
         primary_key=True,
         index=True,
     )
+
+    code = Column(
+        String(15),
+        index=True,
+        unique=True,
+        nullable=False,
+    )
+    
     connection_point_number = Column(
         String(15),
         index=True,

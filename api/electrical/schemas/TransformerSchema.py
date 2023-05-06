@@ -18,10 +18,11 @@ class TransformerInfos(BaseModel):
     index_reading: float
     manufacturing_country: str
     coordinates: TransformerCoordinates
-
+    
 
 class TransformerBase(BaseModel):
-    tranformer_number: str
+    code: str
+    transformer_number: str
     departure_id: int
     area_id: int
     infos: TransformerInfos

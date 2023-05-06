@@ -77,7 +77,7 @@ async def get_area_item(
     return area
 
 
-# post area route
+# post area route 
 @areaRouter.post(
     "/",
     summary="Creation router a area",
@@ -88,7 +88,7 @@ async def create(
     areas: List[CreateArea],
     areaService: AreaService = Depends(),
 ):
-    return await areaService.create(areas=areas)
+    return await areaService.create(data=areas)
 
 
 # update area route
