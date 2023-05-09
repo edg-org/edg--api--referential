@@ -12,7 +12,8 @@ from api.salesfinancial.services.InvoicingFrequencyService import (
 from api.salesfinancial.schemas.InvoicingFrequencySchema import (
     InvoicingFrequencyBase,
     CreateInvoicingFrequency,
-    InvoicingFrequencySchema,
+    InvoicingFrequencyUpdate,
+    InvoicingFrequencySchema
 )
 
 env = get_env_var()
@@ -84,7 +85,7 @@ async def create(
 )
 async def update(
     code: int,
-    data: InvoicingFrequencyBase,
+    data: InvoicingFrequencyUpdate,
     frequencyService: InvoicingFrequencyService = Depends(),
 ):
     return await frequencyService.update(

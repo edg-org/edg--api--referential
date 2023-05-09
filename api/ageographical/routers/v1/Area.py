@@ -10,9 +10,10 @@ from api.ageographical.services.AreaService import (
     AreaService,
 )
 from api.ageographical.schemas.AreaSchema import (
-    AreaBase,
+    AreaInput,
     CreateArea,
     AreaSchema,
+    AreaUpdate,
     AreaItemSchema,
 )
 
@@ -31,11 +32,7 @@ areaRouter = APIRouter(
     description="This router allows to get all areas",
     response_model=List[AreaSchema],
 )
-async def list(
-    skip: int = 0,
-    limit: int = 100,
-    areaService: AreaService = Depends(),
-):
+async def list(skip: int = 0, limit: int = 100,areaService: AreaService = Depends()):
     return await areaService.list(skip, limit)
 
 
@@ -85,10 +82,10 @@ async def get_area_item(
     response_model=List[CreateArea],
 )
 async def create(
-    areas: List[CreateArea],
+    data: List[AreaInput],
     areaService: AreaService = Depends(),
 ):
-    return await areaService.create(areas=areas)
+    return await areaService.create(data=data)
 
 
 # update area route
@@ -100,7 +97,7 @@ async def create(
 )
 async def update(
     code: int,
-    data: AreaBase,
+    data: AreaUpdate,
     areaService: AreaService = Depends(),
 ):
     return await areaService.update(code=code, data=data)

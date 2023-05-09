@@ -1,10 +1,11 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
 from fastapi import Depends, encoders
+from sqlalchemy import insert, func, and_, Unicode
+#from sqlalchemy.types import Unicode
 from api.configs.Database import get_db
 from api.ageographical.models.CityModel import CityModel
-from api.ageographical.schemas.CitySchema import CreateCity
+from api.ageographical.schemas.CitySchema import CreateCity, CityUpdate, CitySearchParams
 
 #
 class CityRepo:
@@ -17,34 +18,49 @@ class CityRepo:
 
     # get max code of city by prefecture
     def maxcodebyzone(self, prefecture_code: int) -> int:
-        return (
+        codemax = (
             self.db.query(func.max(CityModel.code))
             .where(
-                CityModel.infos["prefecture_code"]
-                == prefecture_code
-            )
-            .one()[0]
+                CityModel.infos["prefecture_code"] == prefecture_code
+            ).one()[0]
         )
+        return 0 if codemax is None else codemax
 
     # get max zipcode of city by prefecture
-    def maxzipcode_byzone(
-        self, prefecture_code: int
-    ) -> int:
+    def maxzipcodebyzone(self, prefecture_code: int) -> int:
+        codemax = (
+            self.db.query(func.max(CityModel.zipcode)).where(
+                CityModel.infos["prefecture_code"] == prefecture_code
+            ).one()[0]
+        )
+        return 0 if codemax is None else codemax
+
+    # count total rows of city by name
+    def countbyname(self, name: str) -> int:
+        return self.db.query(CityModel).where(
+            func.lower(func.json_unquote(CityModel.infos["name"])) == name.lower()
+        ).count()
+    
+    # count total rows of city by code
+    def countbycode(self, code: int) -> int:
+        return self.db.query(CityModel).where(
+            CityModel.code == code
+        ).count()
+
+    # count total rows of city by zipcode
+    def countbyzipcode(self, zipcode: str) -> CityModel:
         return (
-            self.db.query(func.max(CityModel.zipcode))
-            .where(
-                CityModel.infos["prefecture_code"]
-                == prefecture_code
-            )
-            .one()[0]
+            self.db.query(CityModel).where(
+                CityModel.zipcode == zipcode
+            ).first()
         )
 
     # get city code by code function
     def getidbycode(self, code: int) -> CityModel:
         return (
-            self.db.query(CityModel.id)
-            .where(CityModel.code == code)
-            .one()[0]
+            self.db.query(CityModel.id).where(
+                CityModel.code == code
+            ).one()[0]
         )
 
     # get all cities function
@@ -61,17 +77,16 @@ class CityRepo:
     # get city by id function
     def get(self, id: int) -> CityModel:
         return (
-            self.db.query(CityModel)
-            .where(CityModel.id == id)
-            .first()
+            self.db.query(CityModel).where(CityModel.id == id).first()
         )
 
     # get city code function
     def getbycode(self, code: str) -> CityModel:
         return (
             self.db.query(CityModel)
-            .where(CityModel.code == code)
-            .first()
+            .where(
+                CityModel.code == code
+            ).first()
         )
 
     # get city name function
@@ -79,24 +94,47 @@ class CityRepo:
         return (
             self.db.query(CityModel)
             .where(
-                func.lower(CityModel.infos["name"])
-                == name.lower()
-            )
-            .first()
+                func.lower(func.json_unquote(CityModel.infos["name"])) == name.lower()
+            ).all()
+        )
+    
+    # check city name in the prefecture function
+    def checkcityname(self, prefecture_code: int, name: str) -> int:
+        return (
+            self.db.query(func.count(CityModel.id))
+            .where(
+                and_(
+                    CityModel.infos["prefecture_code"] == prefecture_code,
+                    func.lower(func.json_unquote(CityModel.infos["name"])) == name.lower()
+                )
+            ).one()[0]
         )
 
-    # get city code function
+    # get city by zipcode function
     def getbyzipcode(self, zipcode: str) -> CityModel:
         return (
             self.db.query(CityModel)
-            .where(CityModel.zipcode == zipcode)
-            .first()
+            .where(
+                CityModel.zipcode == zipcode
+            ).first()
+        )
+
+    # get city by zipcode function
+    def search(self, params: CitySearchParams) -> CityModel:
+        return (
+            self.db.query(CityModel)
+            .where(
+                and_(
+                    CityModel.code == params.code
+                    if params.code is not None else True,
+                    CityModel.zipcode == params.zipcode
+                    if params.zipcode is not None else True,
+                )
+            ).first()
         )
 
     # create city function
-    def create(
-        self, data: List[CreateCity]
-    ) -> List[CreateCity]:
+    def create(self, data: List[CreateCity]) -> List[CreateCity]:
         self.db.execute(
             insert(CityModel),
             encoders.jsonable_encoder(data),
@@ -105,7 +143,7 @@ class CityRepo:
         return data
 
     # update city function
-    def update(self, data: CityModel) -> CityModel:
+    def update(self, data: CreateCity) -> CityModel:
         self.db.add(data)
         self.db.commit()
         self.db.refresh(data)

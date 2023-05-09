@@ -3,12 +3,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from api.salesfinancial.models.TrackingTypeModel import (
-    TrackingTypeModel,
-)
-from api.salesfinancial.schemas.TrackingTypeSchema import (
-    CreateTrackingType,
-)
+from api.salesfinancial.models.TrackingTypeModel import TrackingTypeModel
+from api.salesfinancial.schemas.TrackingTypeSchema import CreateTrackingType
 
 
 class TrackingTypeRepo:
@@ -21,14 +17,13 @@ class TrackingTypeRepo:
 
     # get max code
     def maxcode(self) -> int:
-        return self.db.query(
+        codemax = self.db.query(
             func.max(TrackingTypeModel.code)
         ).one()[0]
+        return 0 if codemax is None else codemax
 
     # get all tracking types function
-    def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[TrackingTypeModel]:
+    def list(self, skip: int = 0, limit: int = 100) -> List[TrackingTypeModel]:
         return (
             self.db.query(TrackingTypeModel)
             .offset(skip)
@@ -72,9 +67,7 @@ class TrackingTypeRepo:
         )
 
     # create tracking type function
-    def create(
-        self, data: List[CreateTrackingType]
-    ) -> List[CreateTrackingType]:
+    def create(self, data: List[CreateTrackingType]) -> List[CreateTrackingType]:
         self.db.execute(
             insert(TrackingTypeModel),
             encoders.jsonable_encoder(data),
@@ -83,9 +76,7 @@ class TrackingTypeRepo:
         return data
 
     # update tracking type function
-    def update(
-        self, data: TrackingTypeModel
-    ) -> TrackingTypeModel:
+    def update(self, data: CreateTrackingType) -> TrackingTypeModel:
         self.db.add(data)
         self.db.commit()
         self.db.refresh(data)

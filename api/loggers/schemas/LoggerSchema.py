@@ -10,8 +10,11 @@ class InfosSchema(BaseModel):
     previous_metadata: Dict[str, Any]
     current_metadata: Dict[str, Any]
 
-class LoggerBase(BaseModel):
+class LoggerInput(BaseModel):
     infos: InfosSchema
+
+class LoggerBase(LoggerInput):
+    pass
 
     class Config:
         orm_mode = True

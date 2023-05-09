@@ -4,7 +4,7 @@ from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
 from api.ageographical.models.RegionModel import RegionModel
-from api.ageographical.schemas.RegionSchema import CreateRegion
+from api.ageographical.schemas.RegionSchema import CreateRegion, RegionUpdate
 
 #
 class RegionRepo:
@@ -21,26 +21,25 @@ class RegionRepo:
             self.db.query(RegionModel)
             .where(
                 RegionModel.infos["zone_code"] == zone_code
-            )
-            .count()
+            ).count()
         )
 
     # get max id of administrative region by natural region
     def maxcodebyzone(self, zone_code: int) -> int:
-        return (
+        codemax = (
             self.db.query(func.max(RegionModel.code))
             .where(
                 RegionModel.infos["zone_code"] == zone_code
-            )
-            .one()[0]
+            ).one()[0]
         )
+        return 0 if codemax is None else codemax
 
     # get administrative region id by code function
     def getidbycode(self, code: int) -> RegionModel:
         return (
-            self.db.query(RegionModel.id)
-            .where(RegionModel.code == code)
-            .one()[0]
+            self.db.query(RegionModel.id).where(
+                RegionModel.code == code
+            ).one()[0]
         )
 
     # get all regions function
@@ -57,34 +56,28 @@ class RegionRepo:
     # get administative region by id function
     def get(self, id: int) -> RegionModel:
         return (
-            self.db.query(RegionModel)
-            .where(RegionModel.id == id)
-            .first()
+            self.db.query(RegionModel).where(RegionModel.id == id).first()
         )
 
     # get administative region code function
     def getbycode(self, code: str) -> RegionModel:
         return (
-            self.db.query(RegionModel)
-            .where(RegionModel.code == code)
-            .first()
+            self.db.query(RegionModel).where(
+                RegionModel.code == code
+            ).first()
         )
 
     # get administative region name function
     def getbyname(self, name: str) -> RegionModel:
         return (
-            self.db.query(RegionModel)
-            .where(
-                func.lower(RegionModel.infos["name"])
-                == name.lower()
+            self.db.query(RegionModel).where(
+                func.lower(func.json_unquote(RegionModel.infos["name"])) == name.lower()
             )
             .first()
         )
 
     # create administative region function
-    def create(
-        self, data: List[CreateRegion]
-    ) -> List[CreateRegion]:
+    def create(self, data: List[CreateRegion]) -> List[CreateRegion]:
         self.db.execute(
             insert(RegionModel),
             encoders.jsonable_encoder(data),
@@ -93,7 +86,7 @@ class RegionRepo:
         return data
 
     # update administative region function
-    def update(self, data: RegionModel) -> RegionModel:
+    def update(self, data: CreateRegion) -> RegionModel:
         self.db.add(data)
         self.db.commit()
         self.db.refresh(data)

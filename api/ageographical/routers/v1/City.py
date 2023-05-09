@@ -10,10 +10,12 @@ from api.ageographical.services.CityService import (
     CityService,
 )
 from api.ageographical.schemas.CitySchema import (
-    CityBase,
+    CityInput,
     CreateCity,
+    CityUpdate,
     CitySchema,
     CityItemSchema,
+    CitySearchParams
 )
 
 env = get_env_var()
@@ -38,18 +40,36 @@ async def list(
 ):
     return await cityService.list(skip, limit)
 
+# get agency route
+@cityRouter.get(
+    "/{name}",
+    summary="Getting router a city without items",
+    description="This router allows to get a agency without items",
+    response_model=List[CitySchema],
+)
+async def get(
+    name: str, cityService: CityService = Depends()
+):
+    city = await cityService.getbyname(name=name)
+    if city is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="City not found",
+        )
+    return city
 
 # get city route
 @cityRouter.get(
-    "/{code}",
+    "/search",
     summary="Getting router a city without items",
     description="This router allows to get a city without items",
-    response_model=CityBase,
+    response_model=CitySchema,
 )
 async def get(
-    code: int, cityService: CityService = Depends()
+    params: CitySearchParams = Depends(),
+    cityService: CityService = Depends()
 ):
-    city = await cityService.getbycode(code=code)
+    city = await cityService.search(params=params)
     if city is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -60,15 +80,16 @@ async def get(
 
 # route of get city with item
 @cityRouter.get(
-    "/items/{code}",
+    "/items",
     summary="Getting router a city with items",
     description="This router allows to get a city with items",
     response_model=CityItemSchema,
 )
 async def get_city_item(
-    code: int, cityService: CityService = Depends()
+    params: CitySearchParams = Depends(),
+    cityService: CityService = Depends()
 ):
-    city = await cityService.getbycode(code=code)
+    city = await cityService.search(params=params)
     if city is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -85,7 +106,7 @@ async def get_city_item(
     response_model=List[CreateCity],
 )
 async def create(
-    data: List[CreateCity],
+    data: List[CityInput],
     cityService: CityService = Depends(),
 ):
     return await cityService.create(data=data)
@@ -100,7 +121,7 @@ async def create(
 )
 async def update(
     id: int,
-    data: CityBase,
+    data: CityUpdate,
     cityService: CityService = Depends(),
 ):
     return await cityService.update(id=id, data=data)

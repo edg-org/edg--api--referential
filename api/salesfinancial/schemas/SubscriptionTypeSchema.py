@@ -31,13 +31,12 @@ class Pricing(BaseModel):
 
 
 class PowerToSubscribe(BaseModel):
-    power: float
+    lower_power: float
+    upper_power: float
+    estimated_consumption: float
     deposit_to_pay: float
 
-
-class TypeInfos(BaseModel):
-    tracking_type: str
-    power_mode: str
+class TypeInfosBase(BaseModel):
     payment_deadline: int
     deadline_measurement_unit: str
     tva: float
@@ -45,15 +44,26 @@ class TypeInfos(BaseModel):
     power_measurement_unit: str
     power_to_subscribe: List[PowerToSubscribe]
 
+class TypeInfosInput(TypeInfosBase):
+    tracking_type: str
+    power_mode: str
 
-class SubscriptionTypeBase(BaseModel):
-    code: int
+class SubscriptionTypeUpdate(BaseModel):
     name: str
-    tracking_type_id: Optional[int]
-    power_mode_id: Optional[int]
-    infos: TypeInfos
+    infos: TypeInfosBase
     pricing: Pricing
     dunning: List[Dunning]
+
+class SubscriptionTypeInput(SubscriptionTypeUpdate):
+    code: int
+    name: str
+    infos: TypeInfosInput
+    pricing: Pricing
+    dunning: List[Dunning]
+
+class SubscriptionTypeBase(SubscriptionTypeInput):
+    power_mode_id: int
+    tracking_type_id: int
 
     class Config:
         orm_mode = True

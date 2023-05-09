@@ -4,7 +4,7 @@ from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
 from api.ageographical.models.CityLevelModel import CityLevelModel
-from api.ageographical.schemas.CityLevelSchema import CreateCityLevel
+from api.ageographical.schemas.CityLevelSchema import CreateCityLevel, CityLevelUpdate
 
 #
 class CityLevelRepo:
@@ -17,9 +17,10 @@ class CityLevelRepo:
 
     # get max code
     def maxcode(self) -> int:
-        return self.db.query(
+        codemax = self.db.query(
             func.max(CityLevelModel.code)
         ).one()[0]
+        return 0 if codemax is None else codemax
 
     # get all city levels function
     def list(
@@ -60,9 +61,7 @@ class CityLevelRepo:
         )
 
     # create city level function
-    def create(
-        self, data: List[CreateCityLevel]
-    ) -> List[CreateCityLevel]:
+    def create(self, data: List[CreateCityLevel]) -> List[CreateCityLevel]:
         self.db.execute(
             insert(CityLevelModel),
             encoders.jsonable_encoder(data),
@@ -71,9 +70,7 @@ class CityLevelRepo:
         return data
 
     # update city level function
-    def update(
-        self, data: CityLevelModel
-    ) -> CityLevelModel:
+    def update(self, data: CityLevelUpdate) -> CityLevelModel:
         self.db.add(data)
         self.db.commit()
         self.db.refresh(data)

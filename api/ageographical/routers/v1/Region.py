@@ -10,8 +10,9 @@ from api.ageographical.services.RegionService import (
     RegionService,
 )
 from api.ageographical.schemas.RegionSchema import (
-    RegionBase,
+    RegionInput,
     RegionSchema,
+    RegionUpdate,
     CreateRegion,
     RegionItemSchema,
 )
@@ -86,7 +87,7 @@ async def get_region_item(
     response_model=List[CreateRegion],
 )
 async def create(
-    data: List[CreateRegion],
+    data: List[RegionInput],
     regionService: RegionService = Depends(),
 ):
     return await regionService.create(data=data)
@@ -101,7 +102,7 @@ async def create(
 )
 async def update(
     code: int,
-    data: RegionBase,
+    data: RegionUpdate,
     regionService: RegionService = Depends(),
 ):
     return await regionService.update(code=code, data=data)

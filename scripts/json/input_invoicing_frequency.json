@@ -5,22 +5,22 @@
         "shortname": "m"
     },
     {
-        "code": 1,
+        "code": 2,
         "name": "Bi-mensuelle",
         "shortname": "b"
     },
     {
-        "code": 1,
+        "code": 3,
         "name": "Trimestrielle",
         "shortname": "t"
     },
     {
-        "code": 1,
+        "code": 6,
         "name": "Semestrielle",
         "shortname": "s"
     },
     {
-        "code": 1,
+        "code": 12,
         "name": "Annuelle",
         "shortname": "a"
     }

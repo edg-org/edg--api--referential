@@ -16,21 +16,36 @@ class AreaRepo:
         self.db = db
 
     # get max id of area by city
-    def maxcode_bycity(self, city_code: int) -> int:
-        return (
+    def maxcodebycity(self, city_code: int) -> int:
+        codemax = (
             self.db.query(func.max(AreaModel.code))
             .where(
                 AreaModel.infos["city_code"] == city_code
-            )
-            .one()[0]
+            ).one()[0]
         )
+        return 0 if codemax is None else codemax
+
+    # count total rows of area by name
+    def countbyname(self, name: str) -> int:
+        return self.db.query(AreaModel).where(
+            func.lower(
+                func.json_unquote(AreaModel.infos["name"])
+            ) == name.lower()
+        ).count()
+    
+    # count total rows of area by code
+    def countbycode(self, code: int) -> int:
+        return self.db.query(AreaModel).where(
+            AreaModel.code == code
+        ).count()
 
     # get area id by code function
     def getidbycode(self, code: int) -> AreaModel:
         return (
             self.db.query(AreaModel.id)
-            .where(AreaModel.code == code)
-            .one()[0]
+            .where(
+                AreaModel.code == code
+            ).one()[0]
         )
 
     # get all areas function
@@ -48,38 +63,42 @@ class AreaRepo:
     def get(self, id: int) -> AreaModel:
         return (
             self.db.query(AreaModel)
-            .where(AreaModel.id == id)
-            .first()
+            .where(
+                AreaModel.id == id
+            ).first()
         )
 
     # get area id by code function
     def getidbycode(self, code: int) -> AreaModel:
         return (
             self.db.query(AreaModel.id)
-            .where(AreaModel.code == code)
-            .one()[0]
+            .where(
+                AreaModel.code == code
+            ).one()[0]
         )
 
     # get area code function
     def getbycode(self, code: str) -> AreaModel:
         return (
             self.db.query(AreaModel)
-            .where(AreaModel.code == code)
-            .first()
+            .where(
+                AreaModel.code == code
+            ).first()
         )
 
     # get area name function
     def getbyname(self, name: str) -> AreaModel:
         return (
             self.db.query(AreaModel)
-            .where(AreaModel.infos["name"] == name)
-            .first()
+            .where(
+                func.lower(
+                    func.json_unquote(AreaModel.infos["name"])
+                ) == name.lower()
+            ).first()
         )
 
     # create area function
-    def create(
-        self, data: List[CreateArea]
-    ) -> List[CreateArea]:
+    def create(self, data: List[CreateArea]) -> List[CreateArea]:
         self.db.execute(
             insert(AreaModel),
             encoders.jsonable_encoder(data),
@@ -88,7 +107,7 @@ class AreaRepo:
         return data
 
     # update area function
-    def update(self, data: AreaModel) -> AreaModel:
+    def update(self, data: CreateArea) -> AreaModel:
         self.db.add(data)
         self.db.commit()
         self.db.refresh(data)

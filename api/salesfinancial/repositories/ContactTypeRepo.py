@@ -3,12 +3,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from api.salesfinancial.models.ContactTypeModel import (
-    ContactTypeModel,
-)
-from api.salesfinancial.schemas.ContactTypeSchema import (
-    CreateContactType,
-)
+from api.salesfinancial.models.ContactTypeModel import ContactTypeModel
+from api.salesfinancial.schemas.ContactTypeSchema import CreateContactType
 
 
 class ContactTypeRepo:
@@ -21,14 +17,13 @@ class ContactTypeRepo:
 
     # get max code
     def maxcode(self) -> int:
-        return self.db.query(
+        codemax = self.db.query(
             func.max(ContactTypeModel.code)
         ).one()[0]
+        return 0 if codemax is None else codemax
 
     # get all contact types function
-    def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[ContactTypeModel]:
+    def list(self, skip: int = 0, limit: int = 100) -> List[ContactTypeModel]:
         return (
             self.db.query(ContactTypeModel)
             .offset(skip)
@@ -64,9 +59,7 @@ class ContactTypeRepo:
         )
 
     # create contact type function
-    def create(
-        self, data: List[CreateContactType]
-    ) -> List[CreateContactType]:
+    def create(self, data: List[CreateContactType]) -> List[CreateContactType]:
         self.db.execute(
             insert(ContactTypeModel),
             encoders.jsonable_encoder(data),
@@ -75,9 +68,7 @@ class ContactTypeRepo:
         return data
 
     # update contact type function
-    def update(
-        self, data: ContactTypeModel
-    ) -> ContactTypeModel:
+    def update(self, data: CreateContactType) -> ContactTypeModel:
         self.db.add(data)
         self.db.commit()
         self.db.refresh(data)

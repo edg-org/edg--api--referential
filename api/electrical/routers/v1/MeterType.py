@@ -6,13 +6,12 @@ from fastapi import (
     status,
     HTTPException,
 )
-from api.electrical.services.MeterTypeService import (
-    MeterTypeService,
-)
+from api.electrical.services.MeterTypeService import MeterTypeService
 from api.electrical.schemas.MeterTypeSchema import (
-    MeterTypeBase,
+    MeterTypeInput,
     CreateMeterType,
-    MeterTypeSchema,
+    MeterTypeUpdate,
+    MeterTypeSchema
 )
 
 env = get_env_var()
@@ -65,7 +64,7 @@ async def get(
     response_model=List[CreateMeterType],
 )
 async def create(
-    data: List[CreateMeterType],
+    data: List[MeterTypeInput],
     typeService: MeterTypeService = Depends(),
 ):
     return await typeService.create(data=data)
@@ -80,7 +79,7 @@ async def create(
 )
 async def update(
     code: int,
-    data: MeterTypeBase,
+    data: MeterTypeUpdate,
     typeService: MeterTypeService = Depends(),
 ):
     return await typeService.update(code=code, data=data)

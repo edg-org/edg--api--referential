@@ -2,9 +2,14 @@ from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
 
-class SubscriptionStatusBase(BaseModel):
-    code: int
+class SubscriptionStatusUpdate(BaseModel):
     name: str
+
+class SubscriptionStatusInput(SubscriptionStatusUpdate):
+    code: int
+
+class SubscriptionStatusBase(SubscriptionStatusInput):
+    pass
     
     class Config:
         orm_mode = True

@@ -1,11 +1,13 @@
 from typing import List
 from api.tools.Helper import agency_basecode
 from fastapi import Depends, HTTPException, status
+from api.ageographical.repositories.CityRepo import CityRepo
 from api.ageographical.models.AgencyModel import AgencyModel
 from api.ageographical.repositories.AgencyRepo import AgencyRepo
 from api.ageographical.schemas.AgencySchema import (
-    AgencyBase,
-    CreateAgency,
+    AgencyInput,
+    AgencyUpdate,
+    CreateAgency
 )
 
 
@@ -23,64 +25,76 @@ class AgencyService:
     ) -> List[AgencyModel]:
         return self.agency.list(skip=skip, limit=limit)
 
-    # get agency by id function
-    async def get(self, id: int) -> AgencyModel:
-        return self.agency.get(id=id)
-
     # get agency by code function
-    async def getbycode(self, code: str) -> AgencyBase:
+    async def get(self, code: str) -> AgencyModel:
         return self.agency.getbycode(code=code)
 
     # get agency by name function
-    async def getbyname(self, name: str) -> AgencyBase:
+    async def getbyname(self, name: str) -> AgencyModel:
         return self.agency.getbyname(name=name)
 
     # create agency function
-    async def create(
-        self, data: List[CreateAgency]
-    ) -> List[CreateAgency]:
+    async def create(self, data: List[AgencyInput]) -> List[CreateAgency]:
+        step = 0
+        agencylist = []
         for item in data:
-            item.code = agency_basecode(item.infos)
-            agency = self.agency.getbycode(code=item.code)
-            if agency:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Agency already registered with code "
-                    + str(item.code),
-                )
-
-            agency = self.agency.getbyname(
-                name=item.infos.name
-            )
-            if agency:
+            count = self.agency.countbyname(name=item.infos.name)
+            if count > 0:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="Agency already registered with name "
                     + item.infos.name,
                 )
+            
+            step += 10
+            agency_code = generate_code(
+                init_codebase=agency_basecode(item.infos.city_code),
+                maxcode=self.agency.maxcodebycity(item.infos.city_code),
+                input_code=item.infos.city_code,
+                code=city_code,
+                current_step=step,
+                init_step=10
+            )
 
-        return self.agency.create(data=data)
+            count = self.agency.countbycode(code=agency_code)
+            if count > 0:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Agency already registered with code "
+                    + str(item.code),
+                )
+            agency = CreateAgency(
+                code = agency_code,
+                city_id = CityRepo.getidbycode(self.agency, item.infos.city_code),
+                infos = item.infos
+            )
+            agencylist.append(agency)
+
+        return self.agency.create(data=agencylist)
 
     # update agency function
-    async def update(
-        self, code: int, data: AgencyBase
-    ) -> AgencyModel:
-        agency = self.agency.get(code=code)
-        if agency is None:
+    async def update(self, code: int, data: AgencyUpdate) -> AgencyModel:
+        count = self.agency.countbycode(code=code)
+        if count == 0:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Agency not found",
             )
 
-        agencydict = data.dict(exclude_unset=True)
+        agency = CreateAgency(
+            code = code,
+            city_id = CityRepo.getidbycode(self.agency, data.infos.city_code),
+            infos = data.infos
+        )
+        agencydict = agency.dict(exclude_unset=True)
         for key, val in agencydict.items():
             setattr(agency, key, val)
         return self.agency.update(agency)
 
     # delete agency function
     async def delete(self, agency: AgencyModel) -> None:
-        agency = self.agency.get(id=id)
-        if agency is None:
+        count = self.agency.countbycode(code=code)
+        if count > 0:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Agency not found",

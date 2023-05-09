@@ -20,46 +20,36 @@ class DeliveryPointService:
 
     # get all delivery points function
     async def list(
-        self, skip: int = 0, limit: int = 100
+        self, 
+        skip: int = 0, 
+        limit: int = 100
     ) -> List[DeliveryPointModel]:
-        return self.deliverypoint.list(
-            skip=skip, limit=limit
-        )
+        return self.deliverypoint.list(skip=skip, limit=limit)
 
     # get delivery point by id function
     async def get(self, id: int) -> DeliveryPointModel:
         return self.deliverypoint.get(id=id)
 
     # get delivery point by number function
-    async def getbynumber(
-        self, number: int
-    ) -> DeliveryPointBase:
+    async def getbynumber(self, number: int) -> DeliveryPointBase:
         return self.deliverypoint.getbynumber(number=number)
 
     # get delivery point by name function
-    async def getbyname(
-        self, name: str
-    ) -> DeliveryPointBase:
+    async def getbyname(self, name: str) -> DeliveryPointBase:
         return self.deliverypoint.getbyname(name=name)
 
     # create delivery point function
-    async def create(
-        self, data: List[CreateDeliveryPoint]
-    ) -> List[CreateDeliveryPoint]:
+    async def create(self, data: List[CreateDeliveryPoint]) -> List[CreateDeliveryPoint]:
         for item in data:
-            deliverypoint = self.deliverypoint.getbycode(
-                code=item.code
-            )
+            deliverypoint = self.deliverypoint.getbynumber(number=item.meter_number)
             if deliverypoint:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Delivery Point already registered with code "
-                    + str(item.code),
+                    detail="Delivery Point already registered with number "
+                    + str(item.meter_number),
                 )
 
-            deliverypoint = self.deliverypoint.getbyname(
-                name=item.name
-            )
+            deliverypoint = self.deliverypoint.getbyname(name=item.name)
             if deliverypoint:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
@@ -70,9 +60,7 @@ class DeliveryPointService:
         return self.deliverypoint.create(data=data)
 
     # update delivery point function
-    async def update(
-        self, number: int, data: DeliveryPointBase
-    ) -> DeliveryPointModel:
+    async def update(self, number: int, data: DeliveryPointBase) -> DeliveryPointModel:
         deliverypoint = self.deliverypoint.getbynumber(
             number=number
         )
@@ -88,9 +76,7 @@ class DeliveryPointService:
         return self.deliverypoint.update(deliverypoint)
 
     # delete delivery point function
-    async def delete(
-        self, deliverypoint: DeliveryPointModel
-    ) -> None:
+    async def delete(self, deliverypoint: DeliveryPointModel) -> None:
         deliverypoint = self.deliverypoint.get(id=id)
         if deliverypoint is None:
             raise HTTPException(

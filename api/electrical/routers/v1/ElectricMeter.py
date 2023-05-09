@@ -6,13 +6,12 @@ from fastapi import (
     status,
     HTTPException,
 )
-from api.electrical.services.ElectricMeterService import (
-    ElectricMeterService,
-)
+from api.electrical.services.ElectricMeterService import ElectricMeterService
 from api.electrical.schemas.ElectricMeterSchema import (
-    ElectricMeterBase,
+    ElectricMeterInput,
     CreateElectricMeter,
-    ElectricMeterSchema,
+    ElectricMeterUpdate,
+    ElectricMeterSchema
 )
 
 env = get_env_var()
@@ -50,15 +49,15 @@ async def get(
     number: int,
     meterService: ElectricMeterService = Depends(),
 ):
-    departure = await meterService.getbynumber(
+    supply = await meterService.getbynumber(
         number=number
     )
-    if departure is None:
+    if supply is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Electric Meter not found",
         )
-    return departure
+    return supply
 
 
 # post transformer route
@@ -69,7 +68,7 @@ async def get(
     response_model=List[CreateElectricMeter],
 )
 async def create(
-    data: List[CreateElectricMeter],
+    data: List[ElectricMeterInput],
     meterService: ElectricMeterService = Depends(),
 ):
     return await meterService.create(data=data)
@@ -84,7 +83,7 @@ async def create(
 )
 async def update(
     number: int,
-    data: ElectricMeterBase,
+    data: ElectricMeterUpdate,
     meterService: ElectricMeterService = Depends(),
 ):
     return await meterService.update(

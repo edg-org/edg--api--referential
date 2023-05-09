@@ -1,16 +1,8 @@
 from typing import List
 from fastapi import Depends, HTTPException, status
-from api.salesfinancial.models.InvoicingFrequencyModel import (
-    InvoicingFrequencyModel,
-)
-from api.salesfinancial.repositories.InvoicingFrequencyRepo import (
-    InvoicingFrequencyRepo,
-)
-from api.salesfinancial.schemas.InvoicingFrequencySchema import (
-    InvoicingFrequencyBase,
-    CreateInvoicingFrequency,
-)
-
+from api.salesfinancial.models.InvoicingFrequencyModel import InvoicingFrequencyModel
+from api.salesfinancial.repositories.InvoicingFrequencyRepo import InvoicingFrequencyRepo
+from api.salesfinancial.schemas.InvoicingFrequencySchema import CreateInvoicingFrequency
 
 class InvoicingFrequencyService:
     invoicingfrequency: InvoicingFrequencyRepo
@@ -34,32 +26,22 @@ class InvoicingFrequencyService:
         return self.invoicingfrequency.get(id=id)
 
     # get invoicing frequency by code function
-    async def getbycode(
-        self, code: str
-    ) -> InvoicingFrequencyBase:
+    async def getbycode(self, code: str) -> InvoicingFrequencyModel:
         return self.invoicingfrequency.getbycode(code=code)
 
     # get invoicing frequency by name function
-    async def getbyname(
-        self, name: str
-    ) -> InvoicingFrequencyBase:
+    async def getbyname(self, name: str) -> InvoicingFrequencyModel:
         return self.invoicingfrequency.getbyname(name=name)
     
     # get invoicing frequency by shortname function
-    async def getbyname(
-        self, shortname: str
-    ) -> InvoicingFrequencyBase:
+    async def getbyname(self, shortname: str) -> InvoicingFrequencyModel:
         return self.invoicingfrequency.getbyshortname(shortname=shortname)
 
     # create invoicing frequency function
-    async def create(
-        self, data: List[CreateInvoicingFrequency]
-    ) -> List[CreateInvoicingFrequency]:
+    async def create(self, data: List[CreateInvoicingFrequency]) -> List[CreateInvoicingFrequency]:
         for item in data:
             invoicingfrequency = (
-                self.invoicingfrequency.getbycode(
-                    code=item.code
-                )
+                self.invoicingfrequency.getbycode(code=item.code)
             )
             if invoicingfrequency:
                 raise HTTPException(
@@ -83,12 +65,8 @@ class InvoicingFrequencyService:
         return self.invoicingfrequency.create(data=data)
 
     # update invoicing frequency function
-    async def update(
-        self, code: int, data: InvoicingFrequencyBase
-    ) -> InvoicingFrequencyModel:
-        invoicingfrequency = self.invoicingfrequency.get(
-            code=code
-        )
+    async def update(self, code: int, data: CreateInvoicingFrequency) -> InvoicingFrequencyModel:
+        invoicingfrequency = self.invoicingfrequency.getbycode(code=code)
         if invoicingfrequency is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -103,12 +81,8 @@ class InvoicingFrequencyService:
         )
 
     # delete invoicing frequency %function
-    async def delete(
-        self, invoicing: InvoicingFrequencyModel
-    ) -> None:
-        invoicingfrequency = self.invoicingfrequency.get(
-            id=id
-        )
+    async def delete(self, invoicing: InvoicingFrequencyModel) -> None:
+        invoicingfrequency = self.invoicingfrequency.getbycode(code=code)
         if invoicingfrequency is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,

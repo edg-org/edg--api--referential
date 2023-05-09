@@ -10,8 +10,9 @@ from api.ageographical.services.AreaTypeService import (
     AreaTypeService,
 )
 from api.ageographical.schemas.AreaTypeSchema import (
-    AreaTypeBase,
+    AreaTypeInput,
     CreateAreaType,
+    AreaTypeUpdate,
     AreaTypeSchema,
 )
 
@@ -65,7 +66,7 @@ async def get(
     response_model=List[CreateAreaType],
 )
 async def create(
-    data: List[CreateAreaType],
+    data: List[AreaTypeInput],
     typeService: AreaTypeService = Depends(),
 ):
     return await typeService.create(data=data)
@@ -80,7 +81,7 @@ async def create(
 )
 async def update(
     code: int,
-    data: AreaTypeBase,
+    data: AreaTypeUpdate,
     typeService: AreaTypeService = Depends(),
 ):
     return await typeService.update(code=code, data=data)

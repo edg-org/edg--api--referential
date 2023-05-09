@@ -6,13 +6,12 @@ from fastapi import (
     status,
     HTTPException,
 )
-from api.electrical.services.ConnectionPointService import (
-    ConnectionPointService,
-)
+from api.electrical.services.ConnectionPointService import ConnectionPointService
 from api.electrical.schemas.ConnectionPointSchema import (
-    ConnectionPointBase,
+    ConnectionPointInput,
     CreateConnectionPoint,
     ConnectionPointSchema,
+    ConnectionPointUpdate,
     ConnectionPointItemSchema,
 )
 
@@ -51,15 +50,15 @@ async def get(
     number: int,
     connectionService: ConnectionPointService = Depends(),
 ):
-    departure = await connectionService.getbynumber(
+    supply = await connectionService.getbynumber(
         number=number
     )
-    if departure is None:
+    if supply is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Connection Point not found",
         )
-    return departure
+    return supply
 
 
 # route of get tranformer with item
@@ -92,7 +91,7 @@ async def get_tranformer_item(
     response_model=List[CreateConnectionPoint],
 )
 async def create(
-    data: List[CreateConnectionPoint],
+    data: List[ConnectionPointInput],
     connectionService: ConnectionPointService = Depends(),
 ):
     return await connectionService.create(data=data)
@@ -107,7 +106,7 @@ async def create(
 )
 async def update(
     number: int,
-    data: ConnectionPointBase,
+    data: ConnectionPointUpdate,
     connectionService: ConnectionPointService = Depends(),
 ):
     return await connectionService.update(

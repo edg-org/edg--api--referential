@@ -1,0 +1,20 @@
+[
+    {
+        "infos": {
+            "name": "transfo diatéla",
+            "city_code": 3011901,
+            "supply_line_code": 301190002,
+            "manufacturing_country": "Allemagne"
+        },
+        "tranformer_code": "string"
+    },
+    {
+        "infos": {
+            "name": "transfo aviation",
+            "city_code": 3011900,
+            "supply_line_code": 301190001,
+            "manufacturing_country": "Allemagne"
+        },
+        "tranformer_code": "string"
+    }
+]

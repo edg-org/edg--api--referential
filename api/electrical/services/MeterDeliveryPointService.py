@@ -20,35 +20,31 @@ class MeterDeliveryPointService:
 
     # get all meter delivery points function
     async def list(
-        self, skip: int = 0, limit: int = 100
+        self, 
+        skip: int = 0, 
+        limit: int = 100
     ) -> List[MeterDeliveryPointModel]:
-        return self.meterdelivery.list(
-            skip=skip, limit=limit
-        )
+        return self.meterdelivery.list(skip=skip, limit=limit)
 
     # get meter delivery point by id function
     async def get(self, id: int) -> MeterDeliveryPointModel:
         return self.meterdelivery.get(id=id)
 
     # get by electric meter number function
-    async def getbymeternumber(
-        self, number: str
-    ) -> MeterDeliveryPointBase:
-        return self.meterdelivery.getbymeternumber(
-            number=number
-        )
+    async def getbymeternumber(self, number: str) -> MeterDeliveryPointBase:
+        return self.meterdelivery.getbymeternumber(number=number)
 
     # get by delivery point number function
     async def getbydeliverypointnumber(
-        self, number: str
+        self, 
+        number: str
     ) -> MeterDeliveryPointBase:
-        return self.meterdelivery.getbydeliverypointnumber(
-            number=number
-        )
+        return self.meterdelivery.getbydeliverypointnumber(number=number)
 
     # create meter delivery point function
     async def create(
-        self, data: List[CreateMeterDeliveryPoint]
+        self, 
+        data: List[CreateMeterDeliveryPoint]
     ) -> List[CreateMeterDeliveryPoint]:
         for item in data:
             meterdelivery = self.meterdelivery.getbycode(
@@ -75,7 +71,8 @@ class MeterDeliveryPointService:
 
     # delete meter delivery point function
     async def delete(
-        self, meterdelivery: MeterDeliveryPointModel
+        self, 
+        meterdelivery: MeterDeliveryPointModel
     ) -> None:
         meterdelivery = self.meterdelivery.get(id=id)
         if meterdelivery is None:

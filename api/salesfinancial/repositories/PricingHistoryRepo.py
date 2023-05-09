@@ -3,13 +3,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from api.salesfinancial.models.PricingHistoryModel import (
-    PricingHistoryModel,
-)
-from api.salesfinancial.schemas.PricingHistorySchema import (
-    CreatePricingHistory,
-)
-
+from api.salesfinancial.models.PricingHistoryModel import PricingHistoryModel
+from api.salesfinancial.schemas.PricingHistorySchema import CreatePricingHistory
 
 class PricingHistoryRepo:
     db: Session
@@ -21,14 +16,13 @@ class PricingHistoryRepo:
 
     # get max code
     def maxcode(self) -> int:
-        return self.db.query(
+        codemax = self.db.query(
             func.max(PricingHistoryModel.code)
         ).one()[0]
+        return 0 if codemax is None else codemax
 
     # get all pricing histories function
-    def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[PricingHistoryModel]:
+    def list(self, skip: int = 0, limit: int = 100) -> List[PricingHistoryModel]:
         return (
             self.db.query(PricingHistoryModel)
             .offset(skip)
@@ -64,26 +58,10 @@ class PricingHistoryRepo:
         )
 
     # create pricing history function
-    def create(
-        self, data: List[CreatePricingHistory]
-    ) -> List[CreatePricingHistory]:
+    def create(self, data: List[CreatePricingHistory]) -> List[CreatePricingHistory]:
         self.db.execute(
             insert(PricingHistoryModel),
             encoders.jsonable_encoder(data),
         )
         self.db.commit()
         return data
-
-    # update pricing history function
-    def update(
-        self, data: PricingHistoryModel
-    ) -> PricingHistoryModel:
-        self.db.add(data)
-        self.db.commit()
-        self.db.refresh(data)
-        return data
-
-    # delete pricing history function
-    def delete(self, pricing: PricingHistoryModel) -> None:
-        self.db.delete(pricing)
-        self.db.commit()

@@ -6,12 +6,11 @@ from fastapi import (
     status,
     HTTPException,
 )
-from api.salesfinancial.services.TrackingTypeService import (
-    TrackingTypeService,
-)
+from api.salesfinancial.services.TrackingTypeService import TrackingTypeService
 from api.salesfinancial.schemas.TrackingTypeSchema import (
     TrackingTypeBase,
     CreateTrackingType,
+    TrackingTypeUpdate,
     TrackingTypeSchema,
 )
 
@@ -81,7 +80,7 @@ async def create(
 )
 async def update(
     code: int,
-    data: TrackingTypeBase,
+    data: TrackingTypeUpdate,
     typeService: TrackingTypeService = Depends(),
 ):
     return await typeService.update(code=code, data=data)

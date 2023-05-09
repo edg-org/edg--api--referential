@@ -12,6 +12,7 @@ from api.salesfinancial.services.SubscriptionLevelService import (
 from api.salesfinancial.schemas.SubscriptionLevelSchema import (
     SubscriptionLevelBase,
     CreateSubscriptionLevel,
+    SubscriptionLevelUpdate,
     SubscriptionLevelSchema,
 )
 
@@ -84,7 +85,7 @@ async def create(
 )
 async def update(
     code: int,
-    data: SubscriptionLevelBase,
+    data: SubscriptionLevelUpdate,
     levelService: SubscriptionLevelService = Depends(),
 ):
     return await levelService.update(code=code, data=data)

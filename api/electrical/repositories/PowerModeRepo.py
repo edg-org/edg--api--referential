@@ -3,13 +3,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from api.electrical.models.PowerModeModel import (
-    PowerModeModel,
-)
-from api.electrical.schemas.PowerModeSchema import (
-    CreatePowerMode,
-)
-
+from api.electrical.models.PowerModeModel import PowerModeModel
+from api.electrical.schemas.PowerModeSchema import CreatePowerMode
 
 class PowerModeRepo:
     db: Session
@@ -26,9 +21,7 @@ class PowerModeRepo:
         ).one()[0]
 
     # get all power modes function
-    def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[PowerModeModel]:
+    def list(self, skip: int = 0, limit: int = 100) -> List[PowerModeModel]:
         return (
             self.db.query(PowerModeModel)
             .offset(skip)
@@ -72,9 +65,7 @@ class PowerModeRepo:
         )
     
     # create power mode function
-    def create(
-        self, data: List[CreatePowerMode]
-    ) -> List[CreatePowerMode]:
+    def create(self, data: List[CreatePowerMode]) -> List[CreatePowerMode]:
         self.db.execute(
             insert(PowerModeModel),
             encoders.jsonable_encoder(data),
@@ -83,9 +74,7 @@ class PowerModeRepo:
         return data
 
     # update power mode function
-    def update(
-        self, data: PowerModeModel
-    ) -> PowerModeModel:
+    def update(self, data: CreatePowerMode) -> PowerModeModel:
         self.db.add(data)
         self.db.commit()
         self.db.refresh(data)

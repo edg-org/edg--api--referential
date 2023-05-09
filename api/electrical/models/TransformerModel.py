@@ -15,9 +15,9 @@ class TransformerModel(EntityMeta):
     __tablename__ = "transformers"
 
     id = Column(MEDIUMINT(unsigned=True), primary_key=True, index=True)
-    transformer_number = Column(String(15), index=True, unique=True, nullable=False)
-    departure_id = Column(TINYINT(unsigned=True), ForeignKey("energy_departures.id"), nullable=False)
-    city_id = Column(SMALLINT(unsigned=True), ForeignKey("areas.id"), nullable=True)
+    transformer_code = Column(String(15), index=True, unique=True, nullable=False)
+    supply_line_id = Column(TINYINT(unsigned=True), ForeignKey("energy_supply_lines.id"), nullable=False)
+    city_id = Column(SMALLINT(unsigned=True), ForeignKey("cities.id"), nullable=False)
     area_id = Column(MEDIUMINT(unsigned=True), ForeignKey("areas.id"), nullable=True)
     infos = Column(JSON, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=datetime.utcnow().isoformat(), nullable=False)
@@ -25,6 +25,6 @@ class TransformerModel(EntityMeta):
 
     city = relationship("CityModel", back_populates="transformers")
     area = relationship("AreaModel", back_populates="transformers")
-    energy_departure = relationship("EnergyDepartureModel", back_populates="transformers")
+    energy_supply_line = relationship("EnergySupplyLineModel", back_populates="transformers")
     
     connection_points = relationship("ConnectionPointModel", back_populates="transformer")

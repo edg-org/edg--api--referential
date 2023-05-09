@@ -3,12 +3,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from api.salesfinancial.models.InvoicingFrequencyModel import (
-    InvoicingFrequencyModel,
-)
-from api.salesfinancial.schemas.InvoicingFrequencySchema import (
-    CreateInvoicingFrequency,
-)
+from api.salesfinancial.models.InvoicingFrequencyModel import InvoicingFrequencyModel
+from api.salesfinancial.schemas.InvoicingFrequencySchema import CreateInvoicingFrequency
 
 
 class InvoicingFrequencyRepo:
@@ -21,14 +17,13 @@ class InvoicingFrequencyRepo:
 
     # get max code
     def maxcode(self) -> int:
-        return self.db.query(
+        codemax = self.db.query(
             func.max(InvoicingFrequencyModel.code)
         ).one()[0]
+        return 0 if codemax is None else codemax
 
     # get all invoicing frequencies function
-    def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[InvoicingFrequencyModel]:
+    def list(self, skip: int = 0, limit: int = 100) -> List[InvoicingFrequencyModel]:
         return (
             self.db.query(InvoicingFrequencyModel)
             .offset(skip)
@@ -55,9 +50,7 @@ class InvoicingFrequencyRepo:
         )
 
     # get invoicing frequency name function
-    def getbyname(
-        self, name: str
-    ) -> InvoicingFrequencyModel:
+    def getbyname(self, name: str) -> InvoicingFrequencyModel:
         return (
             self.db.query(InvoicingFrequencyModel)
             .where(
@@ -68,9 +61,7 @@ class InvoicingFrequencyRepo:
         )
 
      # get invoicing frequency shortname function
-    def getbyshortname(
-        self, shortname: str
-    ) -> InvoicingFrequencyModel:
+    def getbyshortname(self, shortname: str) -> InvoicingFrequencyModel:
         return (
             self.db.query(InvoicingFrequencyModel)
             .where(
@@ -81,9 +72,7 @@ class InvoicingFrequencyRepo:
         )
     
     # create invoicing frequency function
-    def create(
-        self, data: List[CreateInvoicingFrequency]
-    ) -> List[CreateInvoicingFrequency]:
+    def create(self, data: List[CreateInvoicingFrequency]) -> List[CreateInvoicingFrequency]:
         self.db.execute(
             insert(InvoicingFrequencyModel),
             encoders.jsonable_encoder(data),
@@ -92,9 +81,7 @@ class InvoicingFrequencyRepo:
         return data
 
     # update invoicing frequency function
-    def update(
-        self, data: InvoicingFrequencyModel
-    ) -> InvoicingFrequencyModel:
+    def update(self, data: CreateInvoicingFrequency) -> InvoicingFrequencyModel:
         self.db.add(data)
         self.db.commit()
         self.db.refresh(data)

@@ -3,27 +3,27 @@ from datetime import datetime
 from pydantic import BaseModel
 
 class ElectricMeterInfos(BaseModel):
-    name: Optional[str]
+    brand: str
     meter_type: str
     power_mode: str
-    factory_name: str
     index_reading: float
     manufacturing_country: str
 
-
-class ElectricMeterBase(BaseModel):
-    meter_number: str
-    type_id: Optional[int]
-    power_mode_id: Optional[int]
+class ElectricMeterUpdate(BaseModel):
     infos: ElectricMeterInfos
+
+class ElectricMeterInput(ElectricMeterUpdate):
+    meter_number: str
+
+class ElectricMeterBase(ElectricMeterInput):
+    meter_type_id: int
+    power_mode_id: int
 
     class Config:
         orm_mode = True
 
-
 class CreateElectricMeter(ElectricMeterBase):
     pass
-
 
 class ElectricMeterSchema(ElectricMeterBase):
     id: int

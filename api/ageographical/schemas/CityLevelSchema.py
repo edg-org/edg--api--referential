@@ -2,9 +2,14 @@ from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
 
-class CityLevelBase(BaseModel):
-    code: int
+class CityLevelUpdate(BaseModel):
     name: str
+
+class CityLevelInput(CityLevelUpdate):
+    code: int
+
+class CityLevelBase(CityLevelInput):
+    pass
 
     class Config:
         orm_mode = True

@@ -12,7 +12,8 @@ from api.salesfinancial.services.ContactTypeService import (
 from api.salesfinancial.schemas.ContactTypeSchema import (
     ContactTypeBase,
     CreateContactType,
-    ContactTypeSchema,
+    ContactTypeUpdate,
+    ContactTypeSchema
 )
 
 env = get_env_var()
@@ -81,7 +82,7 @@ async def create(
 )
 async def update(
     code: int,
-    data: ContactTypeBase,
+    data: ContactTypeUpdate,
     typeService: ContactTypeService = Depends(),
 ):
     return await typeService.update(code=code, data=data)

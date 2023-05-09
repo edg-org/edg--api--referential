@@ -10,8 +10,9 @@ from api.ageographical.services.AgencyService import (
     AgencyService,
 )
 from api.ageographical.schemas.AgencySchema import (
-    AgencyBase,
+    AgencyInput,
     CreateAgency,
+    AgencyUpdate,
     AgencySchema,
 )
 
@@ -35,7 +36,6 @@ async def list(
     agencyService: AgencyService = Depends(),
 ):
     return await agencyService.list(skip, limit)
-
 
 # get agency route
 @agencyRouter.get(
@@ -64,7 +64,7 @@ async def get(
     response_model=List[CreateAgency],
 )
 async def create(
-    data: List[CreateAgency],
+    data: List[AgencyInput],
     agencyService: AgencyService = Depends(),
 ):
     return await agencyService.create(data=data)
@@ -79,7 +79,7 @@ async def create(
 )
 async def update(
     code: int,
-    data: AgencyBase,
+    data: AgencyUpdate,
     agencyService: AgencyService = Depends(),
 ):
     return await agencyService.update(code=code, data=data)

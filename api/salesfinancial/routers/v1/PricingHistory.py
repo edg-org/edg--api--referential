@@ -73,18 +73,3 @@ async def create(
     historyService: PricingHistoryService = Depends(),
 ):
     return await historyService.create(data=data)
-
-
-# update pricing history route
-@pricinghistoryRouter.put(
-    "/{code}",
-    summary="Update router a pricing history",
-    description="This router allows to update a pricing history",
-    response_model=PricingHistorySchema,
-)
-async def update(
-    code: int,
-    data: PricingHistoryBase,
-    historyService: PricingHistoryService = Depends(),
-):
-    return await historyService.update(code=code, data=data)

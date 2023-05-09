@@ -10,8 +10,8 @@ class CityModel(EntityMeta):
     id = Column(SMALLINT(unsigned=True), primary_key=True, index=True)
     code = Column(MEDIUMINT(unsigned=True), index=True, unique=True, nullable=False)
     prefecture_id = Column(TINYINT(unsigned=True), ForeignKey("prefectures.id"), nullable=False)
-    level_id = Column(TINYINT(unsigned=True), ForeignKey("city_levels.id"), nullable=False)
-    type_id = Column(TINYINT(unsigned=True), ForeignKey("city_types.id"), nullable=False)
+    city_level_id = Column(TINYINT(unsigned=True), ForeignKey("city_levels.id"), nullable=False)
+    city_type_id = Column(TINYINT(unsigned=True), ForeignKey("city_types.id"), nullable=False)
     zipcode = Column(String(5), index=True, unique=True, nullable=False)
     infos = Column(JSON, nullable=False)
     is_activated = Column(Boolean, index=True, default=True)
@@ -19,8 +19,12 @@ class CityModel(EntityMeta):
     updated_at = Column(DateTime(timezone=True), onupdate=datetime.utcnow().isoformat(), nullable=True)
     deleted_at = Column(DateTime(timezone=True), nullable=True)
     
-    prefecture = relationship("PrefectureModel", back_populates="cities")
     city_type = relationship("CityTypeModel", back_populates="cities")
     city_level = relationship("CityLevelModel", back_populates="cities")
+    prefecture = relationship("PrefectureModel", back_populates="cities")
+    
     
     areas = relationship("AreaModel", back_populates="city")
+    agencies = relationship("AgencyModel", back_populates="city")
+    transformers = relationship("TransformerModel", back_populates="city")
+    departure_supply_lines = relationship("EnergySupplyLineModel", back_populates="departure_city")

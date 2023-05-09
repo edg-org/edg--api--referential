@@ -4,7 +4,7 @@ from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
 from api.ageographical.models.AreaTypeModel import AreaTypeModel
-from api.ageographical.schemas.AreaTypeSchema import CreateAreaType
+from api.ageographical.schemas.AreaTypeSchema import CreateAreaType, AreaTypeUpdate
 
 #
 class AreaTypeRepo:
@@ -17,9 +17,10 @@ class AreaTypeRepo:
 
     # get max code
     def maxcode(self) -> int:
-        return self.db.query(
+        codemax = self.db.query(
             func.max(AreaTypeModel.code)
         ).one()[0]
+        return 0 if codemax is None else codemax
 
     # get all area types function
     def list(
@@ -60,9 +61,7 @@ class AreaTypeRepo:
         )
 
     # create area type function
-    def create(
-        self, data: List[CreateAreaType]
-    ) -> List[CreateAreaType]:
+    def create(self, data: List[CreateAreaType]) -> List[CreateAreaType]:
         self.db.execute(
             insert(AreaTypeModel),
             encoders.jsonable_encoder(data),
@@ -71,7 +70,7 @@ class AreaTypeRepo:
         return data
 
     # update area type function
-    def update(self, data: AreaTypeModel) -> AreaTypeModel:
+    def update(self, data: AreaTypeUpdate) -> AreaTypeModel:
         self.db.add(data)
         self.db.commit()
         self.db.refresh(data)

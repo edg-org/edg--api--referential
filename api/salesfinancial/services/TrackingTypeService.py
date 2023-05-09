@@ -1,16 +1,8 @@
 from typing import List
 from fastapi import Depends, HTTPException, status
-from api.salesfinancial.models.TrackingTypeModel import (
-    TrackingTypeModel,
-)
-from api.salesfinancial.repositories.TrackingTypeRepo import (
-    TrackingTypeRepo,
-)
-from api.salesfinancial.schemas.TrackingTypeSchema import (
-    TrackingTypeBase,
-    CreateTrackingType,
-)
-
+from api.salesfinancial.models.TrackingTypeModel import TrackingTypeModel
+from api.salesfinancial.schemas.TrackingTypeSchema import CreateTrackingType
+from api.salesfinancial.repositories.TrackingTypeRepo import TrackingTypeRepo
 
 class TrackingTypeService:
     trackingtype: TrackingTypeRepo
@@ -21,9 +13,7 @@ class TrackingTypeService:
         self.trackingtype = trackingtype
 
     # get all tracking types function
-    async def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[TrackingTypeModel]:
+    async def list(self, skip: int = 0, limit: int = 100) -> List[TrackingTypeModel]:
         return self.trackingtype.list(
             skip=skip, limit=limit
         )
@@ -33,21 +23,15 @@ class TrackingTypeService:
         return self.trackingtype.get(id=id)
 
     # get tracking type by code function
-    async def getbycode(
-        self, code: str
-    ) -> TrackingTypeBase:
+    async def getbycode(self, code: str) -> TrackingTypeModel:
         return self.trackingtype.getbycode(code=code)
 
     # get tracking type by name function
-    async def getbyname(
-        self, name: str
-    ) -> TrackingTypeBase:
+    async def getbyname(self, name: str) -> TrackingTypeModel:
         return self.trackingtype.getbyname(name=name)
 
     # create tracking type function
-    async def create(
-        self, data: List[CreateTrackingType]
-    ) -> List[CreateTrackingType]:
+    async def create(self, data: List[CreateTrackingType]) -> List[CreateTrackingType]:
         for item in data:
             trackingtype = self.trackingtype.getbycode(
                 code=item.code
@@ -72,10 +56,8 @@ class TrackingTypeService:
         return self.trackingtype.create(data=data)
 
     # update tracking type function
-    async def update(
-        self, code: int, data: TrackingTypeBase
-    ) -> TrackingTypeModel:
-        trackingtype = self.trackingtype.get(code=code)
+    async def update(self, code: int, data: CreateTrackingType) -> TrackingTypeModel:
+        trackingtype = self.trackingtype.getbycode(code=code)
         if trackingtype is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -88,10 +70,8 @@ class TrackingTypeService:
         return self.trackingtype.update(trackingtype)
 
     # delete tracking type %function
-    async def delete(
-        self, tracking: TrackingTypeModel
-    ) -> None:
-        trackingtype = self.trackingtype.get(id=id)
+    async def delete(self, tracking: TrackingTypeModel) -> None:
+        trackingtype = self.trackingtype.getbycode(code=code)
         if trackingtype is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,

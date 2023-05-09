@@ -8,21 +8,22 @@ class ConnectionCoordinates(BaseModel):
     latitude: float
     longitude: float
 
-
 class ConnectionInfos(BaseModel):
-    name: str
+    name: Optional[str]=None
     area_code: int
-    transformer_number: str
+    transformer_code: int
     address: str
-    coordinates: ConnectionCoordinates
+    coordinates: Optional[ConnectionCoordinates]=None
 
-
-class ConnectionPointBase(BaseModel):
-    connection_point_number: str
-    name: Optional[str]
-    transformer_id: Optional[int]
-    area_id: Optional[int]
+class ConnectionPointUpdate(BaseModel):
     infos: ConnectionInfos
+
+class ConnectionPointInput(ConnectionPointUpdate):
+    pass
+class ConnectionPointBase(ConnectionPointInput):
+    area_id: int
+    transformer_id: int
+    connection_point_number: str
 
     class Config:
         orm_mode = True

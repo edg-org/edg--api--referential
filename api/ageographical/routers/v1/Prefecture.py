@@ -10,8 +10,9 @@ from api.ageographical.services.PrefectureService import (
     PrefectureService,
 )
 from api.ageographical.schemas.PrefectureSchema import (
+    PrefectureInput,
     PrefectureSchema,
-    PrefectureBase,
+    PrefectureUpdate,
     CreatePrefecture,
     PrefectureItemSchema,
 )
@@ -92,7 +93,7 @@ async def get_prefecture_item(
     response_model=List[CreatePrefecture],
 )
 async def create(
-    data: List[CreatePrefecture],
+    data: List[PrefectureInput],
     prefectureService: PrefectureService = Depends(),
 ):
     return await prefectureService.create(data=data)
@@ -103,11 +104,11 @@ async def create(
     "/{code}",
     summary="Update router a prefecture",
     description="This router allows to update a prefecture",
-    response_model=PrefectureBase,
+    response_model=PrefectureSchema,
 )
 async def update(
     code: int,
-    data: PrefectureBase,
+    data: PrefectureUpdate,
     prefectureService: PrefectureService = Depends(),
 ):
     return await prefectureService.update(

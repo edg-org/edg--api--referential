@@ -6,13 +6,12 @@ from fastapi import (
     status,
     HTTPException,
 )
-from api.electrical.services.DeliveryPointService import (
-    DeliveryPointService,
-)
+from api.electrical.services.DeliveryPointService import DeliveryPointService
 from api.electrical.schemas.DeliveryPointSchema import (
-    DeliveryPointBase,
+    DeliveryPointInput,
     CreateDeliveryPoint,
-    DeliveryPointSchema,
+    DeliveryPointUpdate,
+    DeliveryPointSchema
 )
 
 env = get_env_var()
@@ -50,15 +49,15 @@ async def get(
     number: int,
     deliveryService: DeliveryPointService = Depends(),
 ):
-    departure = await deliveryService.getbynumber(
+    supply = await deliveryService.getbynumber(
         number=number
     )
-    if departure is None:
+    if supply is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Delivery Point not found",
         )
-    return departure
+    return supply
 
 
 # post transformer route
@@ -69,7 +68,7 @@ async def get(
     response_model=List[CreateDeliveryPoint],
 )
 async def create(
-    data: List[CreateDeliveryPoint],
+    data: List[DeliveryPointInput],
     deliveryService: DeliveryPointService = Depends(),
 ):
     return await deliveryService.create(data=data)
@@ -84,7 +83,7 @@ async def create(
 )
 async def update(
     number: int,
-    data: DeliveryPointBase,
+    data: DeliveryPointUpdate,
     deliveryService: DeliveryPointService = Depends(),
 ):
     return await deliveryService.update(

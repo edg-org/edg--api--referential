@@ -4,23 +4,27 @@
         "name": "Tout mode de paiement",
         "payment_mode": [
             {
-                "code": "pm1",
-                "name": "Prélèvement automatique"
+                "code": 4421,
+                "name": "prélèvement automatique"
             },
             {
-                "code": "pm2",
+                "code": 5115,
                 "name": "carte bancaire"
             },
             {
-                "code": "pm3",
+                "code": 512,
                 "name": "paiement mobile web"
             },
             {
-                "code": "pm5",
+                "code": 53,
                 "name": "espèce"
             },
             {
-                "code": "pm5",
+                "code": 411,
+                "name": "virement bancaire"
+            },
+            {
+                "code": 5112,
                 "name": "chèque bancaire"
             }
         ]
@@ -30,20 +34,24 @@
         "name": "Tout mode excepté Chèque bancaire",
         "payment_mode": [
             {
-                "code": "pm1",
-                "name": "Prélèvement automatique"
+                "code": 4421,
+                "name": "prélèvement automatique"
             },
             {
-                "code": "pm2",
+                "code": 5115,
                 "name": "carte bancaire"
             },
             {
-                "code": "pm3",
+                "code": 512,
                 "name": "paiement mobile web"
             },
             {
-                "code": "pm5",
+                "code": 53,
                 "name": "espèce"
+            },
+            {
+                "code": 411,
+                "name": "virement bancaire"
             }
         ]
     }

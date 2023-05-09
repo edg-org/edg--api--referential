@@ -2,9 +2,14 @@ from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
 
-class CityTypeBase(BaseModel):
-    code: int
+class CityTypeUpdate(BaseModel):
     name: str
+
+class CityTypeInput(CityTypeUpdate):
+    code: int
+
+class CityTypeBase(CityTypeInput):
+    pass
 
     class Config:
         orm_mode = True

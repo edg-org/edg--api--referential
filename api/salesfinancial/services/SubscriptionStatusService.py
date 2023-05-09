@@ -1,15 +1,8 @@
 from typing import List
 from fastapi import Depends, HTTPException, status
-from api.salesfinancial.models.SubscriptionStatusModel import (
-    SubscriptionStatusModel,
-)
-from api.salesfinancial.repositories.SubscriptionStatusRepo import (
-    SubscriptionStatusRepo,
-)
-from api.salesfinancial.schemas.SubscriptionStatusSchema import (
-    SubscriptionStatusBase,
-    CreateSubscriptionStatus,
-)
+from api.salesfinancial.models.SubscriptionStatusModel import SubscriptionStatusModel
+from api.salesfinancial.schemas.SubscriptionStatusSchema import CreateSubscriptionStatus
+from api.salesfinancial.repositories.SubscriptionStatusRepo import SubscriptionStatusRepo
 
 
 class SubscriptionStatusService:
@@ -22,9 +15,7 @@ class SubscriptionStatusService:
         self.subscriptionstatus = subscriptionstatus
 
     # get all subscription status function
-    async def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[SubscriptionStatusModel]:
+    async def list(self, skip: int = 0, limit: int = 100) -> List[SubscriptionStatusModel]:
         return self.subscriptionstatus.list(
             skip=skip, limit=limit
         )
@@ -34,21 +25,15 @@ class SubscriptionStatusService:
         return self.subscriptionstatus.get(id=id)
 
     # get subscription status by code function
-    async def getbycode(
-        self, code: str
-    ) -> SubscriptionStatusBase:
+    async def getbycode(self, code: str) -> SubscriptionStatusModel:
         return self.subscriptionstatus.getbycode(code=code)
 
     # get subscription status by name function
-    async def getbyname(
-        self, name: str
-    ) -> SubscriptionStatusBase:
+    async def getbyname(self, name: str) -> SubscriptionStatusModel:
         return self.subscriptionstatus.getbyname(name=name)
 
     # create subscription status function
-    async def create(
-        self, data: List[CreateSubscriptionStatus]
-    ) -> List[CreateSubscriptionStatus]:
+    async def create(self, data: List[CreateSubscriptionStatus]) -> List[CreateSubscriptionStatus]:
         for item in data:
             subscriptionstatus = (
                 self.subscriptionstatus.getbycode(
@@ -77,12 +62,8 @@ class SubscriptionStatusService:
         return self.subscriptionstatus.create(data=data)
 
     # update subscription status function
-    async def update(
-        self, code: int, data: SubscriptionStatusBase
-    ) -> SubscriptionStatusModel:
-        subscriptionstatus = self.subscriptionstatus.get(
-            code=code
-        )
+    async def update(self, code: int, data: CreateSubscriptionStatus) -> SubscriptionStatusModel:
+        subscriptionstatus = self.subscriptionstatus.getbycode(code=code)
         if subscriptionstatus is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -92,17 +73,11 @@ class SubscriptionStatusService:
         statusdict = data.dict(exclude_unset=True)
         for key, val in statusdict.items():
             setattr(subscriptionstatus, key, val)
-        return self.subscriptionstatus.update(
-            subscriptionstatus
-        )
+        return self.subscriptionstatus.update(subscriptionstatus)
 
     # delete subscription status %function
-    async def delete(
-        self, subscription: SubscriptionStatusModel
-    ) -> None:
-        subscriptionstatus = self.subscriptionstatus.get(
-            id=id
-        )
+    async def delete(self, subscription: SubscriptionStatusModel) -> None:
+        subscriptionstatus = self.subscriptionstatus.getbycode(code=code)
         if subscriptionstatus is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,

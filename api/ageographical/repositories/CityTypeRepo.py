@@ -4,7 +4,7 @@ from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
 from api.ageographical.models.CityTypeModel import CityTypeModel
-from api.ageographical.schemas.CityTypeSchema import CreateCityType
+from api.ageographical.schemas.CityTypeSchema import CreateCityType, CityTypeUpdate
 
 #
 class CityTypeRepo:
@@ -17,9 +17,10 @@ class CityTypeRepo:
 
     # get max code of city type
     def maxcode(self) -> int:
-        return self.db.query(
+        codemax = self.db.query(
             func.max(CityTypeModel.code)
         ).one()[0]
+        return 0 if codemax is None else codemax
 
     # get all city types function
     def list(
@@ -35,28 +36,19 @@ class CityTypeRepo:
     # get city type by id function
     def get(self, id: int) -> CityTypeModel:
         return (
-            self.db.query(CityTypeModel)
-            .where(CityTypeModel.id == id)
-            .first()
+            self.db.query(CityTypeModel).where(CityTypeModel.id == id).first()
         )
 
     # get city type code function
     def getbycode(self, code: str) -> CityTypeModel:
         return (
-            self.db.query(CityTypeModel)
-            .where(CityTypeModel.code == code)
-            .first()
+            self.db.query(CityTypeModel).where(CityTypeModel.code == code).first()
         )
 
     # get city type name function
     def getbyname(self, name: str) -> CityTypeModel:
         return (
-            self.db.query(CityTypeModel)
-            .where(
-                func.lower(CityTypeModel.name)
-                == name.lower()
-            )
-            .first()
+            self.db.query(CityTypeModel).where(func.lower(CityTypeModel.name) == name.lower()).first()
         )
 
     # create city type function
@@ -71,7 +63,7 @@ class CityTypeRepo:
         return data
 
     # update city type function
-    def update(self, data: CityTypeModel) -> CityTypeModel:
+    def update(self, data: CreateCityType) -> CityTypeModel:
         self.db.add(data)
         self.db.commit()
         self.db.refresh(data)

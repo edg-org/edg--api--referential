@@ -1,15 +1,8 @@
 from typing import List
 from fastapi import Depends, HTTPException, status
-from api.salesfinancial.models.SubscriptionLevelModel import (
-    SubscriptionLevelModel,
-)
-from api.salesfinancial.repositories.SubscriptionLevelRepo import (
-    SubscriptionLevelRepo,
-)
-from api.salesfinancial.schemas.SubscriptionLevelSchema import (
-    SubscriptionLevelBase,
-    CreateSubscriptionLevel,
-)
+from api.salesfinancial.models.SubscriptionLevelModel import SubscriptionLevelModel
+from api.salesfinancial.schemas.SubscriptionLevelSchema import CreateSubscriptionLevel
+from api.salesfinancial.repositories.SubscriptionLevelRepo import SubscriptionLevelRepo
 
 
 class SubscriptionLevelService:
@@ -22,9 +15,7 @@ class SubscriptionLevelService:
         self.invoicelevel = invoicelevel
 
     # get all invoice levels function
-    async def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[SubscriptionLevelModel]:
+    async def list(self, skip: int = 0, limit: int = 100) -> List[SubscriptionLevelModel]:
         return self.invoicelevel.list(
             skip=skip, limit=limit
         )
@@ -34,21 +25,15 @@ class SubscriptionLevelService:
         return self.invoicelevel.get(id=id)
 
     # get invoice level by code function
-    async def getbycode(
-        self, code: str
-    ) -> SubscriptionLevelBase:
+    async def getbycode(self, code: str) -> SubscriptionLevelModel:
         return self.invoicelevel.getbycode(code=code)
 
     # get invoice level by name function
-    async def getbyname(
-        self, name: str
-    ) -> SubscriptionLevelBase:
+    async def getbyname(self, name: str) -> SubscriptionLevelModel:
         return self.invoicelevel.getbyname(name=name)
 
     # create invoice level function
-    async def create(
-        self, data: List[CreateSubscriptionLevel]
-    ) -> List[CreateSubscriptionLevel]:
+    async def create(self, data: List[CreateSubscriptionLevel]) -> List[CreateSubscriptionLevel]:
         for item in data:
             invoicelevel = self.invoicelevel.getbycode(
                 code=item.code
@@ -73,10 +58,8 @@ class SubscriptionLevelService:
         return self.invoicelevel.create(data=data)
 
     # update invoice level function
-    async def update(
-        self, code: int, data: SubscriptionLevelBase
-    ) -> SubscriptionLevelModel:
-        invoicelevel = self.invoicelevel.get(code=code)
+    async def update(self, code: int, data: CreateSubscriptionLevel) -> SubscriptionLevelModel:
+        invoicelevel = self.invoicelevel.getbycode(code=code)
         if invoicelevel is None:
             raise HTTPException(
                 level_code=status.HTTP_404_NOT_FOUND,
@@ -89,10 +72,8 @@ class SubscriptionLevelService:
         return self.invoicelevel.update(invoicelevel)
 
     # delete invoice level %function
-    async def delete(
-        self, invoice: SubscriptionLevelModel
-    ) -> None:
-        invoicelevel = self.invoicelevel.get(id=id)
+    async def delete(self, invoice: SubscriptionLevelModel) -> None:
+        invoicelevel = self.invoicelevel.getbycode(code=code)
         if invoicelevel is None:
             raise HTTPException(
                 level_code=status.HTTP_404_NOT_FOUND,

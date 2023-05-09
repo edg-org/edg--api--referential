@@ -10,8 +10,9 @@ from api.ageographical.services.CityLevelService import (
     CityLevelService,
 )
 from api.ageographical.schemas.CityLevelSchema import (
-    CityLevelBase,
+    CityLevelInput,
     CreateCityLevel,
+    CityLevelUpdate,
     CityLevelSchema,
 )
 
@@ -65,7 +66,7 @@ async def get(
     response_model=List[CreateCityLevel],
 )
 async def create(
-    data: List[CreateCityLevel],
+    data: List[CityLevelInput],
     levelService: CityLevelService = Depends(),
 ):
     return await levelService.create(data=data)
@@ -80,7 +81,7 @@ async def create(
 )
 async def update(
     code: int,
-    data: CityLevelBase,
+    data: CityLevelUpdate,
     levelService: CityLevelService = Depends(),
 ):
     return await levelService.update(code=code, data=data)

@@ -15,21 +15,22 @@ class DeliveryInfos(BaseModel):
     address: str
     coordinates: DeliveryCoordinates
 
-
-class DeliveryPointBase(BaseModel):
-    delivery_point_number: str
+class DeliveryPointUpdate(BaseModel):
     name: Optional[str]
-    area_id: Optional[int]
-    connection_point_id: Optional[int]
-    infos: DeliveryInfos
+    infos: Optional[DeliveryInfos]
+
+class DeliveryPointInput(DeliveryPointUpdate):
+    delivery_point_number: str
+
+class DeliveryPointBase(DeliveryPointInput):
+    area_id: int
+    connection_point_id: int
 
     class Config:
         orm_mode = True
 
-
 class CreateDeliveryPoint(DeliveryPointBase):
     pass
-
 
 class DeliveryPointSchema(DeliveryPointBase):
     id: int

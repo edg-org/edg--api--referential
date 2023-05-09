@@ -10,8 +10,9 @@ from api.ageographical.services.NaturalZoneService import (
     ZoneService,
 )
 from api.ageographical.schemas.NaturalZoneSchema import (
-    ZoneBase,
+    ZoneInput,
     ZoneSchema,
+    ZoneUpdate,
     CreateZone,
     ZoneItemSchema,
 )
@@ -86,7 +87,7 @@ async def get_zone_item(
     response_model=List[CreateZone],
 )
 async def create(
-    data: List[CreateZone],
+    data: List[ZoneInput],
     zoneService: ZoneService = Depends(),
 ):
     return await zoneService.create(data=data)
@@ -101,7 +102,7 @@ async def create(
 )
 async def update(
     code: int,
-    data: ZoneBase,
+    data: ZoneUpdate,
     zoneService: ZoneService = Depends(),
 ):
-    return await zoneService.update(id=code, data=data)
+    return await zoneService.update(code=code, data=data)

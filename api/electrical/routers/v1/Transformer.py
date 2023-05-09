@@ -6,14 +6,13 @@ from fastapi import (
     status,
     HTTPException,
 )
-from api.electrical.services.TransformerService import (
-    TransformerService,
-)
+from api.electrical.services.TransformerService import TransformerService
 from api.electrical.schemas.TransformerSchema import (
-    TransformerBase,
+    TransformerInput,
     CreateTransformer,
     TransformerSchema,
-    TransformerItemSchema,
+    TransformerUpdate,
+    TransformerItemSchema
 )
 
 env = get_env_var()
@@ -51,15 +50,15 @@ async def get(
     number: str,
     transformerService: TransformerService = Depends(),
 ):
-    departure = await transformerService.getbynumber(
+    supply = await transformerService.getbynumber(
         number=number
     )
-    if departure is None:
+    if supply is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Transformer not found",
         )
-    return departure
+    return supply
 
 
 # route of get tranformer with item
@@ -92,7 +91,7 @@ async def get_tranformer_item(
     response_model=List[CreateTransformer],
 )
 async def create(
-    data: List[CreateTransformer],
+    data: List[TransformerInput],
     transformerService: TransformerService = Depends(),
 ):
     return await transformerService.create(data=data)
@@ -107,7 +106,7 @@ async def create(
 )
 async def update(
     number: str,
-    data: TransformerBase,
+    data: TransformerUpdate,
     transformerService: TransformerService = Depends(),
 ):
     return await transformerService.update(

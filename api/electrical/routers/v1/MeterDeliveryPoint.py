@@ -6,13 +6,11 @@ from fastapi import (
     status,
     HTTPException,
 )
-from api.electrical.services.MeterDeliveryPointService import (
-    MeterDeliveryPointService,
-)
+from api.electrical.services.MeterDeliveryPointService import MeterDeliveryPointService
 from api.electrical.schemas.MeterDeliveryPointSchema import (
-    MeterDeliveryPointBase,
+    MeterDeliveryPointInput,
     CreateMeterDeliveryPoint,
-    MeterDeliveryPointSchema,
+    MeterDeliveryPointSchema
 )
 
 env = get_env_var()
@@ -50,13 +48,13 @@ async def get(
     id: int,
     meterdeliveryService: MeterDeliveryPointService = Depends(),
 ):
-    departure = await meterdeliveryService.get(id=id)
-    if departure is None:
+    supply = await meterdeliveryService.get(id=id)
+    if supply is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Meter Delivery Point not found",
         )
-    return departure
+    return supply
 
 
 # post transformer route
@@ -67,7 +65,7 @@ async def get(
     response_model=List[CreateMeterDeliveryPoint],
 )
 async def create(
-    data: List[CreateMeterDeliveryPoint],
+    data: List[MeterDeliveryPointInput],
     meterdeliveryService: MeterDeliveryPointService = Depends(),
 ):
     return await meterdeliveryService.create(data=data)

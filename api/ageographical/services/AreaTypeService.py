@@ -4,6 +4,7 @@ from api.ageographical.models.AreaTypeModel import AreaTypeModel
 from api.ageographical.repositories.AreaTypeRepo import AreaTypeRepo
 from api.ageographical.schemas.AreaTypeSchema import (
     AreaTypeBase,
+    AreaTypeUpdate,
     CreateAreaType,
 )
 
@@ -17,9 +18,7 @@ class AreaTypeService:
         self.areatype = areatype
 
     # get all area types function
-    async def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[AreaTypeModel]:
+    async def list(self, skip: int = 0, limit: int = 100) -> List[AreaTypeModel]:
         return self.areatype.list(skip=skip, limit=limit)
 
     # get area type by id function
@@ -35,9 +34,7 @@ class AreaTypeService:
         return self.areatype.getbyname(name=name)
 
     # create area type function
-    async def create(
-        self, data: List[CreateAreaType]
-    ) -> List[CreateAreaType]:
+    async def create(self, data: List[CreateAreaType]) -> List[CreateAreaType]:
         for item in data:
             areatype = self.areatype.getbycode(
                 code=item.code
@@ -49,9 +46,7 @@ class AreaTypeService:
                     + str(item.code),
                 )
 
-            areatype = self.areatype.getbyname(
-                name=item.name
-            )
+            areatype = self.areatype.getbyname(name=item.name)
             if areatype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
@@ -62,10 +57,8 @@ class AreaTypeService:
         return self.areatype.create(data=data)
 
     # update area type function
-    async def update(
-        self, code: int, data: AreaTypeBase
-    ) -> AreaTypeModel:
-        areatype = self.areatype.get(code=code)
+    async def update(self, code: int, data: CreateAreaType) -> AreaTypeModel:
+        areatype = self.areatype.getbycode(code=code)
         if areatype is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -79,7 +72,7 @@ class AreaTypeService:
 
     # delete area type %function
     async def delete(self, area: AreaTypeModel) -> None:
-        areatype = self.areatype.get(id=id)
+        areatype = self.areatype.getbycode(code=code)
         if areatype is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,

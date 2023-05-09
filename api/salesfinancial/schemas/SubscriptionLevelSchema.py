@@ -3,13 +3,18 @@ from pydantic import BaseModel
 from typing import Optional, List
 
 class PaymentMode(BaseModel):
-    code: str
-    name: str
-
-class SubscriptionLevelBase(BaseModel):
     code: int
     name: str
+
+class SubscriptionLevelUpdate(BaseModel):
+    name: str
     payment_mode: List[PaymentMode]
+
+class SubscriptionLevelInput(SubscriptionLevelUpdate):
+    code: int
+
+class SubscriptionLevelBase(SubscriptionLevelInput):
+    pass
 
     class Config:
         orm_mode = True

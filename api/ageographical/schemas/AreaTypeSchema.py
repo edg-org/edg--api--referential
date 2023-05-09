@@ -2,9 +2,14 @@ from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
 
-class AreaTypeBase(BaseModel):
-    code: int
+class AreaTypeUpdate(BaseModel):
     name: str
+
+class AreaTypeInput(AreaTypeUpdate):
+    code: int
+
+class AreaTypeBase(AreaTypeInput):
+    pass
 
     class Config:
         orm_mode = True

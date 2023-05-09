@@ -1,1 +1,10 @@
-[{"code":1,"name":"Commune Urbaine"},{"code":2,"name":"Commune Rurale"}]
+[
+    {
+        "code": 1,
+        "name": "Commune Urbaine"
+    },
+    {
+        "code": 2,
+        "name": "Commune Rurale"
+    }
+]

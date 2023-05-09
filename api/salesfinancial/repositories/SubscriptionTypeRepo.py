@@ -3,13 +3,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from api.salesfinancial.models.SubscriptionTypeModel import (
-    SubscriptionTypeModel,
-)
-from api.salesfinancial.schemas.SubscriptionTypeSchema import (
-    CreateSubscriptionType,
-)
-
+from api.salesfinancial.models.SubscriptionTypeModel import SubscriptionTypeModel
+from api.salesfinancial.schemas.SubscriptionTypeSchema import CreateSubscriptionType
 
 class SubscriptionTypeRepo:
     db: Session
@@ -21,14 +16,13 @@ class SubscriptionTypeRepo:
 
     # get max code
     def maxcode(self) -> int:
-        return self.db.query(
+        codemax = self.db.query(
             func.max(SubscriptionTypeModel.code)
         ).one()[0]
+        return 0 if codemax is None else codemax
 
     # get all subscription types function
-    def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[SubscriptionTypeModel]:
+    def list(self, skip: int = 0, limit: int = 100) -> List[SubscriptionTypeModel]:
         return (
             self.db.query(SubscriptionTypeModel)
             .offset(skip)
@@ -64,9 +58,7 @@ class SubscriptionTypeRepo:
         )
 
     # create subscription type function
-    def create(
-        self, data: List[CreateSubscriptionType]
-    ) -> List[CreateSubscriptionType]:
+    def create(self, data: List[CreateSubscriptionType]) -> List[CreateSubscriptionType]:
         self.db.execute(
             insert(SubscriptionTypeModel),
             encoders.jsonable_encoder(data),
@@ -75,17 +67,13 @@ class SubscriptionTypeRepo:
         return data
 
     # update subscription type function
-    def update(
-        self, data: SubscriptionTypeModel
-    ) -> SubscriptionTypeModel:
+    def update(self, data: CreateSubscriptionType) -> SubscriptionTypeModel:
         self.db.add(data)
         self.db.commit()
         self.db.refresh(data)
         return data
 
     # delete subscription type function
-    def delete(
-        self, subscription: SubscriptionTypeModel
-    ) -> None:
+    def delete(self, subscription: SubscriptionTypeModel) -> None:
         self.db.delete(subscription)
         self.db.commit()

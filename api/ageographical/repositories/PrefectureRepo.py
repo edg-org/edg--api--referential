@@ -4,7 +4,7 @@ from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
 from api.ageographical.models.PrefectureModel import PrefectureModel
-from api.ageographical.schemas.PrefectureSchema import CreatePrefecture
+from api.ageographical.schemas.PrefectureSchema import CreatePrefecture, PrefectureUpdate
 
 #
 class PrefectureRepo:
@@ -15,20 +15,35 @@ class PrefectureRepo:
     ) -> None:
         self.db = db
 
-    # count total rows of natural region
+    # count total rows of prefecture
     def countrows(self) -> int:
         return self.db.query(PrefectureModel).count()
 
+    # count total rows of prefecture by name
+    def countbyname(self, name: str) -> int:
+        return (
+            self.db.query(PrefectureModel)
+            .where(
+            func.lower(func.json_unquote(PrefectureModel.infos["name"])) == name.lower())
+            .count()
+        )
+    
+    # count total rows of prefecture by code
+    def countbycode(self, code: int) -> int:
+        return (
+            self.db.query(PrefectureModel)
+            .where(PrefectureModel.code == code)
+            .count()
+        )
+
     # get max code of prefecture by region
     def maxcodebyzone(self, zone_code: int) -> int:
-        return (
+        codemax = (
             self.db.query(func.max(PrefectureModel.code))
-            .where(
-                PrefectureModel.infos["zone_code"]
-                == zone_code
-            )
+            .where(PrefectureModel.infos["zone_code"] == zone_code)
             .one()[0]
         )
+        return 0 if codemax is None else codemax
 
     # get prefecture id by code function
     def getidbycode(self, code: int) -> PrefectureModel:
@@ -63,33 +78,25 @@ class PrefectureRepo:
             self.db.query(PrefectureModel)
             .where(
                 PrefectureModel.prefecture_number == number
-            )
-            .first()
+            ).first()
         )
 
     # get prefecture code function
     def getbycode(self, code: int) -> PrefectureModel:
         return (
-            self.db.query(PrefectureModel)
-            .where(PrefectureModel.code == code)
-            .first()
+            self.db.query(PrefectureModel).where(PrefectureModel.code == code).first()
         )
 
     # get prefecture name function
     def getbyname(self, name: str) -> PrefectureModel:
         return (
-            self.db.query(PrefectureModel)
-            .where(
-                func.lower(PrefectureModel.infos["name"])
-                == name.lower()
-            )
-            .first()
+            self.db.query(PrefectureModel).where(
+                func.lower(func.json_unquote(PrefectureModel.infos["name"]))== name.lower()
+            ).first()
         )
 
     # create prefecture function
-    def create(
-        self, data: List[CreatePrefecture]
-    ) -> List[CreatePrefecture]:
+    def create(self, data: List[CreatePrefecture]) -> List[CreatePrefecture]:
         self.db.execute(
             insert(PrefectureModel),
             encoders.jsonable_encoder(data),
@@ -98,9 +105,7 @@ class PrefectureRepo:
         return data
 
     # update prefecture function
-    def update(
-        self, data: PrefectureModel
-    ) -> PrefectureModel:
+    def update(self, data: CreatePrefecture) -> PrefectureModel:
         self.db.add(data)
         self.db.commit()
         self.db.refresh(data)

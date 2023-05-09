@@ -6,13 +6,12 @@ from fastapi import (
     status,
     HTTPException,
 )
-from api.electrical.services.PowerModeService import (
-    PowerModeService,
-)
+from api.electrical.services.PowerModeService import PowerModeService
 from api.electrical.schemas.PowerModeSchema import (
-    PowerModeBase,
+    PowerModeInput,
     CreatePowerMode,
-    PowerModeSchema,
+    PowerModeUpdate,
+    PowerModeSchema
 )
 
 env = get_env_var()
@@ -65,7 +64,7 @@ async def get(
     response_model=List[CreatePowerMode],
 )
 async def create(
-    data: List[CreatePowerMode],
+    data: List[PowerModeInput],
     powerService: PowerModeService = Depends(),
 ):
     return await powerService.create(data=data)
@@ -80,7 +79,7 @@ async def create(
 )
 async def update(
     code: int,
-    data: PowerModeBase,
+    data: PowerModeUpdate,
     powerService: PowerModeService = Depends(),
 ):
     return await powerService.update(code=code, data=data)

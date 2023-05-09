@@ -12,13 +12,16 @@ class PricingInfos(BaseModel):
     subscription_fee: float
     slices: List[PricingSlices]
 
-class PricingHistoryBase(BaseModel):
+class PricingHistoryInput(BaseModel):
     code: int
     name: str
     subscription_type_code: int
     start_date: date
     end_date: date
     infos: PricingInfos
+
+class PricingHistoryBase(PricingHistoryInput):
+    pass
 
     class Config:
         orm_mode = True

@@ -9,7 +9,7 @@ class ZoneModel(EntityMeta):
 
     id = Column(TINYINT(unsigned=True), primary_key=True, index=True)
     code = Column(TINYINT(unsigned=True), index=True, unique=True, nullable=False)
-    name = Column(String(25), index=True, unique=True, nullable=False)
+    name = Column(String(35), index=True, unique=True, nullable=False)
     is_activated = Column(Boolean, index=True, default=True)
     created_at = Column(DateTime(timezone=True), server_default=datetime.utcnow().isoformat(), nullable=False)
     updated_at = Column(DateTime(timezone=True), onupdate=datetime.utcnow().isoformat(), nullable=True)

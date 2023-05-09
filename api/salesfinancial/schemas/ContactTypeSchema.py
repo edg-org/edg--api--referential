@@ -2,9 +2,14 @@ from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
 
-class ContactTypeBase(BaseModel):
-    code: int
+class ContactTypeUpdate(BaseModel):
     name: str
+
+class ContactTypeInput(ContactTypeUpdate):
+    code: int
+
+class ContactTypeBase(ContactTypeInput):
+    pass
     
     class Config:
         orm_mode = True

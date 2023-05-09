@@ -1,15 +1,8 @@
 from typing import List
 from fastapi import Depends, HTTPException, status
-from api.salesfinancial.models.SubscriptionTypeModel import (
-    SubscriptionTypeModel,
-)
-from api.salesfinancial.repositories.SubscriptionTypeRepo import (
-    SubscriptionTypeRepo,
-)
-from api.salesfinancial.schemas.SubscriptionTypeSchema import (
-    SubscriptionTypeBase,
-    CreateSubscriptionType,
-)
+from api.salesfinancial.models.SubscriptionTypeModel import SubscriptionTypeModel
+from api.salesfinancial.repositories.SubscriptionTypeRepo import SubscriptionTypeRepo
+from api.salesfinancial.schemas.SubscriptionTypeSchema import SubscriptionTypeInput, CreateSubscriptionType
 
 from api.salesfinancial.repositories.TrackingTypeRepo import (
     TrackingTypeRepo,
@@ -28,9 +21,7 @@ class SubscriptionTypeService:
         self.subscriptiontype = subscriptiontype
 
     # get all subscription types function
-    async def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[SubscriptionTypeModel]:
+    async def list(self, skip: int = 0, limit: int = 100) -> List[SubscriptionTypeModel]:
         return self.subscriptiontype.list(
             skip=skip, limit=limit
         )
@@ -40,36 +31,18 @@ class SubscriptionTypeService:
         return self.subscriptiontype.get(id=id)
 
     # get subscription type by code function
-    async def getbycode(
-        self, code: str
-    ) -> SubscriptionTypeBase:
+    async def getbycode(self, code: str) -> SubscriptionTypeModel:
         return self.subscriptiontype.getbycode(code=code)
 
     # get subscription type by name function
-    async def getbyname(
-        self, name: str
-    ) -> SubscriptionTypeBase:
+    async def getbyname(self, name: str) -> SubscriptionTypeModel:
         return self.subscriptiontype.getbyname(name=name)
 
     # create subscription type function
-    async def create(
-        self, data: List[CreateSubscriptionType]
-    ) -> List[CreateSubscriptionType]:
+    async def create(self, data: List[SubscriptionTypeInput]) -> List[CreateSubscriptionType]:
+        datalist = []
         for item in data:
-
-            item.power_mode_id = PowerModeRepo.getidbyname(
-                self.subscriptiontype, item.infos.power_mode
-            )
-
-            item.tracking_type_id = TrackingTypeRepo.getidbyname(
-                self.subscriptiontype, item.infos.tracking_type
-            )
-
-            subscriptiontype = (
-                self.subscriptiontype.getbycode(
-                    code=item.code
-                )
-            )
+            subscriptiontype = self.subscriptiontype.getbycode(code=item.code)
             if subscriptiontype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
@@ -77,11 +50,8 @@ class SubscriptionTypeService:
                     + str(item.code),
                 )
 
-            subscriptiontype = (
-                self.subscriptiontype.getbyname(
-                    name=item.name
-                )
-            )
+            subscriptiontype = self.subscriptiontype.getbyname(name=item.name)
+
             if subscriptiontype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
@@ -89,33 +59,45 @@ class SubscriptionTypeService:
                     + item.name,
                 )
 
-        return self.subscriptiontype.create(data=data)
+            subscription = CreateSubscriptionType(
+                code = item.code,
+                name = item.name,
+                infos = item.infos,
+                pricing = item.pricing,
+                dunning = item.dunning,
+                power_mode_id = PowerModeRepo.getidbyname(self.subscriptiontype, item.infos.power_mode),
+                tracking_type_id = TrackingTypeRepo.getidbyname(self.subscriptiontype, item.infos.tracking_type)
+            )
+            datalist.append(subscription)
+
+        return self.subscriptiontype.create(data=datalist)
 
     # update subscription type function
-    async def update(
-        self, code: int, data: SubscriptionTypeBase
-    ) -> SubscriptionTypeModel:
-        subscriptiontype = self.subscriptiontype.get(
-            code=code
-        )
+    async def update(self, code: int, data: CreateSubscriptionType) -> SubscriptionTypeModel:
+        subscriptiontype = self.subscriptiontype.getbycode(code=code)
         if subscriptiontype is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Subscription Type not found",
             )
-
-        typedict = data.dict(exclude_unset=True)
+            
+        subscription = CreateSubscriptionType(
+            code = data.code,
+            name = data.name,
+            infos = data.infos,
+            pricing = data.pricing,
+            dunning = data.dunning,
+            power_mode_id = PowerModeRepo.getidbyname(self.subscriptiontype, data.infos.power_mode),
+            tracking_type_id = TrackingTypeRepo.getidbyname(self.subscriptiontype, data.infos.tracking_type)
+        )
+        typedict = subscription.dict(exclude_unset=True)
         for key, val in typedict.items():
             setattr(subscriptiontype, key, val)
-        return self.subscriptiontype.update(
-            subscriptiontype
-        )
+        return self.subscriptiontype.update(subscriptiontype)
 
     # delete subscription type %function
-    async def delete(
-        self, subscription: SubscriptionTypeModel
-    ) -> None:
-        subscriptiontype = self.subscriptiontype.get(id=id)
+    async def delete(self, subscription: SubscriptionTypeModel) -> None:
+        subscriptiontype = self.subscriptiontype.getbycode(code=code)
         if subscriptiontype is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,

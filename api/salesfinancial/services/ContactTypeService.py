@@ -1,16 +1,8 @@
 from typing import List
 from fastapi import Depends, HTTPException, status
-from api.salesfinancial.models.ContactTypeModel import (
-    ContactTypeModel,
-)
-from api.salesfinancial.repositories.ContactTypeRepo import (
-    ContactTypeRepo,
-)
-from api.salesfinancial.schemas.ContactTypeSchema import (
-    ContactTypeBase,
-    CreateContactType,
-)
-
+from api.salesfinancial.models.ContactTypeModel import ContactTypeModel
+from api.salesfinancial.repositories.ContactTypeRepo import ContactTypeRepo
+from api.salesfinancial.schemas.ContactTypeSchema import CreateContactType
 
 class ContactTypeService:
     contacttype: ContactTypeRepo
@@ -31,17 +23,15 @@ class ContactTypeService:
         return self.contacttype.get(id=id)
 
     # get contact type by code function
-    async def getbycode(self, code: str) -> ContactTypeBase:
+    async def getbycode(self, code: str) -> ContactTypeModel:
         return self.contacttype.getbycode(code=code)
 
     # get contact type by name function
-    async def getbyname(self, name: str) -> ContactTypeBase:
+    async def getbyname(self, name: str) -> ContactTypeModel:
         return self.contacttype.getbyname(name=name)
 
     # create contact type function
-    async def create(
-        self, data: List[CreateContactType]
-    ) -> List[CreateContactType]:
+    async def create(self, data: List[CreateContactType]) -> List[CreateContactType]:
         for item in data:
             contacttype = self.contacttype.getbycode(
                 code=item.code
@@ -66,10 +56,8 @@ class ContactTypeService:
         return self.contacttype.create(data=data)
 
     # update contact type function
-    async def update(
-        self, code: int, data: ContactTypeBase
-    ) -> ContactTypeModel:
-        contacttype = self.contacttype.get(code=code)
+    async def update(self, code: int, data: CreateContactType) -> ContactTypeModel:
+        contacttype = self.contacttype.getbycode(code=code)
         if contacttype is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -82,10 +70,8 @@ class ContactTypeService:
         return self.contacttype.update(contacttype)
 
     # delete contact type %function
-    async def delete(
-        self, contact: ContactTypeModel
-    ) -> None:
-        contacttype = self.contacttype.get(id=id)
+    async def delete(self, contact: ContactTypeModel) -> None:
+        contacttype = self.contacttype.getbycode(code=code)
         if contacttype is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,

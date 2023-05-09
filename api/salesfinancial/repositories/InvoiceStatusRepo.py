@@ -3,32 +3,27 @@ from sqlalchemy.orm import Session
 from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from api.salesfinancial.models.InvoiceStatusModel import (
-    InvoiceStatusModel,
-)
-from api.salesfinancial.schemas.InvoiceStatusSchema import (
-    CreateInvoiceStatus,
-)
-
+from api.salesfinancial.models.InvoiceStatusModel import InvoiceStatusModel
+from api.salesfinancial.schemas.InvoiceStatusSchema import CreateInvoiceStatus
 
 class InvoiceStatusRepo:
     db: Session
 
     def __init__(
-        self, db: Session = Depends(get_db)
+        self, 
+        db: Session = Depends(get_db)
     ) -> None:
         self.db = db
 
     # get max code
     def maxcode(self) -> int:
-        return self.db.query(
+        codemax = self.db.query(
             func.max(InvoiceStatusModel.code)
         ).one()[0]
+        return 0 if codemax is None else codemax
 
     # get all subscription status function
-    def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[InvoiceStatusModel]:
+    def list(self, skip: int = 0, limit: int = 100) -> List[InvoiceStatusModel]:
         return (
             self.db.query(InvoiceStatusModel)
             .offset(skip)
@@ -64,9 +59,7 @@ class InvoiceStatusRepo:
         )
 
     # create subscription status function
-    def create(
-        self, data: List[CreateInvoiceStatus]
-    ) -> List[CreateInvoiceStatus]:
+    def create(self, data: List[CreateInvoiceStatus]) -> List[CreateInvoiceStatus]:
         self.db.execute(
             insert(InvoiceStatusModel),
             encoders.jsonable_encoder(data),
@@ -75,9 +68,7 @@ class InvoiceStatusRepo:
         return data
 
     # update subscription status function
-    def update(
-        self, data: InvoiceStatusModel
-    ) -> InvoiceStatusModel:
+    def update(self, data: CreateInvoiceStatus) -> InvoiceStatusModel:
         self.db.add(data)
         self.db.commit()
         self.db.refresh(data)

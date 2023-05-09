@@ -11,7 +11,9 @@ from api.salesfinancial.services.SubscriptionTypeService import (
 )
 from api.salesfinancial.schemas.SubscriptionTypeSchema import (
     SubscriptionTypeBase,
+    SubscriptionTypeInput,
     CreateSubscriptionType,
+    SubscriptionTypeUpdate,
     SubscriptionTypeSchema,
 )
 
@@ -69,7 +71,7 @@ async def get(
     response_model=List[CreateSubscriptionType],
 )
 async def create(
-    data: List[CreateSubscriptionType],
+    data: List[SubscriptionTypeInput],
     typeService: SubscriptionTypeService = Depends(),
 ):
     return await typeService.create(data=data)
@@ -84,7 +86,7 @@ async def create(
 )
 async def update(
     code: int,
-    data: SubscriptionTypeBase,
+    data: SubscriptionTypeUpdate,
     typeService: SubscriptionTypeService = Depends(),
 ):
     return await typeService.update(code=code, data=data)

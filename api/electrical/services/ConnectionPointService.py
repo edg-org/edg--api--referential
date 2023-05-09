@@ -1,10 +1,13 @@
 from typing import List
 from fastapi import Depends, HTTPException, status
+from api.ageographical.repositories.AreaRepo import AreaRepo
+from api.tools.Helper import connectionpoint_basecode, generate_code
+from api.electrical.repositories.TransformerRepo import TransformerRepo
 from api.electrical.models.ConnectionPointModel import ConnectionPointModel
 from api.electrical.repositories.ConnectionPointRepo import ConnectionPointRepo
 from api.electrical.schemas.ConnectionPointSchema import (
-    ConnectionPointBase,
-    CreateConnectionPoint,
+    ConnectionPointUpdate,
+    CreateConnectionPoint
 )
 
 
@@ -20,68 +23,60 @@ class ConnectionPointService:
 
     # get all connection points function
     async def list(
-        self, skip: int = 0, limit: int = 100
+        self, 
+        skip: int = 0, 
+        limit: int = 100
     ) -> List[ConnectionPointModel]:
-        return self.connectionpoint.list(
-            skip=skip, limit=limit
-        )
+        return self.connectionpoint.list(skip=skip, limit=limit)
 
     # get connection point by id function
     async def get(self, id: int) -> ConnectionPointModel:
         return self.connectionpoint.get(id=id)
 
     # get connection point by number function
-    async def getbynumber(
-        self, number: int
-    ) -> ConnectionPointBase:
-        return self.connectionpoint.getbynumber(
-            number=number
-        )
+    async def getbynumber(self, number: int) -> ConnectionPointModel:
+        return self.connectionpoint.getbynumber(number=number)
 
     # get connection point by name function
-    async def getbyname(
-        self, name: str
-    ) -> ConnectionPointBase:
+    async def getbyname(self, name: str) -> ConnectionPointModel:
         return self.connectionpoint.getbyname(name=name)
 
     # create connection point function
-    async def create(
-        self, data: List[CreateConnectionPoint]
-    ) -> List[CreateConnectionPoint]:
+    async def create(self, data: List[ConnectionPointUpdate]) -> List[CreateConnectionPoint]:
+        step = 0
+        area_code = 0
+        connectionpointlist = []
         for item in data:
-            connectionpoint = (
-                self.connectionpoint.getbycode(
-                    code=item.code
-                )
+            step += 1
+            connection_point_number = generate_code(
+                init_codebase=connectionpoint_basecode(item.infos.area_code),
+                maxcode=self.connectionpoint.maxnumberbyarea(item.infos.area_code),
+                input_code=item.infos.area_code,
+                code=area_code,
+                current_step=step,
+                init_step=1
             )
-            if connectionpoint:
+
+            count = self.connectionpoint.countbynumber(number=str(connection_point_number))
+            if count > 0:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Connection Point already registered with code "
-                    + str(item.code),
+                    detail="Connection Point already registered with code " + str(connection_point_number),
                 )
-
-            connectionpoint = (
-                self.connectionpoint.getbyname(
-                    name=item.name
-                )
+            connectionpoint = CreateConnectionPoint(
+                connection_point_number = str(connection_point_number),
+                area_id = AreaRepo.getidbycode(self.connectionpoint, item.infos.area_code),
+                transformer_id = TransformerRepo.getidbycode(self.connectionpoint, item.infos.transformer_code),
+                infos = item.infos
             )
-            if connectionpoint:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Connection Point already registered with name "
-                    + item.name,
-                )
-
-        return self.connectionpoint.create(data=data)
+            connectionpointlist.append(connectionpoint)
+            area_code = item.infos.area_code
+            
+        return self.connectionpoint.create(data=connectionpointlist)
 
     # update connection point function
-    async def update(
-        self, number: int, data: ConnectionPointBase
-    ) -> ConnectionPointModel:
-        connectionpoint = self.connectionpoint.getbynumber(
-            number=number
-        )
+    async def update(self, number: int, data: ConnectionPointModel) -> ConnectionPointModel:
+        connectionpoint = self.connectionpoint.getbynumber(number=number)
         if connectionpoint is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -94,9 +89,7 @@ class ConnectionPointService:
         return self.connectionpoint.update(connectionpoint)
 
     # delete connection point function
-    async def delete(
-        self, connectionpoint: ConnectionPointModel
-    ) -> None:
+    async def delete(self, connectionpoint: ConnectionPointModel) -> None:
         connectionpoint = self.connectionpoint.get(id=id)
         if connectionpoint is None:
             raise HTTPException(

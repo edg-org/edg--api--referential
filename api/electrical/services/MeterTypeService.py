@@ -4,7 +4,8 @@ from api.electrical.models.MeterTypeModel import MeterTypeModel
 from api.electrical.repositories.MeterTypeRepo import MeterTypeRepo
 from api.electrical.schemas.MeterTypeSchema import (
     MeterTypeBase,
-    CreateMeterType,
+    MeterTypeUpdate,
+    CreateMeterType
 )
 
 
@@ -36,13 +37,9 @@ class MeterTypeService:
         return self.metertype.getbyname(name=name)
 
     # create meter type function
-    async def create(
-        self, data: List[CreateMeterType]
-    ) -> List[CreateMeterType]:
+    async def create(self, data: List[CreateMeterType]) -> List[CreateMeterType]:
         for item in data:
-            metertype = self.metertype.getbycode(
-                code=item.code
-            )
+            metertype = self.metertype.getbycode(code=item.code)
             if metertype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
@@ -50,9 +47,7 @@ class MeterTypeService:
                     + str(item.code),
                 )
 
-            metertype = self.metertype.getbyname(
-                name=item.name
-            )
+            metertype = self.metertype.getbyname(name=item.name)
             if metertype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
@@ -63,9 +58,7 @@ class MeterTypeService:
         return self.metertype.create(data=data)
 
     # update meter type function
-    async def update(
-        self, code: int, data: MeterTypeBase
-    ) -> MeterTypeModel:
+    async def update(self, code: int, data: MeterTypeUpdate) -> MeterTypeUpdate:
         metertype = self.metertype.getbycode(code=code)
         if metertype is None:
             raise HTTPException(

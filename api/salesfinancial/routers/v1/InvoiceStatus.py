@@ -12,7 +12,8 @@ from api.salesfinancial.services.InvoiceStatusService import (
 from api.salesfinancial.schemas.InvoiceStatusSchema import (
     InvoiceStatusBase,
     CreateInvoiceStatus,
-    InvoiceStatusSchema,
+    InvoiceStatusUpdate,
+    InvoiceStatusSchema
 )
 
 env = get_env_var()
@@ -82,7 +83,7 @@ async def create(
 )
 async def update(
     code: int,
-    data: InvoiceStatusBase,
+    data: InvoiceStatusUpdate,
     statusService: InvoiceStatusService = Depends(),
 ):
     return await statusService.update(code=code, data=data)

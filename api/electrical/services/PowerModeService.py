@@ -39,9 +39,7 @@ class PowerModeService:
         self, data: List[CreatePowerMode]
     ) -> List[CreatePowerMode]:
         for item in data:
-            powermode = self.powermode.getbycode(
-                code=item.code
-            )
+            powermode = self.powermode.getbycode(code=item.code)
             if powermode:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
@@ -49,9 +47,7 @@ class PowerModeService:
                     + str(item.code),
                 )
 
-            powermode = self.powermode.getbyname(
-                name=item.name
-            )
+            powermode = self.powermode.getbyname(name=item.name)
             if powermode:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,

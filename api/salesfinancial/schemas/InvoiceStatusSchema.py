@@ -2,9 +2,14 @@ from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
 
-class InvoiceStatusBase(BaseModel):
-    code: int
+class InvoiceStatusUpdate(BaseModel):
     name: str
+
+class InvoiceStatusInput(InvoiceStatusUpdate):
+    code: int
+
+class InvoiceStatusBase(InvoiceStatusInput):
+    pass
     
     class Config:
         orm_mode = True

@@ -3,13 +3,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from api.salesfinancial.models.SubscriptionStatusModel import (
-    SubscriptionStatusModel,
-)
-from api.salesfinancial.schemas.SubscriptionStatusSchema import (
-    CreateSubscriptionStatus,
-)
-
+from api.salesfinancial.models.SubscriptionStatusModel import SubscriptionStatusModel
+from api.salesfinancial.schemas.SubscriptionStatusSchema import CreateSubscriptionStatus
 
 class SubscriptionStatusRepo:
     db: Session
@@ -21,14 +16,13 @@ class SubscriptionStatusRepo:
 
     # get max code
     def maxcode(self) -> int:
-        return self.db.query(
+        codemax = self.db.query(
             func.max(SubscriptionStatusModel.code)
         ).one()[0]
+        return 0 if codemax is None else codemax
 
     # get all subscription status function
-    def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[SubscriptionStatusModel]:
+    def list(self, skip: int = 0, limit: int = 100) -> List[SubscriptionStatusModel]:
         return (
             self.db.query(SubscriptionStatusModel)
             .offset(skip)
@@ -55,9 +49,7 @@ class SubscriptionStatusRepo:
         )
 
     # get subscription status name function
-    def getbyname(
-        self, name: str
-    ) -> SubscriptionStatusModel:
+    def getbyname(self, name: str) -> SubscriptionStatusModel:
         return (
             self.db.query(SubscriptionStatusModel)
             .where(
@@ -68,9 +60,7 @@ class SubscriptionStatusRepo:
         )
 
     # create subscription status function
-    def create(
-        self, data: List[CreateSubscriptionStatus]
-    ) -> List[CreateSubscriptionStatus]:
+    def create(self, data: List[CreateSubscriptionStatus]) -> List[CreateSubscriptionStatus]:
         self.db.execute(
             insert(SubscriptionStatusModel),
             encoders.jsonable_encoder(data),
@@ -79,17 +69,13 @@ class SubscriptionStatusRepo:
         return data
 
     # update subscription status function
-    def update(
-        self, data: SubscriptionStatusModel
-    ) -> SubscriptionStatusModel:
+    def update(self, data: CreateSubscriptionStatus) -> SubscriptionStatusModel:
         self.db.add(data)
         self.db.commit()
         self.db.refresh(data)
         return data
 
     # delete subscription status function
-    def delete(
-        self, subscription: SubscriptionStatusModel
-    ) -> None:
+    def delete(self, subscription: SubscriptionStatusModel) -> None:
         self.db.delete(subscription)
         self.db.commit()

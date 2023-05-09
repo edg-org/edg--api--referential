@@ -1,6 +1,10 @@
 from typing import Optional
 from datetime import datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+class AgencySearchParams(BaseModel):
+    code: int = Field(description="Field of the agency name")
+    name: str | None = Field(description="Field of the agency name")
 
 class AgencyCoordinates(BaseModel):
     altitude: str
@@ -12,13 +16,18 @@ class AgencyInfos(BaseModel):
     email: str
     telephone: str
     address: str
+    city_code: int
     coordinates: Optional[AgencyCoordinates]
 
-class AgencyBase(BaseModel):
-    code: Optional[int]
-    area_id: Optional[int]
-    type_id: Optional[int]
+class AgencyUpdate(BaseModel):
     infos: AgencyInfos
+
+class AgencyInput(AgencyUpdate):
+    pass
+
+class AgencyBase(AgencyInput):
+    code: int
+    city_id: int
 
     class Config:
         orm_mode = True

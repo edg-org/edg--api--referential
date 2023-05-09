@@ -5,7 +5,8 @@ from fastapi import Depends, HTTPException, status
 from api.ageographical.models.NaturalZoneModel import ZoneModel
 from api.ageographical.repositories.NaturalZoneRepo import ZoneRepo
 from api.ageographical.schemas.NaturalZoneSchema import (
-    ZoneBase,
+    ZoneInput,
+    ZoneUpdate,
     CreateZone,
 )
 
@@ -27,62 +28,61 @@ class ZoneService:
         return self.zone.get(id=id)
 
     # get natural region by code function
-    async def getbycode(self, code: str) -> ZoneBase:
+    async def getbycode(self, code: str) -> ZoneModel:
         return self.zone.getbycode(code=code)
 
     # get natural region by name function
-    async def getbyname(self, name: str) -> ZoneBase:
+    async def getbyname(self, name: str) -> ZoneModel:
         return self.zone.getbyname(name=name)
 
     # create natural region function
-    async def create(
-        self, data: List[CreateZone]
-    ) -> List[CreateZone]:
-        maxcode = self.zone.maxcode()
-        if maxcode is None:
-            maxcode = 0
+    async def create(self, data: List[ZoneInput]) -> List[CreateZone]:
+        maxcode = self.zone.maxcode()            
+        zonelist = []  
         for item in data:
-            maxcode = generate_zone_code(maxcode)
-            setattr(item, "code", maxcode)
             zone = self.zone.getbycode(code=maxcode)
             if zone:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Natural Region already registered with code "
-                    + str(item.code),
+                    detail="Natural Region already registered with code " + str(maxcode),
                 )
 
             zone = self.zone.getbyname(name=item.name)
             if zone:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Natural Region already registered with name "
-                    + str(item.name),
+                    detail="Natural Region already registered with name " + str(item.name),
                 )
+            maxcode = generate_zone_code(maxcode)
+            zone = CreateZone(
+                name = item.name,
+                code = maxcode
+            )
+            zonelist.append(zone)
 
-        return self.zone.create(data=data)
+        return self.zone.create(data=zonelist)
 
     # update natural region function
-    async def update(
-        self, id: int, data: ZoneBase
-    ) -> ZoneModel:
-        zone = self.zone.getbycode(code=id)
+    async def update(self, code: int, data: ZoneUpdate) -> ZoneModel:
+        zone = self.zone.getbycode(code=code)
         if zone is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Natural Region not found",
             )
 
-        zonedict = data.dict(exclude_unset=True)
+        zone = CreateZone(
+            name = data.name,
+            code = code
+        )
+        zonedict = zone.dict(exclude_unset=True)
         for key, val in zonedict.items():
             setattr(zone, key, val)
-        return self.zone.update(data=zone)
+        return self.zone.update(data=datatoupdate)
 
     # activate or desactivate natural region function
-    async def activate_desactivate(
-        self, id: int, flag: bool
-    ) -> None:
-        zone = self.zone.get(id=id)
+    async def activate_desactivate(self, code: int, flag: bool) -> None:
+        zone = self.zone.getbycode(code=code)
         if zone is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,

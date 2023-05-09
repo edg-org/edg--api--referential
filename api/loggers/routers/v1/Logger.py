@@ -3,9 +3,9 @@ from api.configs.Environment import get_env_var
 from fastapi import APIRouter, Depends, status, HTTPException
 from api.loggers.services.LoggerService import LoggerService
 from api.loggers.schemas.LoggerSchema import (
-    LoggerBase,
+    LoggerInput,
     LoggerSchema,
-    CreateLogger, 
+    CreateLogger
 )
 
 env = get_env_var()
@@ -31,7 +31,7 @@ async def list(skip: int=0, limit: int=100, logService: LoggerService = Depends(
     "/{id}",
     summary="Getting router a city without items",
     description="This router allows to get a log",
-    response_model=LoggerBase
+    response_model=LoggerSchema
 )
 async def get(id: int, logService: LoggerService = Depends()):
     log = await logService.get(id=id)
@@ -46,5 +46,8 @@ async def get(id: int, logService: LoggerService = Depends()):
     description="This router allows to create a log",
     response_model=List[CreateLogger]
 )
-async def create(data: List[CreateLogger], loggerService: LoggerService = Depends()):
+async def create(
+    data: List[LoggerInput], 
+    loggerService: LoggerService = Depends()
+):
     return await loggerService.create(data=data)

@@ -1,51 +1,70 @@
 [
     {
-        "code": 1,
+        "code": "btd1p",
         "name": "Basse Tension Domestique Monophasé",
         "infos": {
-            "tracking_type": "post-payé",
+            "tracking_type": "postpayé",
             "power_mode": "monophasé",
             "payment_deadline": 30,
             "deadline_measurement_unit": "day",
             "tva": 18,
             "currency": "GNF",
             "power_measurement_unit": "ampère",
+            "consumption_measurement_unit": "KWh",
             "power_to_subscribe": [
                 {
-                    "power": 5,
-                    "deposit_to_pay": 89694
+                    "lower_power": 0,
+                    "upper_power": 5,
+                    "deposit_to_pay": 89694,
+                    "estimated_consumption": 1.10
                 },
                 {
-                    "power": 10,
-                    "deposit_to_pay": 179388
+                    "lower_power": 6,
+                    "upper_power": 10,
+                    "deposit_to_pay": 179388,
+                    "estimated_consumption": 2.20
                 },
                 {
-                    "power": 15,
-                    "deposit_to_pay": 269082
+                    "lower_power": 11,
+                    "upper_power": 15,
+                    "deposit_to_pay": 269082,
+                    "estimated_consumption": 3.30
                 },
                 {
-                    "power": 20,
-                    "deposit_to_pay": 358776
+                    "lower_power": 16,
+                    "upper_power": 20,
+                    "deposit_to_pay": 358776,
+                    "estimated_consumption": 4.40
                 },
                 {
-                    "power": 20,
-                    "deposit_to_pay": 448470
+                    "lower_power": 21,
+                    "upper_power": 25,
+                    "deposit_to_pay": 448470,
+                    "estimated_consumption": 5.50
                 },
                 {
-                    "power": 30,
-                    "deposit_to_pay": 538164
+                    "lower_power": 26,
+                    "upper_power": 30,
+                    "deposit_to_pay": 538164,
+                    "estimated_consumption": 6.60
                 },
                 {
-                    "power": 35,
-                    "deposit_to_pay": 627858
+                    "lower_power": 31,
+                    "upper_power": 35,
+                    "deposit_to_pay": 627858,
+                    "estimated_consumption": 7.70
                 },
                 {
-                    "power": 40,
-                    "deposit_to_pay": 717552
+                    "lower_power": 36,
+                    "upper_power": 40,
+                    "deposit_to_pay": 717552,
+                    "estimated_consumption": 8.80
                 },
                 {
-                    "power": 45,
-                    "deposit_to_pay": 807246
+                    "lower_power": 41,
+                    "upper_power": 45,
+                    "deposit_to_pay": 807246,
+                    "estimated_consumption": 9.90
                 }
             ]
         },
@@ -77,7 +96,7 @@
         },
         "dunning": [
             {
-                "code": "t1r1",
+                "code": "btd1p1",
                 "rank": 1,
                 "name": "1ère relance",
                 "payment_deadline": 20,
@@ -85,7 +104,132 @@
                 "delay_penality_rate": 0
             },
             {
-                "code": "t1r2",
+                "code": "btd1p2",
+                "rank": 2,
+                "name": "2ère relance",
+                "payment_deadline": 15,
+                "deadline_unit_time": "day",
+                "delay_penality_rate": 5
+            }
+        ]
+    },
+    {
+        "code": "btd3p",
+        "name": "Basse Tension Domestique Monophasé",
+        "infos": {
+            "tracking_type": "postpayé",
+            "power_mode": "monophasé",
+            "payment_deadline": 30,
+            "deadline_measurement_unit": "day",
+            "tva": 18,
+            "currency": "GNF",
+            "power_measurement_unit": "ampère",
+            "power_to_subscribe": [
+                {
+                    "lower_power": 6,
+                    "upper_power": 10,
+                    "deposit_to_pay": 5338164,
+                    "estimated_consumption": 6.60
+                },
+                {
+                    "lower_power": 11,
+                    "upper_power": 15,
+                    "deposit_to_pay": 807246,
+                    "estimated_consumption": 9.90
+                },
+                {
+                    "lower_power": 16,
+                    "upper_power": 20,
+                    "deposit_to_pay": 1076328,
+                    "estimated_consumption": 13.20
+                },
+                {
+                    "lower_power": 21,
+                    "upper_power": 25,
+                    "deposit_to_pay": 1345410,
+                    "estimated_consumption": 16.50
+                },
+                {
+                    "lower_power": 26,
+                    "upper_power": 30,
+                    "deposit_to_pay": 1614492,
+                    "estimated_consumption": 19.80
+                },
+                {
+                    "lower_power": 31,
+                    "upper_power": 35,
+                    "deposit_to_pay": 1883574,
+                    "estimated_consumption": 23.10
+                },
+                {
+                    "lower_power": 36,
+                    "upper_power": 40,
+                    "deposit_to_pay": 2152656,
+                    "estimated_consumption": 26.40
+                },
+                {
+                    "lower_power": 41,
+                    "upper_power": 45,
+                    "deposit_to_pay": 2421738,
+                    "estimated_consumption": 29.70
+                },
+                {
+                    "lower_power": 46,
+                    "upper_power": 50,
+                    "deposit_to_pay": 2690820,
+                    "estimated_consumption": 33.00
+                },
+                {
+                    "lower_power": 51,
+                    "upper_power": 60,
+                    "deposit_to_pay": 3228984,
+                    "estimated_consumption": 39.60
+                },
+                {
+                    "lower_power": 61,
+                    "upper_power": 90,
+                    "deposit_to_pay": 4843476,
+                    "estimated_consumption": 59.40
+                }
+            ]
+        },
+        "pricing": {
+            "code": "btd-230105",
+            "name": "tarif domestique basse tension",
+            "start_date": "2023-01-05",
+            "subscription_fee": 4850,
+            "slices": [
+                {
+                    "name": "Tranche 1",
+                    "unit_price": 90,
+                    "lower_index": 1,
+                    "upper_index": 40
+                },
+                {
+                    "name": "Tranche 2",
+                    "unit_price": 293,
+                    "lower_index": 41,
+                    "upper_index": 330
+                },
+                {
+                    "name": "Tranche 3",
+                    "unit_price": 336,
+                    "lower_index": 41,
+                    "upper_index": null
+                }
+            ]
+        },
+        "dunning": [
+            {
+                "code": "btd3p1",
+                "rank": 1,
+                "name": "1ère relance",
+                "payment_deadline": 20,
+                "deadline_unit_time": "day",
+                "delay_penality_rate": 0
+            },
+            {
+                "code": "btd3p2",
                 "rank": 2,
                 "name": "2ère relance",
                 "payment_deadline": 15,

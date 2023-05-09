@@ -1,0 +1,25 @@
+[
+    {
+        "infos": {
+            "name": "Aviation",
+            "area_type": "quartier",
+            "city_code": 3011900
+        }
+    },
+    {
+        "infos": {
+            "name": "Banankoroda",
+            "area_type": "quartier",
+            "city_code": 3011900,
+            "agency_code": 30119010
+        }
+    },
+    {
+        "infos": {
+            "name": "Bordo",
+            "area_type": "quartier",
+            "city_code": 3011900,
+            "agency_code": 30119010
+        }
+    }
+]

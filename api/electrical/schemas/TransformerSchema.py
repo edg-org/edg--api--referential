@@ -9,20 +9,27 @@ class TransformerCoordinates(BaseModel):
     longitude: float
 
 class TransformerInfos(BaseModel):
-    name: Optional[str]
-    area_code: Optional[int]
-    city_code: Optional[int]
-    factory_name: str
-    index_reading: float
-    manufacturing_country: str
-    coordinates: TransformerCoordinates
+    name: str
+    brand: Optional[str]
+    tranformer_serial_number: Optional[str]
+    city_code: int
+    area_code: Optional[int] = None
+    supply_line_code: int
+    manufacturing_country: Optional[str] = None
+    coordinates: Optional[TransformerCoordinates] = None
 
-class TransformerBase(BaseModel):
-    tranformer_number: str
-    departure_id: int
-    area_id: Optional[int]
-    city_id: Optional[int]
+class TransformerUpdate(BaseModel):
     infos: TransformerInfos
+
+class TransformerInput(TransformerUpdate):
+    pass
+
+
+class TransformerBase(TransformerInput):
+    transformer_code: str
+    city_id: int
+    area_id: Optional[int] = None
+    supply_line_id: int
 
     class Config:
         orm_mode = True

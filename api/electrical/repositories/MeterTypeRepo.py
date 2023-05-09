@@ -3,13 +3,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from api.electrical.models.MeterTypeModel import (
-    MeterTypeModel,
-)
-from api.electrical.schemas.MeterTypeSchema import (
-    CreateMeterType,
-)
-
+from api.electrical.models.MeterTypeModel import MeterTypeModel
+from api.electrical.schemas.MeterTypeSchema import CreateMeterType
 
 class MeterTypeRepo:
     db: Session
@@ -26,9 +21,7 @@ class MeterTypeRepo:
         ).one()[0]
 
     # get all meter types function
-    def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[MeterTypeModel]:
+    def list(self, skip: int = 0, limit: int = 100) -> List[MeterTypeModel]:
         return (
             self.db.query(MeterTypeModel)
             .offset(skip)
@@ -64,9 +57,7 @@ class MeterTypeRepo:
         )
 
     # create meter type function
-    def create(
-        self, data: List[CreateMeterType]
-    ) -> List[CreateMeterType]:
+    def create(self, data: List[CreateMeterType]) -> List[CreateMeterType]:
         self.db.execute(
             insert(MeterTypeModel),
             encoders.jsonable_encoder(data),
@@ -75,15 +66,13 @@ class MeterTypeRepo:
         return data
 
     # update meter type function
-    def update(
-        self, data: MeterTypeModel
-    ) -> MeterTypeModel:
+    def update(self, data: CreateMeterType) -> MeterTypeModel:
         self.db.add(data)
         self.db.commit()
         self.db.refresh(data)
         return data
 
     # delete meter type function
-    def delete(self, meter: MeterTypeModel) -> None:
-        self.db.delete(meter)
+    def delete(self, type: MeterTypeModel) -> None:
+        self.db.delete(type)
         self.db.commit()

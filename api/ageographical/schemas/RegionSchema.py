@@ -1,9 +1,7 @@
 from typing import Optional
 from datetime import datetime
-from pydantic import BaseModel
-from api.ageographical.schemas.PrefectureSchema import (
-    PrefectureSchema,
-)
+from pydantic import BaseModel, Field
+from api.ageographical.schemas.PrefectureSchema import PrefectureSchema
 
 
 class RegionCoordinates(BaseModel):
@@ -11,25 +9,30 @@ class RegionCoordinates(BaseModel):
     latitude: float
     longitude: float
 
+class RegionSearchParams(BaseModel):
+    code: int = Field(description="Field of the region code")
+    name: str | None = Field(description="Field of the region name")
 
 class RegionInfos(BaseModel):
     zone_code: int
-    name: str
     coordinates: Optional[RegionCoordinates]
 
-
-class RegionBase(BaseModel):
-    code: Optional[int]
-    zone_id: Optional[int]
+class RegionUpdate(BaseModel):
+    name: str
     infos: RegionInfos
+
+class RegionInput(RegionUpdate):
+    pass
+
+class RegionBase(RegionInput):
+    code: int
+    zone_id: int
 
     class Config:
         orm_mode = True
 
-
 class CreateRegion(RegionBase):
     pass
-
 
 class RegionSchema(RegionBase):
     id: int
@@ -37,7 +40,6 @@ class RegionSchema(RegionBase):
     created_at: datetime
     updated_at: Optional[datetime]
     deleted_at: Optional[datetime]
-
 
 class RegionItemSchema(RegionSchema):
     prefectures: list[PrefectureSchema] = []

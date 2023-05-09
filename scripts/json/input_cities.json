@@ -1,2 +1,186 @@
-[{"infos":{"prefecture_code":10202,"name":"Boké","type":"Commune Urbaine","level":"Préfecture"}},{"infos":{"prefecture_code":10202,"name":"Bintimodiya","type":"Commune Urbaine","level":"Sous-préfecture"}},{"infos":{"prefecture_code":10202,"name":"Dabiss","type":"Commune Urbaine","level":"Sous-préfecture"}},{"infos":{"prefecture_code":10202,"name":"Kamsar","type":"Commune Urbaine","level":"Sous-préfecture"}},{"infos":{"prefecture_code":10202,"name":"Kanfarande","type":"Commune Urbaine","level":"Sous-préfecture"}},{"infos":{"prefecture_code":10202,"name":"Kolaboui","type":"Commune Urbaine","level":"Sous-préfecture"}},{"infos":{"prefecture_code":10202,"name":"Malapouyah","type":"Commune Urbaine","level":"Sous-préfecture"}},{"infos":{"prefecture_code":10202,"name":"Sangarédi","type":"Commune Urbaine","level":"Sous-préfecture"}},{"infos":{"prefecture_code":10202,"name":"Sansalé","type":"Commune Urbaine","level":"Sous-préfecture"}},{"infos":{"prefecture_code":10202,"name":"Tanéné","type":"Commune Urbaine","level":"Sous-préfecture"}}]
-[{"infos":{"prefecture_code":30119,"name":"Kankan","type":"Commune Urbaine","level":"Préfecture"}},{"infos":{"prefecture_code":30119,"name":"Balandou","type":"Commune Urbaine","level":"Sous-préfecture"}},{"infos":{"prefecture_code":30119,"name":"Batè-Nafaji","type":"Commune Urbaine","level":"Sous-préfecture"}},{"infos":{"prefecture_code":30119,"name":"Boula","type":"Commune Urbaine","level":"Sous-préfecture"}},{"infos":{"prefecture_code":30119,"name":"Gbérédou-Baranama","type":"Commune Urbaine","level":"Sous-préfecture"}},{"infos":{"prefecture_code":30119,"name":"Karifamoriyah","type":"Commune Urbaine","level":"Sous-préfecture"}},{"infos":{"prefecture_code":30119,"name":"Koumba","type":"Commune Urbaine","level":"Sous-préfecture"}},{"infos":{"prefecture_code":30119,"name":"Mamouroudou","type":"Commune Urbaine","level":"Sous-préfecture"}},{"infos":{"prefecture_code":30119,"name":"Missamana","type":"Commune Urbaine","level":"Sous-préfecture"}},{"infos":{"prefecture_code":30119,"name":"Moribayah","type":"Commune Urbaine","level":"Sous-préfecture"}},{"infos":{"prefecture_code":30119,"name":"Sabadou-Baranama","type":"Commune Urbaine","level":"Sous-préfecture"}},{"infos":{"prefecture_code":30119,"name":"Tinti-Oulen","type":"Commune Urbaine","level":"Sous-préfecture"}},{"infos":{"prefecture_code":30119,"name":"Tokounou","type":"Commune Urbaine","level":"Sous-préfecture"}}]
+[
+    {
+        "infos": {
+            "prefecture_code": 10202,
+            "name": "Boké",
+            "city_type": "Commune Urbaine",
+            "city_level": "Préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture_code": 10202,
+            "name": "Bintimodiya",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture_code": 10202,
+            "name": "Dabiss",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture_code": 10202,
+            "name": "Kamsar",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture_code": 10202,
+            "name": "Kanfarande",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture_code": 10202,
+            "name": "Kolaboui",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture_code": 10202,
+            "name": "Malapouyah",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture_code": 10202,
+            "name": "Sangarédi",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture_code": 10202,
+            "name": "Sansalé",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture_code": 10202,
+            "name": "Tanéné",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture_code": 30119,
+            "name": "Kankan",
+            "city_type": "Commune Urbaine",
+            "city_level": "Préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture_code": 30119,
+            "name": "Balandou",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture_code": 30119,
+            "name": "Batè-Nafaji",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture_code": 30119,
+            "name": "Boula",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture_code": 30119,
+            "name": "Gbérédou-Baranama",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture_code": 30119,
+            "name": "Karifamoriyah",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture_code": 30119,
+            "name": "Koumba",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture_code": 30119,
+            "name": "Mamouroudou",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture_code": 30119,
+            "name": "Missamana",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture_code": 30119,
+            "name": "Moribayah",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture_code": 30119,
+            "name": "Sabadou-Baranama",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture_code": 30119,
+            "name": "Tinti-Oulen",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture_code": 30119,
+            "name": "Tokounou",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    }
+]

@@ -1,1 +1,26 @@
-[{"code":1,"name":"Arrondissement"},{"code":2,"name":"District"},{"code":3,"name":"Quartier"},{"code":4,"name":"Village"},{"code":5,"name":"Zone administrative"},{"code":6,"name":"Zone industrielle"}]
+[
+    {
+        "code": 1,
+        "name": "Arrondissement"
+    },
+    {
+        "code": 2,
+        "name": "District"
+    },
+    {
+        "code": 3,
+        "name": "Quartier"
+    },
+    {
+        "code": 4,
+        "name": "Village"
+    },
+    {
+        "code": 5,
+        "name": "Zone administrative"
+    },
+    {
+        "code": 6,
+        "name": "Zone industrielle"
+    }
+]

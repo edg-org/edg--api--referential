@@ -4,7 +4,7 @@ from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
 from api.ageographical.models.AgencyModel import AgencyModel
-from api.ageographical.schemas.AgencySchema import CreateAgency
+from api.ageographical.schemas.AgencySchema import CreateAgency, AgencyUpdate
 
 #
 class AgencyRepo:
@@ -15,15 +15,29 @@ class AgencyRepo:
     ) -> None:
         self.db = db
 
-    # get max id of agency by area
-    def maxcodebyzone(self, area_code: int) -> int:
-        return (
+    # get max id of agency by city
+    def maxcodebycity(self, city_code: int) -> int:
+        codemax = (
             self.db.query(func.max(AgencyModel.code))
             .where(
-                AgencyModel.infos["area_code"] == area_code
-            )
-            .one()[0]
+                AgencyModel.infos["city_code"] == city_code
+            ).one()[0]
         )
+        return 0 if codemax is None else codemax
+
+    # count total rows of agency by name
+    def countbyname(self, name: str) -> int:
+        return self.db.query(AgencyModel).where(
+            func.lower(
+                func.json_unquote(AgencyModel.infos["name"])
+            ) == name.lower()
+        ).count()
+    
+    # count total rows of agency by code
+    def countbycode(self, code: int) -> int:
+        return self.db.query(AgencyModel).where(
+            AgencyModel.code == code
+        ).count()
 
     # get agency id by code function
     def getidbycode(self, code: int) -> AgencyModel:
@@ -65,16 +79,14 @@ class AgencyRepo:
         return (
             self.db.query(AgencyModel)
             .where(
-                func.lower(AgencyModel.infos["name"])
-                == name.lower()
-            )
-            .first()
+                func.lower(
+                    func.json_unquote(AgencyModel.infos["name"])
+                ) == name.lower()
+            ).first()
         )
 
     # create agency function
-    def create(
-        self, data: List[CreateAgency]
-    ) -> List[CreateAgency]:
+    def create(self, data: List[CreateAgency]) -> List[CreateAgency]:
         self.db.execute(
             insert(AgencyModel),
             encoders.jsonable_encoder(data),
@@ -83,7 +95,7 @@ class AgencyRepo:
         return data
 
     # update agency function
-    def update(self, data: AgencyModel) -> AgencyModel:
+    def update(self, data: CreateAgency) -> AgencyModel:
         self.db.add(data)
         self.db.commit()
         self.db.refresh(data)

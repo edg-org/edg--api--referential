@@ -1,0 +1,23 @@
+[
+    {
+        "infos": {
+            "name": "Station Missiran",
+            "line_type": "consommation domestique",
+            "real_supply_power": 150,
+            "measurement_unit": "KWh",
+            "departure_city_code": 3011900,
+            "address": "quartier missiran"
+        }
+    },
+    {
+        "infos": {
+            "name": "Station Kankankoura",
+            "line_type": "consommation industrielle",
+            "real_supply_power": 850,
+            "measurement_unit": "KWh",
+            "departure_city_code": 3011900,
+            "arrival_city_code": 3011901,
+            "address": "quartier Kankankoura"
+        }
+    }
+]

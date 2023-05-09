@@ -1,16 +1,8 @@
 from typing import List
 from fastapi import Depends, HTTPException, status
-from api.salesfinancial.models.InvoiceStatusModel import (
-    InvoiceStatusModel,
-)
-from api.salesfinancial.repositories.InvoiceStatusRepo import (
-    InvoiceStatusRepo,
-)
-from api.salesfinancial.schemas.InvoiceStatusSchema import (
-    InvoiceStatusBase,
-    CreateInvoiceStatus,
-)
-
+from api.salesfinancial.models.InvoiceStatusModel import InvoiceStatusModel
+from api.salesfinancial.repositories.InvoiceStatusRepo import InvoiceStatusRepo
+from api.salesfinancial.schemas.InvoiceStatusSchema import CreateInvoiceStatus
 
 class InvoiceStatusService:
     invoicestatus: InvoiceStatusRepo
@@ -33,15 +25,11 @@ class InvoiceStatusService:
         return self.invoicestatus.get(id=id)
 
     # get invoice status by code function
-    async def getbycode(
-        self, code: str
-    ) -> InvoiceStatusBase:
+    async def getbycode(self, code: str) -> InvoiceStatusModel:
         return self.invoicestatus.getbycode(code=code)
 
     # get invoice status by name function
-    async def getbyname(
-        self, name: str
-    ) -> InvoiceStatusBase:
+    async def getbyname(self, name: str) -> InvoiceStatusModel:
         return self.invoicestatus.getbyname(name=name)
 
     # create invoice status function
@@ -72,10 +60,8 @@ class InvoiceStatusService:
         return self.invoicestatus.create(data=data)
 
     # update invoice status function
-    async def update(
-        self, code: int, data: InvoiceStatusBase
-    ) -> InvoiceStatusModel:
-        invoicestatus = self.invoicestatus.get(code=code)
+    async def update(self, code: int, data: CreateInvoiceStatus) -> InvoiceStatusModel:
+        invoicestatus = self.invoicestatus.getbycode(code=code)
         if invoicestatus is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -88,10 +74,8 @@ class InvoiceStatusService:
         return self.invoicestatus.update(invoicestatus)
 
     # delete invoice status %function
-    async def delete(
-        self, invoice: InvoiceStatusModel
-    ) -> None:
-        invoicestatus = self.invoicestatus.get(id=id)
+    async def delete(self, invoice: InvoiceStatusModel) -> None:
+        invoicestatus = self.invoicestatus.getbycode(code=code)
         if invoicestatus is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,

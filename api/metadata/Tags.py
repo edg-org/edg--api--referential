@@ -1,5 +1,17 @@
 Tags = [
     {
+        "name": "Tracking Types",
+        "description": "Contains CRUD operation on Tracking Types",
+    },
+    {
+        "name": "Meter Types",
+        "description": "Contains CRUD operation on Meter Types",
+    },
+    {
+        "name": "Power Modes",
+        "description": "Contains CRUD operation on Power Modes",
+    },
+    {
         "name": "Contact Types",
         "description": "Contains CRUD operation on Contact Types",
     },
@@ -24,16 +36,8 @@ Tags = [
         "description": "Contains CRUD operation on Invoicing Frequencies",
     },
     {
-        "name": "Tracking Types",
-        "description": "Contains CRUD operation on Tracking Types",
-    },
-    {
-        "name": "Meter Types",
-        "description": "Contains CRUD operation on Meter Types",
-    },
-    {
-        "name": "Power Modes",
-        "description": "Contains CRUD operation on Power Modes",
+        "name": "Supply Line Types",
+        "description": "Contains CRUD operation on Supply Line Types",
     },
     {
         "name": "Pricing Histories",
@@ -68,12 +72,12 @@ Tags = [
         "description": "Contains CRUD operation on Cities",
     },
     {
-        "name": "Areas",
-        "description": "Contains CRUD operation on Areas",
-    },
-    {
         "name": "Agencies",
         "description": "Contains CRUD operation on Agencies",
+    },
+    {
+        "name": "Areas",
+        "description": "Contains CRUD operation on Areas",
     },
     {
         "name": "Electric Meters",
@@ -86,5 +90,5 @@ Tags = [
     {
         "name": "Loggers",
         "description": "Contains CRUD operation on Logs",
-    },
+    }
 ]

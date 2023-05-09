@@ -5,10 +5,14 @@ from api.salesfinancial.schemas.SubscriptionTypeSchema import (
     SubscriptionTypeSchema,
 )
 
-
-class TrackingTypeBase(BaseModel):
-    code: int
+class TrackingTypeUpdate(BaseModel):
     name: str
+
+class TrackingTypeInput(TrackingTypeUpdate):
+    code: int
+
+class TrackingTypeBase(TrackingTypeInput):
+    pass
 
     class Config:
         orm_mode = True

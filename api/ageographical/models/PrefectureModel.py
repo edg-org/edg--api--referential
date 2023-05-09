@@ -9,6 +9,7 @@ class PrefectureModel(EntityMeta):
 
     id = Column(TINYINT(unsigned=True), primary_key=True, index=True)
     code = Column(MEDIUMINT(unsigned=True), index=True, unique=True, nullable=False)
+    name = Column(String(35), index=True, unique=True, nullable=False)
     prefecture_number = Column(String(2), index=True, unique=True, nullable=False)
     region_id = Column(TINYINT(unsigned=True), ForeignKey("regions.id"), nullable=False)
     infos = Column(JSON, nullable=False)

@@ -10,8 +10,9 @@ from api.ageographical.services.CityTypeService import (
     CityTypeService,
 )
 from api.ageographical.schemas.CityTypeSchema import (
-    CityTypeBase,
+    CityTypeInput,
     CreateCityType,
+    CityTypeUpdate,
     CityTypeSchema,
 )
 
@@ -65,7 +66,7 @@ async def get(
     response_model=List[CreateCityType],
 )
 async def create(
-    data: List[CreateCityType],
+    data: List[CityTypeInput],
     typeService: CityTypeService = Depends(),
 ):
     return await typeService.create(data=data)
@@ -80,7 +81,7 @@ async def create(
 )
 async def update(
     code: int,
-    data: CityTypeBase,
+    data: CityTypeUpdate,
     typeService: CityTypeService = Depends(),
 ):
     return await typeService.update(code=code, data=data)

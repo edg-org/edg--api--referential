@@ -1,1 +1,14 @@
-[{"code":1,"name":"Préfecture"},{"code":2,"name":"Sous-préfecture"},{"code":3,"name":"Commune"}]
+[
+    {
+        "code": 1,
+        "name": "Préfecture"
+    },
+    {
+        "code": 2,
+        "name": "Sous-préfecture"
+    },
+    {
+        "code": 3,
+        "name": "Commune"
+    }
+]

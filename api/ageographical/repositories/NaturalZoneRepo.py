@@ -4,7 +4,7 @@ from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
 from api.ageographical.models.NaturalZoneModel import ZoneModel
-from api.ageographical.schemas.NaturalZoneSchema import CreateZone
+from api.ageographical.schemas.NaturalZoneSchema import CreateZone, ZoneUpdate
 
 #
 class ZoneRepo:
@@ -21,14 +21,13 @@ class ZoneRepo:
 
     # get max code of natural region
     def maxcode(self) -> int:
-        return self.db.query(
+        codemax = self.db.query(
             func.max(ZoneModel.code)
         ).one()[0]
+        return 0 if codemax is None else codemax
 
     # get all regions function
-    def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[ZoneModel]:
+    def list(self, skip: int = 0, limit: int = 100) -> List[ZoneModel]:
         return (
             self.db.query(ZoneModel)
             .offset(skip)
@@ -71,9 +70,7 @@ class ZoneRepo:
         )
 
     # create region function
-    def create(
-        self, data: List[CreateZone]
-    ) -> List[ZoneModel]:
+    def create(self, data: List[CreateZone]) -> List[ZoneModel]:
         self.db.execute(
             insert(ZoneModel),
             encoders.jsonable_encoder(data),
@@ -82,7 +79,7 @@ class ZoneRepo:
         return data
 
     # update region function
-    def update(self, data: ZoneModel) -> ZoneModel:
+    def update(self, data: CreateZone) -> ZoneModel:
         self.db.add(data)
         self.db.commit()
         self.db.refresh(data)

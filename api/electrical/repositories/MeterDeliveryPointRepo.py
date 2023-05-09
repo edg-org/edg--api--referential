@@ -3,13 +3,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from api.electrical.models.MeterDeliveryPointModel import (
-    MeterDeliveryPointModel,
-)
-from api.electrical.schemas.MeterDeliveryPointSchema import (
-    CreateMeterDeliveryPoint,
-)
-
+from api.electrical.models.MeterDeliveryPointModel import MeterDeliveryPointModel
+from api.electrical.schemas.MeterDeliveryPointSchema import CreateMeterDeliveryPoint
 
 class MeterDeliveryPointRepo:
     db: Session
@@ -39,9 +34,7 @@ class MeterDeliveryPointRepo:
         )
 
     # get by meter number function
-    def getbymeternumber(
-        self, number: int
-    ) -> MeterDeliveryPointModel:
+    def getbymeternumber(self, number: int) -> MeterDeliveryPointModel:
         return (
             self.db.query(MeterDeliveryPointModel)
             .where(
@@ -52,9 +45,7 @@ class MeterDeliveryPointRepo:
         )
 
     # get by delivery point number function
-    def getbydeliverypointnumber(
-        self, number: int
-    ) -> MeterDeliveryPointModel:
+    def getbydeliverypointnumber(self, number: int) -> MeterDeliveryPointModel:
         return (
             self.db.query(MeterDeliveryPointModel)
             .where(
@@ -65,9 +56,7 @@ class MeterDeliveryPointRepo:
         )
 
     # create meter delivery point function
-    def create(
-        self, data: List[CreateMeterDeliveryPoint]
-    ) -> List[CreateMeterDeliveryPoint]:
+    def create(self, data: List[CreateMeterDeliveryPoint]) -> List[CreateMeterDeliveryPoint]:
         self.db.execute(
             insert(MeterDeliveryPointModel),
             encoders.jsonable_encoder(data),
@@ -76,8 +65,6 @@ class MeterDeliveryPointRepo:
         return data
 
     # delete meter delivery point function
-    def delete(
-        self, meter: MeterDeliveryPointModel
-    ) -> None:
+    def delete(self, meter: MeterDeliveryPointModel) -> None:
         self.db.delete(meter)
         self.db.commit()

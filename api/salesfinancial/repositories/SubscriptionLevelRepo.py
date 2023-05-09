@@ -3,12 +3,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from api.salesfinancial.models.SubscriptionLevelModel import (
-    SubscriptionLevelModel,
-)
-from api.salesfinancial.schemas.SubscriptionLevelSchema import (
-    CreateSubscriptionLevel,
-)
+from api.salesfinancial.models.SubscriptionLevelModel import SubscriptionLevelModel
+from api.salesfinancial.schemas.SubscriptionLevelSchema import CreateSubscriptionLevel
 
 
 class SubscriptionLevelRepo:
@@ -21,14 +17,13 @@ class SubscriptionLevelRepo:
 
     # get max code
     def maxcode(self) -> int:
-        return self.db.query(
+        codemax = self.db.query(
             func.max(SubscriptionLevelModel.code)
         ).one()[0]
+        return 0 if codemax is None else codemax
 
     # get all subscription levels function
-    def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[SubscriptionLevelModel]:
+    def list(self, skip: int = 0, limit: int = 100) -> List[SubscriptionLevelModel]:
         return (
             self.db.query(SubscriptionLevelModel)
             .offset(skip)
@@ -45,9 +40,7 @@ class SubscriptionLevelRepo:
         )
 
     # get subscription level code function
-    def getbycode(
-        self, code: str
-    ) -> SubscriptionLevelModel:
+    def getbycode(self, code: str) -> SubscriptionLevelModel:
         return (
             self.db.query(SubscriptionLevelModel)
             .where(SubscriptionLevelModel.code == code)
@@ -55,9 +48,7 @@ class SubscriptionLevelRepo:
         )
 
     # get subscription level name function
-    def getbyname(
-        self, name: str
-    ) -> SubscriptionLevelModel:
+    def getbyname(self, name: str) -> SubscriptionLevelModel:
         return (
             self.db.query(SubscriptionLevelModel)
             .where(
@@ -68,9 +59,7 @@ class SubscriptionLevelRepo:
         )
 
     # create subscription level function
-    def create(
-        self, data: List[CreateSubscriptionLevel]
-    ) -> List[CreateSubscriptionLevel]:
+    def create(self, data: List[CreateSubscriptionLevel]) -> List[CreateSubscriptionLevel]:
         self.db.execute(
             insert(SubscriptionLevelModel),
             encoders.jsonable_encoder(data),
@@ -79,9 +68,7 @@ class SubscriptionLevelRepo:
         return data
 
     # update subscription level function
-    def update(
-        self, data: SubscriptionLevelModel
-    ) -> SubscriptionLevelModel:
+    def update(self, data: CreateSubscriptionLevel) -> SubscriptionLevelModel:
         self.db.add(data)
         self.db.commit()
         self.db.refresh(data)
