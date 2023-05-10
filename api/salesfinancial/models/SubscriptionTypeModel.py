@@ -8,7 +8,7 @@ class SubscriptionTypeModel(EntityMeta):
     __tablename__ = "subscription_types"
 
     id = Column(TINYINT(unsigned=True), primary_key=True, index=True)
-    code = Column(TINYINT(unsigned=True), index=True, unique=True, nullable=False)
+    code = Column(String(10), index=True, unique=True, nullable=False)
     name = Column(String(100), index=True, unique=True, nullable=False)
     infos = Column(JSON, nullable=False)
     pricing = Column(JSON, nullable=False)

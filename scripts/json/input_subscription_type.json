@@ -115,7 +115,7 @@
     },
     {
         "code": "btd3p",
-        "name": "Basse Tension Domestique Monophasé",
+        "name": "Basse Tension Domestique Triphasé",
         "infos": {
             "tracking_type": "postpayé",
             "power_mode": "monophasé",

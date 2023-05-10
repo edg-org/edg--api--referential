@@ -42,6 +42,7 @@ class TypeInfosBase(BaseModel):
     tva: float
     currency: str
     power_measurement_unit: str
+    consumption_measurement_unit: str
     power_to_subscribe: List[PowerToSubscribe]
 
 class TypeInfosInput(TypeInfosBase):
@@ -55,11 +56,8 @@ class SubscriptionTypeUpdate(BaseModel):
     dunning: List[Dunning]
 
 class SubscriptionTypeInput(SubscriptionTypeUpdate):
-    code: int
-    name: str
+    code: str
     infos: TypeInfosInput
-    pricing: Pricing
-    dunning: List[Dunning]
 
 class SubscriptionTypeBase(SubscriptionTypeInput):
     power_mode_id: int
@@ -67,7 +65,6 @@ class SubscriptionTypeBase(SubscriptionTypeInput):
 
     class Config:
         orm_mode = True
-
 
 class CreateSubscriptionType(SubscriptionTypeBase):
     pass
