@@ -5,18 +5,22 @@
     },
     {
         "code": 2,
-        "name": "En attente d’activation"
+        "name": "Incomplet"
     },
     {
         "code": 3,
-        "name": "Activé"
+        "name": "En attente d’activation"
     },
     {
         "code": 4,
-        "name": "Suspendu"
+        "name": "Activé"
     },
     {
         "code": 5,
+        "name": "Suspendu"
+    },
+    {
+        "code": 6,
         "name": "Clôturé"
     }
 ]

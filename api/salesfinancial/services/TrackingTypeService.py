@@ -33,9 +33,7 @@ class TrackingTypeService:
     # create tracking type function
     async def create(self, data: List[CreateTrackingType]) -> List[CreateTrackingType]:
         for item in data:
-            trackingtype = self.trackingtype.getbycode(
-                code=item.code
-            )
+            trackingtype = self.trackingtype.getbycode(code=item.code)
             if trackingtype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
@@ -43,9 +41,7 @@ class TrackingTypeService:
                     + str(item.code),
                 )
 
-            trackingtype = self.trackingtype.getbyname(
-                name=item.name
-            )
+            trackingtype = self.trackingtype.getbyname(name=item.name)
             if trackingtype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,

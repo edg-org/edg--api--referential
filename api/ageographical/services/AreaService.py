@@ -1,11 +1,11 @@
 from typing import List
 from fastapi import Depends, HTTPException, status
 from api.ageographical.models.AreaModel import AreaModel
-from api.tools.Helper import area_basecode, generate_zipcode
 from api.ageographical.repositories.AreaRepo import AreaRepo
 from api.ageographical.repositories.CityRepo import CityRepo
 from api.ageographical.repositories.AgencyRepo import AgencyRepo
 from api.ageographical.repositories.AreaTypeRepo import AreaTypeRepo
+from api.tools.Helper import area_basecode, generate_zipcode, generate_code
 from api.ageographical.schemas.AreaSchema import (
     AreaInput,
     AreaUpdate,
@@ -41,25 +41,50 @@ class AreaService:
     async def create(self, data: List[AreaInput]) -> List[CreateArea]:
         step = 0
         arealist = []
-        city_code = 0
+        place_code = 0
         step_zipcode = 0
         for item in data:
-            count = self.area.countbyname(name=item.infos.name)
-            if count > 0:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Area already registered with name " + item.infos.name
-                )
-
             step +=1
+            input_code = 0
+            maxcode=0
+            hierarchical_area_id = None
+            city_id = 0
+            zipcode = 0
+            if (hasattr(item.infos, "hierarchical_area_code") and item.infos.hierarchical_area_code is not None):
+                count = self.area.checknamebyhierarchicalareacode(hierarchical_area_code=item.infos.hierarchical_area_code, name=item.infos.name)
+                if count > 0:
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail="Area already registered with name " + item.infos.name + " whose hierarchical area code is " + str(item.infos.hierarchical_area_code),
+                    )
+                    
+                area = AreaRepo.getbycode(self.area, item.infos.hierarchical_area_code)
+                city_id = area.city_id
+                zipcode = area.zipcode
+                hierarchical_area_id =  area.id
+                input_code = item.infos.hierarchical_area_code
+                maxcode=self.area.maxcodebyhierachicalarea(input_code)
+            elif (hasattr(item.infos, "city_code") and item.infos.city_code is not None):
+                count = self.area.checknamebycitycode(hierarchical_area_code=item.infos.city_code, name=item.infos.name)
+                if count > 0:
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail="Area already registered with name " + item.infos.name + " in the city whose code is " + str(item.infos.city_code),
+                    )
+                input_code = item.infos.city_code
+                maxcode=self.area.maxcodebycity(input_code)
+                city_id = CityRepo.getidbycode(self.area, item.infos.city_code)
+                zipcode = CityRepo.getbycode(self.area, item.infos.city_code).zipcode
+                
             result = generate_code(
-                init_codebase=area_basecode(item.infos.city_code),
-                maxcode=self.area.maxcodebycity(item.infos.city_code),
-                input_code=item.infos.city_code,
-                code=city_code,
+                init_codebase=area_basecode(input_code),
+                maxcode=maxcode,
+                input_code=input_code,
+                code=place_code,
                 step=step,
                 init_step=1
             )
+            
             step = result["step"]
             area_code = result["code"]
             count = self.area.countbycode(code=area_code)
@@ -68,9 +93,8 @@ class AreaService:
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="Area already registered with code " + str(area_code)
                 )
-
-            zipcode = CityRepo.getbycode(self.area, item.infos.city_code).zipcode
-            if item.infos.on_city_zipcode == False:
+                
+            if item.infos.on_hierarchical_zipcode == False:
                 step_zipcode +=1
                 zipcode = generate_zipcode(int(zipcode), step_zipcode)
 
@@ -81,16 +105,20 @@ class AreaService:
             area = CreateArea(
                 code = area_code,
                 zipcode = zipcode,
-                city_id = CityRepo.getidbycode(self.area, item.infos.city_code),
                 agency_id = agency_id,
+                hierarchical_area_id = hierarchical_area_id,
+                city_id = city_id,
                 area_type_id = AreaTypeRepo.getbyname(self.area, item.infos.area_type).id,
                 infos = item.infos
             )
-
+            
+            print(area)
             arealist.append(area)
-            city_code = item.infos.city_code
+            place_code = item.infos.city_code
+            if (hasattr(item.infos, "hierarchical_area_code") and item.infos.hierarchical_area_code is not None):
+                place_code = item.infos.hierarchical_area_code
 
-        return self.area.create(data=arealist)
+        return "dededeededed"#self.area.create(data=arealist)
 
     # update area function
     async def update(self, code: int, data: AreaUpdate) -> AreaModel:

@@ -1,6 +1,6 @@
 from typing import List
-from api.tools.Helper import agency_basecode
 from fastapi import Depends, HTTPException, status
+from api.tools.Helper import agency_basecode, generate_code
 from api.ageographical.repositories.CityRepo import CityRepo
 from api.ageographical.models.AgencyModel import AgencyModel
 from api.ageographical.repositories.AgencyRepo import AgencyRepo
@@ -36,6 +36,7 @@ class AgencyService:
     # create agency function
     async def create(self, data: List[AgencyInput]) -> List[CreateAgency]:
         step = 0
+        city_code = 0
         agencylist = []
         for item in data:
             count = self.agency.countbyname(name=item.infos.name)
@@ -70,6 +71,7 @@ class AgencyService:
                 infos = item.infos
             )
             agencylist.append(agency)
+            city_code = item.infos.city_code
 
         return self.agency.create(data=agencylist)
 

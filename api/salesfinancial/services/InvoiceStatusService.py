@@ -37,9 +37,7 @@ class InvoiceStatusService:
         self, data: List[CreateInvoiceStatus]
     ) -> List[CreateInvoiceStatus]:
         for item in data:
-            invoicestatus = self.invoicestatus.getbycode(
-                code=item.code
-            )
+            invoicestatus = self.invoicestatus.getbycode(code=item.code)
             if invoicestatus:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
@@ -47,9 +45,7 @@ class InvoiceStatusService:
                     + str(item.code),
                 )
 
-            invoicestatus = self.invoicestatus.getbyname(
-                name=item.name
-            )
+            invoicestatus = self.invoicestatus.getbyname(name=item.name)
             if invoicestatus:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,

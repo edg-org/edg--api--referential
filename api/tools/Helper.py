@@ -46,5 +46,4 @@ def generate_code(
         if code != input_code:
             step = init_step
 
-    #return {"step": step, "code": (basecode+step)}
     return dict(step=step, code=(basecode+step))

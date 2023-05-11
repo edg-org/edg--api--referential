@@ -35,9 +35,7 @@ class SubscriptionLevelService:
     # create invoice level function
     async def create(self, data: List[CreateSubscriptionLevel]) -> List[CreateSubscriptionLevel]:
         for item in data:
-            invoicelevel = self.invoicelevel.getbycode(
-                code=item.code
-            )
+            invoicelevel = self.invoicelevel.getbycode(code=item.code)
             if invoicelevel:
                 raise HTTPException(
                     level_code=status.HTTP_400_BAD_REQUEST,
@@ -45,9 +43,7 @@ class SubscriptionLevelService:
                     + str(item.code),
                 )
 
-            invoicelevel = self.invoicelevel.getbyname(
-                name=item.name
-            )
+            invoicelevel = self.invoicelevel.getbyname(name=item.name)
             if invoicelevel:
                 raise HTTPException(
                     level_code=status.HTTP_400_BAD_REQUEST,

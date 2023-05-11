@@ -16,9 +16,9 @@ class AreaCoordinates(BaseModel):
 
 class AreaInfos(BaseModel):
     name: str
-    area_type: str  # neighborhood, district, village,  industrial area, administrative area
-    city_code: int
-    on_city_zipcode: bool = False
+    area_type: str  # district, neighborhood, village,  industrial area, administrative area
+    city_code: Optional[int]
+    on_hierarchical_zipcode: bool = False
     agency_code: Optional[int] = None
     hierarchical_area_code: Optional[int] = None
     coordinates: Optional[AreaCoordinates] = None
@@ -35,7 +35,7 @@ class AreaBase(AreaInput):
     city_id: int
     area_type_id: int
     agency_id: Optional[int] = None
-    hierarchical_aera_id: Optional[int] = None
+    hierarchical_area_id: Optional[int] = None
 
     class Config:
         orm_mode = True

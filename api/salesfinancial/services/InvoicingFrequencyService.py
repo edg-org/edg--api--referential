@@ -40,9 +40,7 @@ class InvoicingFrequencyService:
     # create invoicing frequency function
     async def create(self, data: List[CreateInvoicingFrequency]) -> List[CreateInvoicingFrequency]:
         for item in data:
-            invoicingfrequency = (
-                self.invoicingfrequency.getbycode(code=item.code)
-            )
+            invoicingfrequency = self.invoicingfrequency.getbycode(code=item.code)
             if invoicingfrequency:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
@@ -50,11 +48,7 @@ class InvoicingFrequencyService:
                     + str(item.code),
                 )
 
-            invoicingfrequency = (
-                self.invoicingfrequency.getbyname(
-                    name=item.name
-                )
-            )
+            invoicingfrequency = self.invoicingfrequency.getbyname(name=item.name)
             if invoicingfrequency:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,

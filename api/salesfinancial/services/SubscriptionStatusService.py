@@ -35,11 +35,8 @@ class SubscriptionStatusService:
     # create subscription status function
     async def create(self, data: List[CreateSubscriptionStatus]) -> List[CreateSubscriptionStatus]:
         for item in data:
-            subscriptionstatus = (
-                self.subscriptionstatus.getbycode(
-                    code=item.code
-                )
-            )
+            subscriptionstatus = self.subscriptionstatus.getbycode(code=item.code)
+            
             if subscriptionstatus:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
@@ -47,11 +44,8 @@ class SubscriptionStatusService:
                     + str(item.code),
                 )
 
-            subscriptionstatus = (
-                self.subscriptionstatus.getbyname(
-                    name=item.name
-                )
-            )
+            subscriptionstatus = self.subscriptionstatus.getbyname(name=item.name)
+            
             if subscriptionstatus:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,

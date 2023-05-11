@@ -33,9 +33,7 @@ class ContactTypeService:
     # create contact type function
     async def create(self, data: List[CreateContactType]) -> List[CreateContactType]:
         for item in data:
-            contacttype = self.contacttype.getbycode(
-                code=item.code
-            )
+            contacttype = self.contacttype.getbycode(code=item.code)
             if contacttype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
@@ -43,9 +41,7 @@ class ContactTypeService:
                     + str(item.code),
                 )
 
-            contacttype = self.contacttype.getbyname(
-                name=item.name
-            )
+            contacttype = self.contacttype.getbyname(name=item.name)
             if contacttype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
