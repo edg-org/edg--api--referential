@@ -23,8 +23,5 @@ class CityModel(EntityMeta):
     city_level = relationship("CityLevelModel", back_populates="cities")
     prefecture = relationship("PrefectureModel", back_populates="cities")
     
-    
     areas = relationship("AreaModel", back_populates="city")
     agencies = relationship("AgencyModel", back_populates="city")
-    transformers = relationship("TransformerModel", back_populates="city")
-    departure_supply_lines = relationship("EnergySupplyLineModel", back_populates="departure_city")

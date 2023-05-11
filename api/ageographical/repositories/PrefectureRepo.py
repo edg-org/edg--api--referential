@@ -24,7 +24,7 @@ class PrefectureRepo:
         return (
             self.db.query(PrefectureModel)
             .where(
-            func.lower(func.json_unquote(PrefectureModel.infos["name"])) == name.lower())
+            func.lower(func.json_unquote(PrefectureModel.name)) == name.lower())
             .count()
         )
     
@@ -91,7 +91,7 @@ class PrefectureRepo:
     def getbyname(self, name: str) -> PrefectureModel:
         return (
             self.db.query(PrefectureModel).where(
-                func.lower(func.json_unquote(PrefectureModel.infos["name"]))== name.lower()
+                func.lower(func.json_unquote(PrefectureModel.name))== name.lower()
             ).first()
         )
 

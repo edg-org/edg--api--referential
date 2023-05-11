@@ -20,6 +20,7 @@ class AreaInfos(BaseModel):
     city_code: int
     on_city_zipcode: bool = False
     agency_code: Optional[int] = None
+    hierarchical_area_code: Optional[int] = None
     coordinates: Optional[AreaCoordinates] = None
 
 class AreaUpdate(BaseModel):
@@ -34,6 +35,7 @@ class AreaBase(AreaInput):
     city_id: int
     area_type_id: int
     agency_id: Optional[int] = None
+    hierarchical_aera_id: Optional[int] = None
 
     class Config:
         orm_mode = True

@@ -47,15 +47,16 @@ class AgencyService:
                 )
             
             step += 10
-            agency_code = generate_code(
+            result = generate_code(
                 init_codebase=agency_basecode(item.infos.city_code),
                 maxcode=self.agency.maxcodebycity(item.infos.city_code),
                 input_code=item.infos.city_code,
                 code=city_code,
-                current_step=step,
+                step=step,
                 init_step=10
             )
-
+            step = result["step"]
+            agency_code = result["code"]
             count = self.agency.countbycode(code=agency_code)
             if count > 0:
                 raise HTTPException(

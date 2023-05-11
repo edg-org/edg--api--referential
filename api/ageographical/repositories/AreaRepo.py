@@ -19,9 +19,8 @@ class AreaRepo:
     def maxcodebycity(self, city_code: int) -> int:
         codemax = (
             self.db.query(func.max(AreaModel.code))
-            .where(
-                AreaModel.infos["city_code"] == city_code
-            ).one()[0]
+            .where(AreaModel.infos["city_code"] == city_code)
+            .one()[0]
         )
         return 0 if codemax is None else codemax
 
@@ -35,17 +34,18 @@ class AreaRepo:
     
     # count total rows of area by code
     def countbycode(self, code: int) -> int:
-        return self.db.query(AreaModel).where(
-            AreaModel.code == code
-        ).count()
+        return (
+            self.db.query(AreaModel)
+            .where(AreaModel.code == code)
+            .count()
+        )
 
     # get area id by code function
     def getidbycode(self, code: int) -> AreaModel:
         return (
             self.db.query(AreaModel.id)
-            .where(
-                AreaModel.code == code
-            ).one()[0]
+            .where(AreaModel.code == code)
+            .one()[0]
         )
 
     # get all areas function

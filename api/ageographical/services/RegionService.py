@@ -1,7 +1,7 @@
 from typing import List
 from datetime import datetime
-from api.tools.Helper import region_basecode
 from fastapi import Depends, HTTPException, status
+from api.tools.Helper import region_basecode, generate_code
 from api.ageographical.models.RegionModel import RegionModel
 from api.ageographical.repositories.RegionRepo import RegionRepo
 from api.ageographical.repositories.NaturalZoneRepo import ZoneRepo
@@ -41,26 +41,27 @@ class RegionService:
         step = 0
         zone_code = 0
         regionlist = []
+
         for item in data:
-            region = self.region.getbyname(name=item.infos.name)
+            region = self.region.getbyname(name=item.name)
             if region:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Administrative Region already registered with name " + str(item.infos.name),
+                    detail="Administrative Region already registered with name " + str(item.name),
                 )
 
-            maxcode = self.region.maxcodebyzone(item.infos.zone_code)
-
             step += 1
-            region_code = generate_code(
+            maxcode = self.region.maxcodebyzone(item.infos.zone_code)
+            result = generate_code(
                 init_codebase=region_basecode(item.infos.zone_code),
                 maxcode=self.region.maxcodebyzone(item.infos.zone_code),
-                input_code=item.infos.prefecture_code,
+                input_code=item.infos.zone_code,
                 code=zone_code,
-                current_step=step,
+                step=step,
                 init_step=1
             )
-            
+            step = result["step"]
+            region_code = result["code"]       
             region = self.region.getbycode(region_code)
             if region:
                 raise HTTPException(
@@ -70,6 +71,7 @@ class RegionService:
 
             region = CreateRegion(
                 code = region_code,
+                name = item.name,
                 zone_id = ZoneRepo.getidbycode(self.region, item.infos.zone_code),
                 infos = item.infos
             )
@@ -89,6 +91,7 @@ class RegionService:
 
         region = CreateRegion(
             code = code,
+            name = data.name,
             zone_id = ZoneRepo.getidbycode(self.region, data.infos.zone_code),
             infos = data.infos
         )

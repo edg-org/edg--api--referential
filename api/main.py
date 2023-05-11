@@ -27,10 +27,6 @@ from api.electrical.routers.v1.PowerMode import powermodeRouter
 from api.electrical.routers.v1.ElectricMeter import meterRouter
 from api.electrical.routers.v1.MeterType import metertypeRouter
 from api.electrical.routers.v1.DeliveryPoint import deliveryRouter
-from api.electrical.routers.v1.EnergySupplyLine import supplyRouter
-from api.electrical.routers.v1.Transformer import transformerRouter
-from api.electrical.routers.v1.SupplyLineType import supplylineRouter
-from api.electrical.routers.v1.ConnectionPoint import connectionRouter
 
 from api.electrical.routers.v1.MeterDeliveryPoint import meterdeliveryRouter
 
@@ -70,13 +66,9 @@ app.include_router(agencyRouter)
 
 app.include_router(powermodeRouter)
 app.include_router(metertypeRouter)
-app.include_router(supplyRouter)
-app.include_router(transformerRouter)
-app.include_router(connectionRouter)
 app.include_router(deliveryRouter)
 app.include_router(meterRouter)
 app.include_router(meterdeliveryRouter)
-app.include_router(supplylineRouter)
 
 app.include_router(loggerRouter)
 

@@ -44,7 +44,7 @@ class PrefectureService:
             step = row_number
         prefecturelist = []
         for item in data:
-            count = self.prefecture.countbyname(name=item.infos.name)
+            count = self.prefecture.countbyname(name=item.name)
             if count > 0:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
@@ -63,6 +63,7 @@ class PrefectureService:
             
             prefecture = CreatePrefecture(
                 code = prefecture_code,
+                name = item.name,
                 is_capital = item.is_capital,
                 prefecture_number = str((prefecture_code % 100)).zfill(2),
                 region_id = RegionRepo.getidbycode(self.prefecture, item.infos.region_code),
@@ -83,6 +84,7 @@ class PrefectureService:
 
         prefecture = CreatePrefecture(
             code = code,
+            name = data.name,
             is_capital = data.is_capital,
             prefecture_number = str((prefecture_code % 100)).zfill(2),
             region_id = RegionRepo.getidbycode(self.prefecture, data.infos.region_code),

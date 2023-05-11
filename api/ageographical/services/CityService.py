@@ -61,18 +61,19 @@ class CityService:
                     + " inside the prefecture with code "+ str(item.infos.prefecture_code),
                 )
             
+            step += 1
             maxcode = self.city.maxcodebyzone(item.infos.prefecture_code)
             maxzipcode = self.city.maxzipcodebyzone(item.infos.prefecture_code)
-
-            step += 1
-            city_code = generate_code(
+            result = generate_code(
                 init_codebase=city_basecode(item.infos.prefecture_code),
                 maxcode=self.city.maxcodebyzone(item.infos.prefecture_code),
                 input_code=item.infos.prefecture_code,
                 code=prefecture_code,
-                current_step=step,
+                step=step,
                 init_step=0
             )
+            step = result["step"]
+            city_code = result["code"]
 
             if maxzipcode > 0 :
                 zipcode_step += 1

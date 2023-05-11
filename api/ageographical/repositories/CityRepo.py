@@ -20,18 +20,17 @@ class CityRepo:
     def maxcodebyzone(self, prefecture_code: int) -> int:
         codemax = (
             self.db.query(func.max(CityModel.code))
-            .where(
-                CityModel.infos["prefecture_code"] == prefecture_code
-            ).one()[0]
+            .where(CityModel.infos["prefecture_code"] == prefecture_code)
+            .one()[0]
         )
         return 0 if codemax is None else codemax
 
     # get max zipcode of city by prefecture
     def maxzipcodebyzone(self, prefecture_code: int) -> int:
         codemax = (
-            self.db.query(func.max(CityModel.zipcode)).where(
-                CityModel.infos["prefecture_code"] == prefecture_code
-            ).one()[0]
+            self.db.query(func.max(CityModel.zipcode))
+            .where(CityModel.infos["prefecture_code"] == prefecture_code)
+            .one()[0]
         )
         return 0 if codemax is None else codemax
 
@@ -43,24 +42,26 @@ class CityRepo:
     
     # count total rows of city by code
     def countbycode(self, code: int) -> int:
-        return self.db.query(CityModel).where(
-            CityModel.code == code
-        ).count()
+        return (
+            self.db.query(CityModel)
+            .where(CityModel.code == code)
+            .count()
+        )
 
     # count total rows of city by zipcode
     def countbyzipcode(self, zipcode: str) -> CityModel:
         return (
-            self.db.query(CityModel).where(
-                CityModel.zipcode == zipcode
-            ).first()
+            self.db.query(CityModel)
+            .where(CityModel.zipcode == zipcode)
+            .count()
         )
 
     # get city code by code function
     def getidbycode(self, code: int) -> CityModel:
         return (
-            self.db.query(CityModel.id).where(
-                CityModel.code == code
-            ).one()[0]
+            self.db.query(CityModel.id)
+            .where(CityModel.code == code)
+            .one()[0]
         )
 
     # get all cities function
@@ -77,16 +78,17 @@ class CityRepo:
     # get city by id function
     def get(self, id: int) -> CityModel:
         return (
-            self.db.query(CityModel).where(CityModel.id == id).first()
+            self.db.query(CityModel)
+            .where(CityModel.id == id)
+            .first()
         )
 
     # get city code function
     def getbycode(self, code: str) -> CityModel:
         return (
             self.db.query(CityModel)
-            .where(
-                CityModel.code == code
-            ).first()
+            .where(CityModel.code == code)
+            .first()
         )
 
     # get city name function
@@ -114,9 +116,8 @@ class CityRepo:
     def getbyzipcode(self, zipcode: str) -> CityModel:
         return (
             self.db.query(CityModel)
-            .where(
-                CityModel.zipcode == zipcode
-            ).first()
+            .where(CityModel.zipcode == zipcode)
+            .first()
         )
 
     # get city by zipcode function

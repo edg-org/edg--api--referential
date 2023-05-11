@@ -36,10 +36,6 @@ Tags = [
         "description": "Contains CRUD operation on Invoicing Frequencies",
     },
     {
-        "name": "Supply Line Types",
-        "description": "Contains CRUD operation on Supply Line Types",
-    },
-    {
         "name": "Pricing Histories",
         "description": "Contains CRUD operation on Pricing Histories",
     },

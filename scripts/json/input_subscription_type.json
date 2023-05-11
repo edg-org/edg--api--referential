@@ -124,6 +124,7 @@
             "tva": 18,
             "currency": "GNF",
             "power_measurement_unit": "ampère",
+            "consumption_measurement_unit": "KWh",
             "power_to_subscribe": [
                 {
                     "lower_power": 6,

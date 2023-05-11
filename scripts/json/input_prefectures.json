@@ -1,240 +1,240 @@
 [
     {
+        "name": "Boffa",
         "is_capital": false,
         "infos": {
-            "region_code": 102,
-            "name": "Boffa"
+            "region_code": 102
         }
     },
     {
+        "name": "Boké",
         "is_capital": true,
         "infos": {
-            "region_code": 102,
-            "name": "Boké"
+            "region_code": 102
         }
     },
     {
+        "name": "Gaoual",
         "is_capital": false,
         "infos": {
-            "region_code": 102,
-            "name": "Gaoual"
+            "region_code": 102
         }
     },
     {
+        "name": "Koundara",
         "is_capital": false,
         "infos": {
-            "region_code": 102,
-            "name": "Koundara"
+            "region_code": 102
         }
     },
     {
+        "name": "Kindia",
         "is_capital": true,
         "infos": {
-            "region_code": 102,
-            "name": "Kindia"
+            "region_code": 102
         }
     },
     {
+        "name": "Coyah",
         "is_capital": false,
         "infos": {
-            "region_code": 102,
-            "name": "Coyah"
+            "region_code": 102
         }
     },
     {
+        "name": "Dubréka",
         "is_capital": false,
         "infos": {
-            "region_code": 102,
-            "name": "Dubréka"
+            "region_code": 102
         }
     },
     {
+        "name": "Forécariah",
         "is_capital": false,
         "infos": {
-            "region_code": 102,
-            "name": "Forécariah"
+            "region_code": 102
         }
     },
     {
+        "name": "Fria",
         "is_capital": false,
         "infos": {
-            "region_code": 102,
-            "name": "Fria"
+            "region_code": 102
         }
     },
     {
+        "name": "Télimélé",
         "is_capital": false,
         "infos": {
-            "region_code": 102,
-            "name": "Télimélé"
+            "region_code": 102
         }
     },
     {
+        "name": "Koubia",
         "is_capital": false,
         "infos": {
-            "region_code": 201,
-            "name": "Koubia"
+            "region_code": 201
         }
     },
     {
+        "name": "Labé",
         "is_capital": true,
         "infos": {
-            "region_code": 201,
-            "name": "Labé"
+            "region_code": 201
         }
     },
     {
+        "name": "Lélouma",
         "is_capital": false,
         "infos": {
-            "region_code": 201,
-            "name": "Lélouma"
+            "region_code": 201
         }
     },
     {
+        "name": "Mali",
         "is_capital": false,
         "infos": {
-            "region_code": 201,
-            "name": "Mali"
+            "region_code": 201
         }
     },
     {
+        "name": "Tougué",
         "is_capital": false,
         "infos": {
-            "region_code": 201,
-            "name": "Tougué"
+            "region_code": 201
         }
     },
     {
+        "name": "Dalaba",
         "is_capital": false,
         "infos": {
-            "region_code": 202,
-            "name": "Dalaba"
+            "region_code": 202
         }
     },
     {
+        "name": "Mamou",
         "is_capital": true,
         "infos": {
-            "region_code": 202,
-            "name": "Mamou"
+            "region_code": 202
         }
     },
     {
+        "name": "Pita",
         "is_capital": false,
         "infos": {
-            "region_code": 202,
-            "name": "Pita"
+            "region_code": 202
         }
     },
     {
+        "name": "Kankan",
         "is_capital": true,
         "infos": {
-            "region_code": 301,
-            "name": "Kankan"
+            "region_code": 301
         }
     },
     {
+        "name": "Kérouané",
         "is_capital": false,
         "infos": {
-            "region_code": 301,
-            "name": "Kérouané"
+            "region_code": 301
         }
     },
     {
+        "name": "Kouroussa",
         "is_capital": false,
         "infos": {
-            "region_code": 301,
-            "name": "Kouroussa"
+            "region_code": 301
         }
     },
     {
+        "name": "Mandiana",
         "is_capital": false,
         "infos": {
-            "region_code": 301,
-            "name": "Mandiana"
+            "region_code": 301
         }
     },
     {
+        "name": "Siguiri",
         "is_capital": false,
         "infos": {
-            "region_code": 301,
-            "name": "Siguiri"
+            "region_code": 301
         }
     },
     {
+        "name": "Dabola",
         "is_capital": false,
         "infos": {
-            "region_code": 302,
-            "name": "Dabola"
+            "region_code": 302
         }
     },
     {
+        "name": "Dinguiraye",
         "is_capital": false,
         "infos": {
-            "region_code": 302,
-            "name": "Dinguiraye"
+            "region_code": 302
         }
     },
     {
+        "name": "Faranah",
         "is_capital": true,
         "infos": {
-            "region_code": 302,
-            "name": "Faranah"
+            "region_code": 302
         }
     },
     {
+        "name": "Kissidougou",
         "is_capital": false,
         "infos": {
-            "region_code": 302,
-            "name": "Kissidougou"
+            "region_code": 302
         }
     },
     {
+        "name": "Beyla",
         "is_capital": false,
         "infos": {
-            "region_code": 401,
-            "name": "Beyla"
+            "region_code": 401
         }
     },
     {
+        "name": "Guéckédou",
         "is_capital": false,
         "infos": {
-            "region_code": 401,
-            "name": "Guéckédou"
+            "region_code": 401
         }
     },
     {
+        "name": "Lola",
         "is_capital": false,
         "infos": {
-            "region_code": 401,
-            "name": "Lola"
+            "region_code": 401
         }
     },
     {
+        "name": "Macenta",
         "is_capital": false,
         "infos": {
-            "region_code": 401,
-            "name": "Macenta"
+            "region_code": 401
         }
     },
     {
+        "name": "N'zérékoré",
         "is_capital": true,
         "infos": {
-            "region_code": 401,
-            "name": "N'zérékoré"
+            "region_code": 401
         }
     },
     {
+        "name": "Yomou",
         "is_capital": false,
         "infos": {
-            "region_code": 401,
-            "name": "Yomou"
+            "region_code": 401
         }
     },
     {
+        "name": "Conakry",
         "is_capital": true,
         "infos": {
-            "region_code": 102,
-            "name": "Conakry"
+            "region_code": 102
         }
     }
 ]

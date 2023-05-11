@@ -26,18 +26,6 @@ def agency_basecode(code: int) -> int:
 def address_basecode(code: int) -> int:
     return code*100
 
-# Function to generate energy supply line base code
-def supply_basecode(code: int)-> int:
-    return code*100
-
-# Function to generate transformer base code
-def transformer_basecode(code: int)-> int:
-    return code*100
-
-# Function to generate connection point base code
-def connectionpoint_basecode(code: int)-> int:
-    return code*100
-
 # Function to generate zipcode
 def generate_zipcode(zipcode_base: int, step: int) -> str:
     return str(zipcode_base+step).zfill(5)
@@ -48,10 +36,9 @@ def generate_code(
     maxcode :int, 
     input_code: int, 
     code: int,
-    current_step: int,
-    init_step: int = 0,
+    step: int,
+    init_step: int = 1,
 ) -> int:
-    step = current_step
     if maxcode > 0:
         basecode = maxcode
     else:
@@ -59,4 +46,5 @@ def generate_code(
         if code != input_code:
             step = init_step
 
-    return basecode + step
+    #return {"step": step, "code": (basecode+step)}
+    return dict(step=step, code=(basecode+step))

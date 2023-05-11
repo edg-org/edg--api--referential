@@ -19,27 +19,25 @@ class RegionRepo:
     def countrowsbyzone(self, zone_code: int) -> int:
         return (
             self.db.query(RegionModel)
-            .where(
-                RegionModel.infos["zone_code"] == zone_code
-            ).count()
+            .where(RegionModel.infos["zone_code"] == zone_code)
+            .count()
         )
 
     # get max id of administrative region by natural region
     def maxcodebyzone(self, zone_code: int) -> int:
         codemax = (
             self.db.query(func.max(RegionModel.code))
-            .where(
-                RegionModel.infos["zone_code"] == zone_code
-            ).one()[0]
+            .where(RegionModel.infos["zone_code"] == zone_code)
+            .one()[0]
         )
         return 0 if codemax is None else codemax
 
     # get administrative region id by code function
     def getidbycode(self, code: int) -> RegionModel:
         return (
-            self.db.query(RegionModel.id).where(
-                RegionModel.code == code
-            ).one()[0]
+            self.db.query(RegionModel.id)
+            .where(RegionModel.code == code)
+            .one()[0]
         )
 
     # get all regions function
@@ -62,17 +60,16 @@ class RegionRepo:
     # get administative region code function
     def getbycode(self, code: str) -> RegionModel:
         return (
-            self.db.query(RegionModel).where(
-                RegionModel.code == code
-            ).first()
+            self.db.query(RegionModel)
+            .where(RegionModel.code == code)
+            .first()
         )
 
     # get administative region name function
     def getbyname(self, name: str) -> RegionModel:
         return (
-            self.db.query(RegionModel).where(
-                func.lower(func.json_unquote(RegionModel.infos["name"])) == name.lower()
-            )
+            self.db.query(RegionModel)
+            .where(func.lower(func.json_unquote(RegionModel.infos["name"])) == name.lower())
             .first()
         )
 
