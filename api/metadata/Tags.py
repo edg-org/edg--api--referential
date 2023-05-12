@@ -36,10 +36,6 @@ Tags = [
         "description": "Contains CRUD operation on Invoicing Frequencies",
     },
     {
-        "name": "Pricing Histories",
-        "description": "Contains CRUD operation on Pricing Histories",
-    },
-    {
         "name": "Area Types",
         "description": "Contains CRUD operation on Type Areas",
     },
@@ -76,12 +72,20 @@ Tags = [
         "description": "Contains CRUD operation on Areas",
     },
     {
+        "name": "Delivery Points",
+        "description": "Contains CRUD operation on Delivery Points",
+    },
+    {
         "name": "Electric Meters",
         "description": "Contains CRUD operation on Electric Meters",
     },
     {
         "name": "Meter Delivery Points",
         "description": "Contains CRUD operation on Meter Delivery Points",
+    },
+    {
+        "name": "Pricing Histories",
+        "description": "Contains CRUD operation on Pricing Histories",
     },
     {
         "name": "Loggers",

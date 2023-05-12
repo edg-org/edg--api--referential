@@ -40,22 +40,39 @@ class DeliveryPointService:
 
     # create delivery point function
     async def create(self, data: List[CreateDeliveryPoint]) -> List[CreateDeliveryPoint]:
+        step = 0
+        pointlist = []
+        area_code = None
         for item in data:
-            deliverypoint = self.deliverypoint.getbynumber(number=item.meter_number)
-            if deliverypoint:
+            if (area_code is not None) and  (area_code != item.infos.area_code):
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Delivery Point already registered with number "
-                    + str(item.meter_number),
+                    detail="You should only have the list of delivery point for one area or at a time"
                 )
+            
+            step += 1
+            result = generate_code(
+                init_codebase=agency_basecode(item.infos.city_code),
+                maxcode=self.agency.maxcodebycity(item.infos.city_code),
+                step=step
+            )
+            step = result["step"]
+            agency_code = result["code"]
+            count = self.agency.countbycode(code=agency_code)
 
-            deliverypoint = self.deliverypoint.getbyname(name=item.name)
-            if deliverypoint:
+            if count > 0:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Delivery Point already registered with name "
-                    + item.name,
+                    detail="Agency already registered with code "
+                    + str(item.code),
                 )
+            agency = CreateAgency(
+                code = agency_code,
+                city_id = CityRepo.getidbycode(self.agency, item.infos.city_code),
+                infos = item.infos
+            )
+            agencylist.append(agency)
+            city_code = item.infos.city_code
 
         return self.deliverypoint.create(data=data)
 

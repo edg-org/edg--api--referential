@@ -7,24 +7,21 @@ class DeliveryCoordinates(BaseModel):
     latitude: float
     longitude: float
 
-
 class DeliveryInfos(BaseModel):
-    name: str
+    name: Optional[str]
     area_code: int
-    connection_point_number: str
     address: str
-    coordinates: DeliveryCoordinates
+    coordinates: Optional[DeliveryCoordinates]
 
 class DeliveryPointUpdate(BaseModel):
-    name: Optional[str]
-    infos: Optional[DeliveryInfos]
+    infos: DeliveryInfos
 
 class DeliveryPointInput(DeliveryPointUpdate):
-    delivery_point_number: str
+    pass
 
 class DeliveryPointBase(DeliveryPointInput):
+    delivery_point_number: str
     area_id: int
-    connection_point_id: int
 
     class Config:
         orm_mode = True
