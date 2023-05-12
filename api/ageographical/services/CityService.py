@@ -49,8 +49,9 @@ class CityService:
     async def create(self, data: List[CityInput]) -> List[CreateCity]:
         step = 0
         zipcode_step = 0
-        prefecture_code = 0
         citylist = []
+        prefecture_code = None
+        
         for item in data:
             
             count = self.city.checkcityname(prefecture_code = item.infos.prefecture_code, name=item.infos.name)
@@ -61,16 +62,19 @@ class CityService:
                     + " inside the prefecture with code "+ str(item.infos.prefecture_code),
                 )
             
+            if (prefecture_code is not None) and  (prefecture_code != item.infos.prefecture_code):
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="You should only have the list of cities for one prefecture at a time"
+                )
+
             step += 1
             maxcode = self.city.maxcodebyzone(item.infos.prefecture_code)
             maxzipcode = self.city.maxzipcodebyzone(item.infos.prefecture_code)
             result = generate_code(
                 init_codebase=city_basecode(item.infos.prefecture_code),
                 maxcode=self.city.maxcodebyzone(item.infos.prefecture_code),
-                input_code=item.infos.prefecture_code,
-                code=prefecture_code,
-                step=step,
-                init_step=0
+                step=step
             )
             step = result["step"]
             city_code = result["code"]

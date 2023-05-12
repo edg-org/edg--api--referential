@@ -36,7 +36,7 @@ class AgencyService:
     # create agency function
     async def create(self, data: List[AgencyInput]) -> List[CreateAgency]:
         step = 0
-        city_code = 0
+        city_code = None
         agencylist = []
         for item in data:
             count = self.agency.countbyname(name=item.infos.name)
@@ -47,18 +47,22 @@ class AgencyService:
                     + item.infos.name,
                 )
             
+            if (city_code is not None) and  (city_code != item.infos.city_code):
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="You should only have the list of agencies for one city or at a time"
+                )
+
             step += 10
             result = generate_code(
                 init_codebase=agency_basecode(item.infos.city_code),
                 maxcode=self.agency.maxcodebycity(item.infos.city_code),
-                input_code=item.infos.city_code,
-                code=city_code,
-                step=step,
-                init_step=10
+                step=step
             )
             step = result["step"]
             agency_code = result["code"]
             count = self.agency.countbycode(code=agency_code)
+
             if count > 0:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,

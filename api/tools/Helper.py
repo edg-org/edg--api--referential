@@ -34,16 +34,11 @@ def generate_zipcode(zipcode_base: int, step: int) -> str:
 def generate_code(
     init_codebase : int,
     maxcode :int, 
-    input_code: int, 
-    code: int,
-    step: int,
-    init_step: int = 1,
+    step: int
 ) -> int:
     if maxcode > 0:
         basecode = maxcode
     else:
         basecode = init_codebase
-        if code != input_code:
-            step = init_step
 
     return dict(step=step, code=(basecode+step))

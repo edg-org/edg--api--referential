@@ -18,7 +18,7 @@ class AreaInfos(BaseModel):
     name: str
     area_type: str  # district, neighborhood, village,  industrial area, administrative area
     city_code: Optional[int]
-    on_hierarchical_zipcode: bool = False
+    is_same_zipcode: bool = False
     agency_code: Optional[int] = None
     hierarchical_area_code: Optional[int] = None
     coordinates: Optional[AreaCoordinates] = None
