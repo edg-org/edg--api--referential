@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field
 from api.ageographical.schemas.AreaSchema import AreaSchema
 
 class CitySearchParams(BaseModel):
-    code: int = Field(description="Field of the city code")
+    code: int | None = Field(description="Field of the city code")
     zipcode: str | None = Field(description="Field of the city zipcode")
 
 class CityCoordinates(BaseModel):

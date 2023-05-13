@@ -68,7 +68,8 @@ async def get(
     response_model=RegionItemSchema,
 )
 async def get_region_item(
-    code: int, regionService: RegionService = Depends()
+    code: int, 
+    regionService: RegionService = Depends()
 ):
     region = await regionService.getbycode(code=code)
     if region is None:

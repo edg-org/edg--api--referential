@@ -96,7 +96,9 @@ class AreaRepo:
 
     # get all areas function
     def list(
-        self, skip: int = 0, limit: int = 100
+        self, 
+        skip: int = 0, 
+        limit: int = 100
     ) -> List[AreaModel]:
         return (
             self.db.query(AreaModel)

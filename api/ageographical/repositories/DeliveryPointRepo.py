@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from api.electrical.models.DeliveryPointModel import DeliveryPointModel
-from api.electrical.schemas.DeliveryPointSchema import CreateDeliveryPoint
+from api.ageographical.models.DeliveryPointModel import DeliveryPointModel
+from api.ageographical.schemas.DeliveryPointSchema import CreateDeliveryPoint, DeliveryPointSchema
 
 class DeliveryPointRepo:
     db: Session
@@ -22,7 +22,11 @@ class DeliveryPointRepo:
         return 0 if codemax is None else codemax
 
     # get all delivery points function
-    def list(self, skip: int = 0, limit: int = 100) -> List[DeliveryPointModel]:
+    def list(
+        self, 
+        skip: int = 0, 
+        limit: int = 100
+    ) -> List[DeliveryPointModel]:
         return (
             self.db.query(DeliveryPointModel)
             .offset(skip)
@@ -38,25 +42,30 @@ class DeliveryPointRepo:
             .first()
         )
 
-    # get delivery point number function
-    def getbynumber(self, number: str) -> DeliveryPointModel:
+     # count total rows of delivery point by number
+    def countbynumber(self, number: int) -> int:
         return (
             self.db.query(DeliveryPointModel)
-            .where(
-                func.lower(DeliveryPointModel.delivery_point_number) == number.lower()
-            )
+            .where(DeliveryPointModel.delivery_point_number == number)
+            .count()
+        )
+
+    # get delivery point number function
+    def getbynumber(self, number: int) -> DeliveryPointModel:
+        return (
+            self.db.query(DeliveryPointModel)
+            .where(DeliveryPointModel.delivery_point_number == number)
             .first()
         )
 
-    # get delivery point name function
-    def getbyname(self, name: str) -> DeliveryPointModel:
-        return (
-            self.db.query(DeliveryPointModel)
-            .where(
-                func.lower(DeliveryPointModel.infos["name"]) == name.lower()
-            )
-            .first()
+    # get max number of delivery point by area
+    def maxnumberyarea(self, area_code: int) -> int:
+        numbermax = (
+            self.db.query(func.max(DeliveryPointModel.delivery_point_number))
+            .where(DeliveryPointModel.infos["area_code"] == area_code)
+            .one()[0]
         )
+        return 0 if numbermax is None else numbermax
 
     # create delivery point function
     def create(self, data: List[CreateDeliveryPoint]) -> List[CreateDeliveryPoint]:

@@ -40,10 +40,9 @@ class CityService:
     async def getbyzipcode(self, zip_code: str) -> CityModel:
         return self.city.getbyzipcode(zip_code=zip_code)
 
-    
     # get city by code function
-    async def search(self, params: CitySearchParams) -> CityModel:
-        return self.city.search(params=params)
+    async def search(self, query_params: CitySearchParams) -> CityModel:
+        return self.city.search(query_params=query_params)
 
     # create city function
     async def create(self, data: List[CityInput]) -> List[CreateCity]:
@@ -69,11 +68,11 @@ class CityService:
                 )
 
             step += 1
-            maxcode = self.city.maxcodebyzone(item.infos.prefecture_code)
-            maxzipcode = self.city.maxzipcodebyzone(item.infos.prefecture_code)
+            maxcode = self.city.maxcodebypref(item.infos.prefecture_code)
+            maxzipcode = self.city.maxzipcodebypref(item.infos.prefecture_code)
             result = generate_code(
                 init_codebase=city_basecode(item.infos.prefecture_code),
-                maxcode=self.city.maxcodebyzone(item.infos.prefecture_code),
+                maxcode=self.city.maxcodebypref(item.infos.prefecture_code),
                 step=step
             )
             step = result["step"]

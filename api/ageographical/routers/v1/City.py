@@ -25,7 +25,6 @@ cityRouter = APIRouter(
     prefix=router_path + "/cities", tags=["Cities"]
 )
 
-
 # get all cities route
 @cityRouter.get(
     "/",
@@ -40,15 +39,35 @@ async def list(
 ):
     return await cityService.list(skip, limit)
 
-# get agency route
+# search city by parameters route
+@cityRouter.get(
+    "/search",
+    summary="Getting router a city by parameters without items",
+    description="This router allows to get a city by parameters without items",
+    response_model=CitySchema,
+)
+async def search_by_paramas(
+    query_params: CitySearchParams = Depends(),
+    cityService: CityService = Depends()
+):
+    city = await cityService.search(query_params=query_params)
+    if city is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="City not found",
+        )
+    return city
+
+# get city by name route
 @cityRouter.get(
     "/{name}",
-    summary="Getting router a city without items",
-    description="This router allows to get a agency without items",
+    summary="Getting router a city by name without items",
+    description="This router allows to get a city by name without items",
     response_model=List[CitySchema],
 )
-async def get(
-    name: str, cityService: CityService = Depends()
+async def get_by_name(
+    name: str, 
+    cityService: CityService = Depends()
 ):
     city = await cityService.getbyname(name=name)
     if city is None:
@@ -57,27 +76,7 @@ async def get(
             detail="City not found",
         )
     return city
-
-# get city route
-@cityRouter.get(
-    "/search",
-    summary="Getting router a city without items",
-    description="This router allows to get a city without items",
-    response_model=CitySchema,
-)
-async def get(
-    params: CitySearchParams = Depends(),
-    cityService: CityService = Depends()
-):
-    city = await cityService.search(params=params)
-    if city is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="City not found",
-        )
-    return city
-
-
+    
 # route of get city with item
 @cityRouter.get(
     "/items",
@@ -85,7 +84,7 @@ async def get(
     description="This router allows to get a city with items",
     response_model=CityItemSchema,
 )
-async def get_city_item(
+async def get_city_items(
     params: CitySearchParams = Depends(),
     cityService: CityService = Depends()
 ):
@@ -96,7 +95,6 @@ async def get_city_item(
             detail="City not found",
         )
     return city
-
 
 # post city route
 @cityRouter.post(
@@ -110,7 +108,6 @@ async def create(
     cityService: CityService = Depends(),
 ):
     return await cityService.create(data=data)
-
 
 # update city route
 @cityRouter.put(

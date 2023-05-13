@@ -1,0 +1,23 @@
+[
+    {
+        "infos": {
+            "number": 1,
+            "area_code": 30119000201,
+            "address": "quartier banankoroda"
+        }
+    },
+    {
+        "infos": {
+            "number": 2,
+            "area_code": 30119000201,
+            "address": "quartier banankoroda"
+        }
+    },
+    {
+        "infos": {
+            "number": 3,
+            "area_code": 30119000201,
+            "address": "quartier banankoroda"
+        }
+    }
+]

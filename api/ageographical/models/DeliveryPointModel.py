@@ -1,7 +1,7 @@
 from datetime import datetime
 from sqlalchemy.orm import relationship
 from api.configs.BaseModel import EntityMeta
-from sqlalchemy.dialects.mysql import MEDIUMINT
+from sqlalchemy.dialects.mysql import MEDIUMINT, BIGINT
 from sqlalchemy import (
     Column,
     DateTime,
@@ -15,7 +15,7 @@ class DeliveryPointModel(EntityMeta):
     __tablename__ = "delivery_points"
 
     id = Column(MEDIUMINT(unsigned=True), primary_key=True, index=True)
-    delivery_point_number = Column(String(15), index=True, unique=True, nullable=False)
+    delivery_point_number = Column(BIGINT(unsigned=True), index=True, unique=True, nullable=False)
     area_id = Column(MEDIUMINT(unsigned=True), ForeignKey("areas.id"), nullable=False)
     infos = Column(JSON, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=datetime.utcnow().isoformat(), nullable=False)

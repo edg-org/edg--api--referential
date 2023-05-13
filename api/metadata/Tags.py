@@ -48,6 +48,10 @@ Tags = [
         "description": "Contains CRUD operation on City Types",
     },
     {
+        "name": "Supply Line Types",
+        "description": "Contains CRUD operation on Supply Line Types",
+    },
+    {
         "name": "Natural Regions",
         "description": "Contains CRUD operation on Natural Regions",
     },
@@ -70,6 +74,18 @@ Tags = [
     {
         "name": "Areas",
         "description": "Contains CRUD operation on Areas",
+    },
+    {
+        "name": "Energy Supply Lines",
+        "description": "Contains CRUD operation on Energy Supply Lines",
+    },
+    {
+        "name": "Transformers",
+        "description": "Contains CRUD operation on Transformers",
+    },
+    {
+        "name": "Connection Points",
+        "description": "Contains CRUD operation on Connection Points",
     },
     {
         "name": "Delivery Points",

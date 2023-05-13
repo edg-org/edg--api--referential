@@ -16,12 +16,17 @@ from api.ageographical.schemas.AreaSchema import (
 class AreaService:
     area: AreaRepo
 
-    def __init__(self, area: AreaRepo = Depends()) -> None:
+    def __init__(
+        self, 
+        area: AreaRepo = Depends()
+    ) -> None:
         self.area = area
 
     # get all areas function
     async def list(
-        self, skip: int = 0, limit: int = 100
+        self, 
+        skip: int = 0, 
+        limit: int = 100
     ) -> List[AreaModel]:
         return self.area.list(skip=skip, limit=limit)
 
@@ -70,6 +75,7 @@ class AreaService:
                 hierarchical_area_id =  area.id
                 input_code = item.infos.hierarchical_area_code
                 maxcode=self.area.maxcodebyhierachicalarea(input_code)
+                item.infos.city_code = CityRepo.get(self.area, area.city_id).code
             elif (
                 hasattr(item.infos, "city_code") 
                 and item.infos.city_code is not None
@@ -85,7 +91,7 @@ class AreaService:
                         + " in the city whose code is " + str(item.infos.city_code),
                     )
                 input_code = item.infos.city_code
-                maxcode=self.area.maxcodebycity(input_code)
+                maxcode = self.area.maxcodebycity(input_code)
                 city_id = CityRepo.getidbycode(self.area, item.infos.city_code)
                 zipcode = CityRepo.getbycode(self.area, item.infos.city_code).zipcode
             

@@ -52,9 +52,7 @@ async def get(
     code: int,
     prefectureService: PrefectureService = Depends(),
 ):
-    prefecture = await prefectureService.getbycode(
-        code=code
-    )
+    prefecture = await prefectureService.getbycode(code=code)
     if prefecture is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -74,9 +72,7 @@ async def get_prefecture_item(
     code: int,
     prefectureService: PrefectureService = Depends(),
 ):
-    prefecture = await prefectureService.getbycode(
-        code=code
-    )
+    prefecture = await prefectureService.getbycode(code=code)
     if prefecture is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -111,6 +107,4 @@ async def update(
     data: PrefectureUpdate,
     prefectureService: PrefectureService = Depends(),
 ):
-    return await prefectureService.update(
-        code=code, data=data
-    )
+    return await prefectureService.update(code=code, data=data)

@@ -4,7 +4,8 @@ from api.configs.BaseModel import EntityMeta
 from sqlalchemy.dialects.mysql import (
     TINYINT,
     SMALLINT,
-    MEDIUMINT
+    MEDIUMINT,
+    BIGINT
 )
 from sqlalchemy import (
     Column,
@@ -20,7 +21,7 @@ class AreaModel(EntityMeta):
     __tablename__ = "areas"
 
     id = Column(MEDIUMINT(unsigned=True), primary_key=True, index=True,)
-    code = Column(Integer, index=True, unique=True, nullable=False)
+    code = Column(BIGINT(unsigned=True), index=True, unique=True, nullable=False)
     city_id = Column(SMALLINT(unsigned=True), ForeignKey("cities.id"), nullable=False)
     agency_id = Column(SMALLINT(unsigned=True), ForeignKey("agencies.id"), nullable=True)
     hierarchical_area_id = Column(MEDIUMINT(unsigned=True), ForeignKey("areas.id"), nullable=True)

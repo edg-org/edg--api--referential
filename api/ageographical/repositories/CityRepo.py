@@ -1,9 +1,8 @@
 from typing import List
 from sqlalchemy.orm import Session
 from fastapi import Depends, encoders
-from sqlalchemy import insert, func, and_, Unicode
-#from sqlalchemy.types import Unicode
 from api.configs.Database import get_db
+from sqlalchemy import insert, func, and_, or_, Unicode
 from api.ageographical.models.CityModel import CityModel
 from api.ageographical.schemas.CitySchema import CreateCity, CityUpdate, CitySearchParams
 
@@ -17,7 +16,7 @@ class CityRepo:
         self.db = db
 
     # get max code of city by prefecture
-    def maxcodebyzone(self, prefecture_code: int) -> int:
+    def maxcodebypref(self, prefecture_code: int) -> int:
         codemax = (
             self.db.query(func.max(CityModel.code))
             .where(CityModel.infos["prefecture_code"] == prefecture_code)
@@ -26,7 +25,7 @@ class CityRepo:
         return 0 if codemax is None else codemax
 
     # get max zipcode of city by prefecture
-    def maxzipcodebyzone(self, prefecture_code: int) -> int:
+    def maxzipcodebypref(self, prefecture_code: int) -> int:
         codemax = (
             self.db.query(func.max(CityModel.zipcode))
             .where(CityModel.infos["prefecture_code"] == prefecture_code)
@@ -84,7 +83,7 @@ class CityRepo:
         )
 
     # get city code function
-    def getbycode(self, code: str) -> CityModel:
+    def getbycode(self, code: int) -> CityModel:
         return (
             self.db.query(CityModel)
             .where(CityModel.code == code)
@@ -120,16 +119,16 @@ class CityRepo:
             .first()
         )
 
-    # get city by zipcode function
-    def search(self, params: CitySearchParams) -> CityModel:
+    # get city by parameters function
+    def search(self, query_params: CitySearchParams) -> CityModel:
         return (
             self.db.query(CityModel)
             .where(
                 and_(
-                    CityModel.code == params.code
-                    if params.code is not None else True,
-                    CityModel.zipcode == params.zipcode
-                    if params.zipcode is not None else True,
+                    CityModel.code == query_params.code
+                    if query_params.code is not None else True,
+                    CityModel.zipcode == query_params.zipcode
+                    if query_params.zipcode is not None else True
                 )
             ).first()
         )

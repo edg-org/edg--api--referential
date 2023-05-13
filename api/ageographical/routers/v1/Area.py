@@ -6,9 +6,7 @@ from fastapi import (
     status,
     HTTPException,
 )
-from api.ageographical.services.AreaService import (
-    AreaService,
-)
+from api.ageographical.services.AreaService import AreaService
 from api.ageographical.schemas.AreaSchema import (
     AreaInput,
     CreateArea,
@@ -24,17 +22,19 @@ areaRouter = APIRouter(
     prefix=router_path + "/areas", tags=["Areas"]
 )
 
-
 # get all areas route
 @areaRouter.get(
     "/",
     summary="Getting router for all areas",
     description="This router allows to get all areas",
-    response_model=List[AreaSchema],
+    response_model=List[AreaSchema]
 )
-async def list(skip: int = 0, limit: int = 100,areaService: AreaService = Depends()):
+async def list(
+    skip: int = 0, 
+    limit: int = 100,
+    areaService: AreaService = Depends()
+):
     return await areaService.list(skip, limit)
-
 
 # get area route
 @areaRouter.get(
@@ -44,7 +44,8 @@ async def list(skip: int = 0, limit: int = 100,areaService: AreaService = Depend
     response_model=AreaSchema,
 )
 async def get(
-    code: int, areaService: AreaService = Depends()
+    code: int, 
+    areaService: AreaService = Depends()
 ):
     area = await areaService.getbycode(code=code)
     if area is None:
@@ -53,7 +54,6 @@ async def get(
             detail="Area not found",
         )
     return area
-
 
 # route of get area with item
 @areaRouter.get(
@@ -73,7 +73,6 @@ async def get_area_item(
         )
     return area
 
-
 # post area route
 @areaRouter.post(
     "/",
@@ -86,7 +85,6 @@ async def create(
     areaService: AreaService = Depends(),
 ):
     return await areaService.create(data=data)
-
 
 # update area route
 @areaRouter.put(

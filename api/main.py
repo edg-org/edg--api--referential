@@ -22,11 +22,16 @@ from api.ageographical.routers.v1.AreaType import areatypeRouter
 from api.ageographical.routers.v1.CityType import citytypeRouter
 from api.ageographical.routers.v1.CityLevel import citylevelRouter
 from api.ageographical.routers.v1.Prefecture import prefectureRouter
+from api.ageographical.routers.v1.DeliveryPoint import deliverypointRouter
 
 from api.electrical.routers.v1.PowerMode import powermodeRouter
 from api.electrical.routers.v1.ElectricMeter import meterRouter
 from api.electrical.routers.v1.MeterType import metertypeRouter
-from api.electrical.routers.v1.DeliveryPoint import deliveryRouter
+
+from api.electrical.routers.v1.Transformer import transformerRouter
+from api.electrical.routers.v1.SupplyLineType import linetypeRouter
+from api.electrical.routers.v1.EnergySupplyLine import energysupplyRouter
+from api.electrical.routers.v1.ConnectionPoint import connectionpointRouter
 
 from api.electrical.routers.v1.MeterDeliveryPoint import meterdeliveryRouter
 
@@ -60,15 +65,20 @@ app.include_router(citytypeRouter)
 app.include_router(citylevelRouter)
 app.include_router(areatypeRouter)
 app.include_router(cityRouter)
-app.include_router(areaRouter)
 app.include_router(agencyRouter)
+app.include_router(areaRouter)
+app.include_router(deliverypointRouter)
 
 
 app.include_router(powermodeRouter)
 app.include_router(metertypeRouter)
-app.include_router(deliveryRouter)
 app.include_router(meterRouter)
 app.include_router(meterdeliveryRouter)
+
+app.include_router(linetypeRouter)
+app.include_router(transformerRouter)
+app.include_router(energysupplyRouter)
+app.include_router(connectionpointRouter)
 
 app.include_router(loggerRouter)
 

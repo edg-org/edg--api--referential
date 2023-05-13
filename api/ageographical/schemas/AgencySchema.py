@@ -3,7 +3,7 @@ from datetime import datetime
 from pydantic import BaseModel, Field
 
 class AgencySearchParams(BaseModel):
-    code: int = Field(description="Field of the agency name")
+    code: int | None = Field(description="Field of the agency name")
     name: str | None = Field(description="Field of the agency name")
 
 class AgencyCoordinates(BaseModel):

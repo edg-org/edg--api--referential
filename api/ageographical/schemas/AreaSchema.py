@@ -4,9 +4,8 @@ from pydantic import BaseModel, Field
 from api.ageographical.schemas.AgencySchema import AgencySchema
 
 class AreaSearchParams(BaseModel):
-    code: int = Field(description="Field of the area code")
+    code: int | None = Field(description="Field of the area code")
     zipcode: str | None = Field(description="Field of the area zipcode")
-    name: str | None = Field(description="Field of the area name")
 
 class AreaCoordinates(BaseModel):
     altitude: float

@@ -26,7 +26,7 @@ class AgencyService:
         return self.agency.list(skip=skip, limit=limit)
 
     # get agency by code function
-    async def get(self, code: str) -> AgencyModel:
+    async def getbycode(self, code: str) -> AgencyModel:
         return self.agency.getbycode(code=code)
 
     # get agency by name function
@@ -66,8 +66,7 @@ class AgencyService:
             if count > 0:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Agency already registered with code "
-                    + str(item.code),
+                    detail="Agency already registered with code " + str(agency_code),
                 )
             agency = CreateAgency(
                 code = agency_code,
