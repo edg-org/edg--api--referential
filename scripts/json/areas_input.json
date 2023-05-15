@@ -4,7 +4,7 @@
             "name": "Aviation",
             "area_type": "quartier",
             "is_same_zipcode": true,
-            "hierarchical_area_code": 301190001
+            "hierarchical_area_code": 30119101101
         }
     },
     {
@@ -12,7 +12,7 @@
             "name": "Bordo",
             "area_type": "quartier",
             "is_same_zipcode": true,
-            "hierarchical_area_code": 301190001
+            "hierarchical_area_code": 30119101101
         }
     },
     {
@@ -20,7 +20,7 @@
             "name": "Banankoroda",
             "area_type": "quartier",
             "is_same_zipcode": true,
-            "hierarchical_area_code": 301190002
+            "hierarchical_area_code": 30119101102
         }
     },
     {
@@ -28,7 +28,7 @@
             "name": "Salamanin",
             "area_type": "quartier",
             "is_same_zipcode": true,
-            "hierarchical_area_code": 301190002
+            "hierarchical_area_code": 30119101102
         }
     }
 ]

@@ -11,7 +11,6 @@ from api.electrical.schemas.TransformerSchema import (
     CreateTransformer,
 )
 
-
 #
 class TransformerService:
     transformer: TransformerRepo
@@ -29,9 +28,9 @@ class TransformerService:
     async def get(self, id: int) -> TransformerModel:
         return self.transformer.get(id=id)
 
-    # get transformer by number function
-    async def getbynumber(self, number: str) -> TransformerModel:
-        return self.transformer.getbynumber(number=number)
+    # get transformer by code function
+    async def getbycode(self, code: int) -> TransformerModel:
+        return self.transformer.getbycode(code=code)
 
     # get transformer by name function
     async def getbyname(self, name: str) -> TransformerModel:
@@ -40,9 +39,10 @@ class TransformerService:
     # create transformer function
     async def create(self, data: List[CreateTransformer]) -> List[CreateTransformer]:
         step = 0
-        place_code = 0
+        place_code = None
         transformerlist = []
         for item in data:
+            multiple = 100
             input_code = item.infos.city_code
             count = self.transformer.checktransformername(place_code = input_code, name=item.infos.name)
             if count > 0:
@@ -53,6 +53,7 @@ class TransformerService:
             
             area_id = None
             if (hasattr(item.infos, "area_code") and item.infos.area_code is not None):
+                multiple = 10
                 area_id = AreaRepo.getidbycode(self.transformer, item.infos.area_code)
                 input_code = item.infos.area_code
                 count = self.transformer.checktransformername(place_code = input_code, name=item.infos.name)
@@ -72,14 +73,13 @@ class TransformerService:
                     )
             else:
                 step += 1
-                transformer_code = generate_code(
-                    init_codebase=transformer_basecode(input_code),
+                result = generate_code(
+                    init_codebase=transformer_basecode(input_code, multiple),
                     maxcode=self.transformer.maxcodebycity(item.infos.city_code),
-                    input_code=input_code,
-                    code=place_code,
-                    current_step=step,
-                    init_step=1
+                    step=step
                 )
+                step = result["step"]
+                transformer_code = result["code"]
                 count = self.transformer.countbycode(code=transformer_code)
                 if count > 0:
                     raise HTTPException(
@@ -89,14 +89,14 @@ class TransformerService:
                 
                 area_id = None
                 if (hasattr(item.infos, "area_code") and item.infos.area_code is not None):
-                    area_id = AreaRepo.getidbycode(self.supply, item.infos.area_code)
+                    area_id = AreaRepo.getidbycode(self.transformer, item.infos.area_code)
 
                 transformer = CreateTransformer(
                     transformer_code = transformer_code,
                     city_id = CityRepo.getidbycode(self.transformer, item.infos.city_code),
                     area_id = area_id,
-                    supply_line_id = EnergySupplyLineRepo.getbycode(self.transformer, item.infos.supply_line_code).id,
-                    infos = item.infos
+                    infos = item.infos,
+                    energy_supply_lines = item.energy_supply_lines
                 )
                 transformerlist.append(transformer)
                 place_code = input_code
@@ -104,7 +104,7 @@ class TransformerService:
         return self.transformer.create(data=transformerlist)
 
     # update transformer function
-    async def update(self, code: str, data: TransformerUpdate) -> TransformerModel:
+    async def update(self, code: int, data: TransformerUpdate) -> TransformerModel:
         count = self.transformer.countbycode(code=code)
         if count  == 0:
             raise HTTPException(

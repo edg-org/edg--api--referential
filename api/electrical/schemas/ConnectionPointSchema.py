@@ -9,6 +9,7 @@ class ConnectionCoordinates(BaseModel):
     longitude: float
 
 class ConnectionInfos(BaseModel):
+    number: int
     name: Optional[str]=None
     area_code: int
     transformer_code: int
@@ -35,7 +36,7 @@ class CreateConnectionPoint(ConnectionPointBase):
 
 class ConnectionPointSchema(ConnectionPointBase):
     id: int
-    is_activated: bool
+    #is_activated: bool
     created_at: datetime
     updated_at: Optional[datetime]
 

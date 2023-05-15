@@ -46,6 +46,7 @@ class AreaService:
     async def create(self, data: List[AreaInput]) -> List[CreateArea]:
         step = 0
         arealist = []
+        area_type = None
         place_code = None
         step_zipcode = 0
         for item in data:
@@ -53,6 +54,7 @@ class AreaService:
             city_id = 0
             zipcode = 0
             input_code = 0
+            area_type_id = 0
             hierarchical_area_id = None
             if (
                 hasattr(item.infos, "hierarchical_area_code") 
@@ -68,13 +70,13 @@ class AreaService:
                         detail="Area already registered with name " + item.infos.name 
                         + " whose hierarchical area code is " + str(item.infos.hierarchical_area_code),
                     )
-                    
                 area = AreaRepo.getbycode(self.area, item.infos.hierarchical_area_code)
                 city_id = area.city_id
                 zipcode = area.zipcode
                 hierarchical_area_id =  area.id
                 input_code = item.infos.hierarchical_area_code
-                maxcode=self.area.maxcodebyhierachicalarea(input_code)
+                area_type_id = AreaTypeRepo.getbyname(self.area, item.infos.area_type).id
+                maxcode=self.area.maxcodebyareaandtype(input_code, area_type_id)
                 item.infos.city_code = CityRepo.get(self.area, area.city_id).code
             elif (
                 hasattr(item.infos, "city_code") 
@@ -90,8 +92,9 @@ class AreaService:
                         detail="Area already registered with name " + item.infos.name 
                         + " in the city whose code is " + str(item.infos.city_code),
                     )
+                area_type_id = AreaTypeRepo.getbyname(self.area, item.infos.area_type).id
                 input_code = item.infos.city_code
-                maxcode = self.area.maxcodebycity(input_code)
+                maxcode = self.area.maxcodebycityandareatype(input_code, area_type_id)
                 city_id = CityRepo.getidbycode(self.area, item.infos.city_code)
                 zipcode = CityRepo.getbycode(self.area, item.infos.city_code).zipcode
             
@@ -100,14 +103,17 @@ class AreaService:
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="You should only have the list of areas for one city or hirearchical area at a time"
                 )
-                
+
+            if (area_type is not None) and  (area_type != item.infos.area_type):
+                step = 0
+
             step += 1
+            suffix = (input_code*10)+area_type_id
             result = generate_code(
-                init_codebase=area_basecode(input_code),
+                init_codebase=area_basecode(suffix),
                 maxcode=maxcode,
                 step=step
             )
-            
             step = result["step"]
             area_code = result["code"]
             count = self.area.countbycode(code=area_code)
@@ -134,7 +140,7 @@ class AreaService:
                 agency_id = agency_id,
                 hierarchical_area_id = hierarchical_area_id,
                 city_id = city_id,
-                area_type_id = AreaTypeRepo.getbyname(self.area, item.infos.area_type).id,
+                area_type_id = area_type_id,
                 infos = item.infos
             )
             arealist.append(area)
@@ -149,6 +155,8 @@ class AreaService:
                 and item.infos.city_code is not None
             ):
                 place_code = item.infos.city_code
+            
+            area_type = item.infos.area_type
 
         return self.area.create(data=arealist)
 

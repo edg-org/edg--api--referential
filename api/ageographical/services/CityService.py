@@ -49,6 +49,7 @@ class CityService:
         step = 0
         zipcode_step = 0
         citylist = []
+        city_level = None
         prefecture_code = None
         
         for item in data:
@@ -66,13 +67,18 @@ class CityService:
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="You should only have the list of cities for one prefecture at a time"
                 )
+            
+            if (city_level is not None) and  (city_level != item.infos.city_level):
+                step = 0
 
             step += 1
-            maxcode = self.city.maxcodebypref(item.infos.prefecture_code)
-            maxzipcode = self.city.maxzipcodebypref(item.infos.prefecture_code)
+            prefecture_code = item.infos.prefecture_code
+            city_level_id = CityLevelRepo.getbyname(self.city, item.infos.city_level).id
+            suffix = (prefecture_code*10)+city_level_id
+            maxzipcode = self.city.maxzipcodebypref(prefecture_code)
             result = generate_code(
-                init_codebase=city_basecode(item.infos.prefecture_code),
-                maxcode=self.city.maxcodebypref(item.infos.prefecture_code),
+                init_codebase=city_basecode(suffix),
+                maxcode=self.city.maxcodebypref(prefecture_code),
                 step=step
             )
             step = result["step"]
@@ -82,7 +88,8 @@ class CityService:
                 zipcode_step += 1
                 zipcode_base = maxzipcode
             else:
-                zipcode_base = ((city_code % 10000) // 100) * 1000
+                suffix = prefecture_code*100
+                zipcode_base = ((suffix % 10000) // 100) * 1000
 
                 if (str(item.infos.city_level).lower() == "préfecture"):
                     zipcode_step = 0
@@ -113,12 +120,13 @@ class CityService:
             city = CreateCity(
                 code = city_code,
                 city_type_id = CityTypeRepo.getbyname(self.city, item.infos.city_type).id,
-                city_level_id = CityLevelRepo.getbyname(self.city, item.infos.city_level).id,
-                prefecture_id = PrefectureRepo.getbycode(self.city, item.infos.prefecture_code).id,
+                city_level_id = city_level_id,
+                prefecture_id = PrefectureRepo.getbycode(self.city, prefecture_code).id,
                 zipcode = zipcode,
                 infos = item.infos
             )
             citylist.append(city)
+            city_level = item.infos.city_level
             prefecture_code = item.infos.prefecture_code
             
         return self.city.create(data=citylist)

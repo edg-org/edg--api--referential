@@ -17,7 +17,7 @@ class TransformerRepo:
     # get max code
     def maxcode(self) -> int:
         codemax = self.db.query(
-                func.max(TransformerModel.code)
+            func.max(TransformerModel.code)
         ).one()[0]
         return 0 if codemax is None else codemax
 
@@ -51,39 +51,36 @@ class TransformerRepo:
             .first()
         )
 
-    # get transformer number function
-    def getbycode(self, code: str) -> TransformerModel:
+    # get transformer code function
+    def getbycode(self, code: int) -> TransformerModel:
         return (
             self.db.query(TransformerModel)
-            .where(
-                TransformerModel.transformer_code == code
-            ).first()
+            .where(TransformerModel.transformer_code == code)
+            .first()
         )
 
     # get transformer id by code function
     def getidbycode(self, code: int) -> TransformerModel:
         return (
             self.db.query(TransformerModel.id)
-            .where(
-                TransformerModel.transformer_code == code
-            ).one()[0]
+            .where(TransformerModel.transformer_code == code)
+            .one()[0]
         )
 
     # get transformer name function
     def getbyname(self, name: str) -> TransformerModel:
         return (
             self.db.query(TransformerModel)
-            .where(
-                func.lower(TransformerModel.infos["name"]) == name.lower()
-            ).first()
+            .where(func.lower(TransformerModel.infos["name"]) == name.lower())
+            .first()
         )
 
     # count total rows of transformer by code
     def countbycode(self, code: str) -> TransformerModel:
         return (
-            self.db.query(TransformerModel).where(
-                TransformerModel.transformer_code == code
-            ).count()
+            self.db.query(TransformerModel)
+            .where(TransformerModel.transformer_code == code)
+            .count()
         )
 
     # check trasnformer name in the place function

@@ -2,21 +2,24 @@
     {
         "infos": {
             "number": 1,
-            "area_code": 30119000201,
+            "area_code": 30119101102301,
+            "connection_point_number": 30119101102301001,
             "address": "quartier banankoroda"
         }
     },
     {
         "infos": {
             "number": 2,
-            "area_code": 30119000201,
+            "area_code": 30119101102301,
+            "connection_point_number": 30119101102301001,
             "address": "quartier banankoroda"
         }
     },
     {
         "infos": {
             "number": 3,
-            "area_code": 30119000201,
+            "area_code": 30119101102301,
+            "connection_point_number": 30119101102301001,
             "address": "quartier banankoroda"
         }
     }

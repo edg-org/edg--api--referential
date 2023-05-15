@@ -20,7 +20,7 @@ def area_basecode(code: int)-> int:
     
 # Function to generate agency base code
 def agency_basecode(code: int) -> int:
-    return code*10
+    return code*100
 
 # Function to generate street code
 def street_basecode(code: int) -> int:
@@ -35,16 +35,16 @@ def deliverypoint_basecode(code: int) -> int:
     return code*10000
 
 # Function to generate energy supply line base code
-def supply_basecode(code: int)-> int:
+def energy_supply_basecode(code: int)-> int:
     return code*100
 
 # Function to generate transformer base code
-def transformer_basecode(code: int)-> int:
-    return code*100
+def transformer_basecode(code: int, multiple: int)-> int:
+    return code*multiple
 
 # Function to generate connection point base code
 def connectionpoint_basecode(code: int)-> int:
-    return code*100
+    return code*1000
 
 # Function to generate zipcode
 def generate_zipcode(zipcode_base: int, step: int) -> str:

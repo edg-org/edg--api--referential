@@ -10,15 +10,18 @@
             "tva": 18,
             "currency": "GNF",
             "power_measurement_unit": "ampère",
+            "consumption_frequency": "mensuel",
             "consumption_measurement_unit": "KWh",
             "power_to_subscribe": [
                 {
+                    "home_type": "T1",
                     "lower_power": 0,
                     "upper_power": 5,
                     "deposit_to_pay": 89694,
                     "estimated_consumption": 1.10
                 },
                 {
+                    "home_type": "T2",
                     "lower_power": 6,
                     "upper_power": 10,
                     "deposit_to_pay": 179388,

@@ -1,23 +1,22 @@
 [
     {
         "infos": {
-            "name": "Station Missiran",
+            "name": "ligne de balandou",
             "line_type": "consommation domestique",
-            "real_supply_power": 150,
-            "measurement_unit": "KWh",
-            "departure_city_code": 3011900,
-            "address": "quartier missiran"
+            "real_supply_power": 1500,
+            "measurement_unit": "kW",
+            "departure_city_code": 30119201,
+            "arrival_city_code": 30119101
         }
     },
     {
         "infos": {
-            "name": "Station Kankankoura",
-            "line_type": "consommation industrielle",
-            "real_supply_power": 850,
-            "measurement_unit": "KWh",
-            "departure_city_code": 3011900,
-            "arrival_city_code": 3011901,
-            "address": "quartier Kankankoura"
+            "name": "ligne de tinti-oulen",
+            "line_type": "consommation domestique",
+            "real_supply_power": 3000,
+            "measurement_unit": "kW",
+            "departure_city_code": 30119211,
+            "arrival_city_code": 30119101
         }
     }
 ]

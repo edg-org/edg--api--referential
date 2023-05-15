@@ -41,46 +41,42 @@ async def list(
 
 # get transformer route
 @transformerRouter.get(
-    "/{number}",
+    "/{code}",
     summary="Getting router a transformer without items",
     description="This router allows to get a transformer without items",
     response_model=TransformerSchema,
 )
 async def get(
-    number: str,
+    code: int,
     transformerService: TransformerService = Depends(),
 ):
-    supply = await transformerService.getbynumber(
-        number=number
-    )
-    if supply is None:
+    transformer = await transformerService.getbycode(code=code)
+    if transformer is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Transformer not found",
         )
-    return supply
+    return transformer
 
 
 # route of get tranformer with item
 @transformerRouter.get(
-    "/items/{number}",
+    "/items/{code}",
     summary="Getting router a transformer with items",
     description="This router allows to get a transformer with items",
     response_model=TransformerItemSchema,
 )
 async def get_tranformer_item(
-    number: str,
+    code: int,
     transformerService: TransformerService = Depends(),
 ):
-    zone = await transformerService.getbynumber(
-        number=number
-    )
-    if zone is None:
+    transformer = await transformerService.getbycode(code=code)
+    if transformer is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Transformer not found",
         )
-    return zone
+    return transformer
 
 
 # post transformer route
@@ -99,14 +95,14 @@ async def create(
 
 # update transformer route
 @transformerRouter.put(
-    "/{number}",
+    "/{code}",
     summary="Update router a transformer",
     description="This router allows to update a transformer",
     response_model=TransformerSchema,
 )
 async def update(
-    number: str,
+    code: int,
     data: TransformerUpdate,
     transformerService: TransformerService = Depends(),
 ):
-    return await transformerService.update(number=number, data=data)
+    return await transformerService.update(code=code, data=data)

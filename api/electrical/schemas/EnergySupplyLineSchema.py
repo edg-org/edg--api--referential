@@ -14,7 +14,7 @@ class SupplyInfos(BaseModel):
     measurement_unit : str
     departure_city_code: int
     arrival_city_code: Optional[int] = None
-    address: str
+    address: Optional[str] = None
     coordinates: Optional[SupplyCoordinates] = None
 
 class EnergySupplyLineUpdate(BaseModel):

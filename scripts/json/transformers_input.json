@@ -1,20 +1,20 @@
 [
     {
         "infos": {
-            "name": "transfo diatéla",
-            "city_code": 3011901,
-            "supply_line_code": 301190002,
+            "name": "transfo banankoroda",
+            "city_code": 30119101,
+            "area_code": 30119101102301,
             "manufacturing_country": "Allemagne"
         },
-        "tranformer_code": "string"
-    },
-    {
-        "infos": {
-            "name": "transfo aviation",
-            "city_code": 3011900,
-            "supply_line_code": 301190001,
-            "manufacturing_country": "Allemagne"
-        },
-        "tranformer_code": "string"
+        "energy_supply_lines": [
+            {
+                "code": 30119201110,
+                "is_active": true
+            },
+            {
+                "code": 30119211110,
+                "is_active": false
+            }
+        ]
     }
 ]

@@ -58,30 +58,29 @@ class ConnectionPointRepo:
 
     # get connection point number function
     def getbynumber(
-        self, number: str
+        self, 
+        number: int
     ) -> ConnectionPointModel:
         return (
             self.db.query(ConnectionPointModel)
-            .where(
-                ConnectionPointModel.connection_point_number == number
-            ).first()
+            .where(ConnectionPointModel.connection_point_number == number)
+            .first()
         )
 
     # get connection point name function
     def getbyname(self, name: str) -> ConnectionPointModel:
         return (
             self.db.query(ConnectionPointModel)
-            .where(
-                func.lower(ConnectionPointModel.infos["name"]) == name.lower()
-            ).first()
+            .where(func.lower(ConnectionPointModel.infos["name"]) == name.lower())
+            .first()
         )
 
      # count total rows of connection point by number
-    def countbynumber(self, number: str) -> ConnectionPointModel:
+    def countbynumber(self, number: int) -> ConnectionPointModel:
         return (
-            self.db.query(ConnectionPointModel).where(
-                ConnectionPointModel.connection_point_number == number
-            ).count()
+            self.db.query(ConnectionPointModel)
+            .where(ConnectionPointModel.connection_point_number == number)
+            .count()
         )
 
     # create connection point function

@@ -5,6 +5,7 @@ from fastapi import Depends, HTTPException, status
 from api.ageographical.repositories.AreaRepo import AreaRepo
 from api.tools.Helper import deliverypoint_basecode, generate_code
 from api.ageographical.models.DeliveryPointModel import DeliveryPointModel
+from api.electrical.repositories.ConnectionPointRepo import ConnectionPointRepo
 from api.ageographical.repositories.DeliveryPointRepo import DeliveryPointRepo
 from api.ageographical.schemas.DeliveryPointSchema import (
     CreateDeliveryPoint,
@@ -45,17 +46,28 @@ class DeliveryPointService:
         client = httpx.AsyncClient()
         baseUrl = env.domaine_name + env.api_routers_prefix + env.api_version
         delivery = self.deliverypoint.getbynumber(number=number)
+        
         area_code = delivery.infos['area_code']
         area = (await client.get(baseUrl+"/areas/"+str(area_code))).json()
+        
         city_code = area["infos"]["city_code"]
         city = (await client.get(baseUrl+"/cities/search?code="+str(city_code))).json()
+        
         prefecture_code = city["infos"]["prefecture_code"]
         prefecture = (await client.get(baseUrl+"/prefectures/"+str(prefecture_code))).json()
        
+        connection_point_number = delivery.infos["connection_point_number"]
+        connection_point = (await client.get(baseUrl+"/connectionpoints/"+str(connection_point_number))).json()
+
+        transformer_code = connection_point["infos"]["transformer_code"]
+        transformer = (await client.get(baseUrl+"/transformers/"+str(transformer_code))).json()
+
         details = {
             "area": {"code": area["code"], "name": area["infos"]["area_type"]+" "+ area["infos"]["name"]},
             "city": {"code": city["code"], "name": city["infos"]["city_type"]+" de "+ city["infos"]["name"]},
-            "prefecture": {"code": prefecture["code"], "name": prefecture["name"]}
+            "prefecture": {"code": prefecture["code"], "name": prefecture["name"]},
+            "connection_point": {"number": connection_point["connection_point_number"]},
+            "transformater": {"code": transformer["transformer_code"], "energy_supply_lines": transformer["energy_supply_lines"]}
         }
 
         deliverypoint = DeliveryPointDetails(
@@ -100,6 +112,7 @@ class DeliveryPointService:
             deliverypoint = CreateDeliveryPoint(
                 delivery_point_number = delivery_point_number,
                 area_id = AreaRepo.getidbycode(self.deliverypoint, item.infos.area_code),
+                connection_point_id = ConnectionPointRepo.getbynumber(self.deliverypoint, item.infos.connection_point_number).id,
                 infos = item.infos
             )
             

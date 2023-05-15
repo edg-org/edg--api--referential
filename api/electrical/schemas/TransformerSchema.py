@@ -33,7 +33,6 @@ class TransformerBase(TransformerInput):
     transformer_code: str
     city_id: int
     area_id: Optional[int] = None
-    supply_line_id: int
 
     class Config:
         orm_mode = True
@@ -43,7 +42,7 @@ class CreateTransformer(TransformerBase):
 
 class TransformerSchema(TransformerBase):
     id: int
-    is_activated: bool
+    #is_activated: bool
     created_at: datetime
     updated_at: Optional[datetime]
     deleted_at: Optional[datetime]

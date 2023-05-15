@@ -43,26 +43,31 @@ class ConnectionPointService:
 
     # create connection point function
     async def create(self, data: List[ConnectionPointUpdate]) -> List[CreateConnectionPoint]:
-        step = 0
-        area_code = 0
+        #step = 0
+        area_code = None
         connectionpointlist = []
         for item in data:
-            step += 1
-            connection_point_number = generate_code(
+            if (area_code is not None) and  (area_code != item.infos.area_code):
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="You should only have the list of connection points for one area at a time"
+                )
+                
+            #step += 1
+            result = generate_code(
                 init_codebase=connectionpoint_basecode(item.infos.area_code),
                 maxcode=self.connectionpoint.maxnumberbyarea(item.infos.area_code),
-                input_code=item.infos.area_code,
-                code=area_code,
-                current_step=step,
-                init_step=1
+                step=item.infos.number
             )
+            connection_point_number = result["code"]
 
-            count = self.connectionpoint.countbynumber(number=str(connection_point_number))
+            count = self.connectionpoint.countbynumber(number=connection_point_number)
             if count > 0:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="Connection Point already registered with code " + str(connection_point_number),
                 )
+                
             connectionpoint = CreateConnectionPoint(
                 connection_point_number = str(connection_point_number),
                 area_id = AreaRepo.getidbycode(self.connectionpoint, item.infos.area_code),

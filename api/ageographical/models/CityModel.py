@@ -1,14 +1,14 @@
 from datetime import datetime
 from sqlalchemy.orm import relationship
 from api.configs.BaseModel import EntityMeta
-from sqlalchemy.dialects.mysql import TINYINT, SMALLINT, MEDIUMINT
+from sqlalchemy.dialects.mysql import TINYINT, SMALLINT, INTEGER
 from sqlalchemy import (Column, JSON, String, Boolean, DateTime, ForeignKey)
 
 class CityModel(EntityMeta):
     __tablename__ = "cities"
 
     id = Column(SMALLINT(unsigned=True), primary_key=True, index=True)
-    code = Column(MEDIUMINT(unsigned=True), index=True, unique=True, nullable=False)
+    code = Column(INTEGER(unsigned=True), index=True, unique=True, nullable=False)
     prefecture_id = Column(TINYINT(unsigned=True), ForeignKey("prefectures.id"), nullable=False)
     city_level_id = Column(TINYINT(unsigned=True), ForeignKey("city_levels.id"), nullable=False)
     city_type_id = Column(TINYINT(unsigned=True), ForeignKey("city_types.id"), nullable=False)
@@ -25,3 +25,5 @@ class CityModel(EntityMeta):
     
     areas = relationship("AreaModel", back_populates="city")
     agencies = relationship("AgencyModel", back_populates="city")
+    transformers = relationship("TransformerModel", back_populates="city")
+    departure_supply_lines = relationship("EnergySupplyLineModel", back_populates="departure_city")

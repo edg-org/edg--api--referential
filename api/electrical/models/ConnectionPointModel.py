@@ -19,9 +19,9 @@ class ConnectionPointModel(EntityMeta):
 
     id = Column(MEDIUMINT(unsigned=True), primary_key=True, index=True)
     connection_point_number = Column(String(15), index=True, unique=True, nullable=False)
-    transformer_id = Column(MEDIUMINT(unsigned=True), ForeignKey("transformers.id"), nullable=False)
-    area_id = Column(MEDIUMINT(unsigned=True), ForeignKey("areas.id"), nullable=False)
     infos = Column(JSON, nullable=False)
+    area_id = Column(MEDIUMINT(unsigned=True), ForeignKey("areas.id"), nullable=False)
+    transformer_id = Column(MEDIUMINT(unsigned=True), ForeignKey("transformers.id"), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=datetime.utcnow().isoformat(), nullable=False)
     updated_at = Column(DateTime(timezone=True), onupdate=datetime.utcnow().isoformat(), nullable=True)
 

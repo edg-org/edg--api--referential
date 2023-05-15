@@ -1,7 +1,7 @@
 from datetime import datetime
 from sqlalchemy.orm import relationship
 from api.configs.BaseModel import EntityMeta
-from sqlalchemy.dialects.mysql import TINYINT, SMALLINT
+from sqlalchemy.dialects.mysql import TINYINT, SMALLINT, BIGINT
 from sqlalchemy import (
     Column,
     JSON,
@@ -16,7 +16,7 @@ class AgencyModel(EntityMeta):
     __tablename__ = "agencies"
 
     id = Column(SMALLINT(unsigned=True), primary_key=True, index=True)
-    code = Column(Integer, index=True, unique=True, nullable=False)
+    code = Column(BIGINT(unsigned=True), index=True, unique=True, nullable=False)
     city_id = Column(SMALLINT(unsigned=True), ForeignKey("cities.id"), nullable=False)
     infos = Column(JSON, nullable=False)
     is_activated = Column(Boolean, index=True, default=True)

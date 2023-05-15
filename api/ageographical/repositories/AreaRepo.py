@@ -15,17 +15,22 @@ class AreaRepo:
     ) -> None:
         self.db = db
 
-    # get max code of area by city
-    def maxcodebycity(self, city_code: int) -> int:
+    # get max code of area by city and area type
+    def maxcodebycityandareatype(self, city_code: int, area_type_id: int) -> int:
         codemax = (
             self.db.query(func.max(AreaModel.code))
-            .where(AreaModel.infos["city_code"] == city_code)
+            .where(
+                and_(
+                    AreaModel.area_type_id == area_type_id,
+                    AreaModel.infos["city_code"] == city_code
+                )
+            )
             .one()[0]
         )
         return 0 if codemax is None else codemax
     
-    # get max code of area by hierarchical area
-    def maxcodebyhierachicalarea(self, hierarchical_area_code: int) -> int:
+    # get max code of area by hierarchical area and type
+    def maxcodebyareaandtype(self, hierarchical_area_code: int, area_type_id: int) -> int:
         codemax = (
             self.db.query(func.max(AreaModel.code))
             .where(AreaModel.infos["hierarchical_area_code"] == hierarchical_area_code)

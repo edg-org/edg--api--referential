@@ -3,7 +3,7 @@
         "infos": {
             "name": "Zone 1",
             "area_type": "arrondissement",
-            "city_code": 3011900,
+            "city_code": 30119101,
             "is_same_zipcode": false
         }
     },
@@ -11,7 +11,7 @@
         "infos": {
             "name": "Zone 2",
             "area_type": "arrondissement",
-            "city_code": 3011900,
+            "city_code": 30119101,
             "is_same_zipcode": false
         }
     }

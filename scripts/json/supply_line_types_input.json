@@ -1,0 +1,22 @@
+[
+    {
+        "code": 1,
+        "name": "consommation domestique",
+        "infos": {
+            "minimum_power": 1000,
+            "maximum_power": 2000,
+            "measurement_unit": "kW",
+            "color": "blue"
+        }
+    },
+    {
+        "code": 2,
+        "name": "consommation industrielle",
+        "infos": {
+            "minimum_power": 2000,
+            "maximum_power": 4000,
+            "measurement_unit": "kW",
+            "color": "red"
+        }
+    }
+]

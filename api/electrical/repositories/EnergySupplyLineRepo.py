@@ -21,12 +21,15 @@ class EnergySupplyLineRepo:
         ).one()[0]
         return 0 if codemax is None else codemax
 
-    # get max code of energy supply line by city
-    def maxcodebycity(self, city_code: int) -> int:
+    # get max code of energy supply line by departure city and line type
+    def maxcodebycitylinetype(self, city_code: int, line_type_id: int) -> int:
         codemax = (
             self.db.query(func.max(EnergySupplyLineModel.code))
             .where(
-                EnergySupplyLineModel.infos["city_code"] == city_code
+                and_(
+                    EnergySupplyLineModel.line_type_id == line_type_id,
+                    EnergySupplyLineModel.infos["departure_city_code"] == city_code
+                )
             ).one()[0]
         )
         return 0 if codemax is None else codemax

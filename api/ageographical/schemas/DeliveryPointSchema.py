@@ -10,6 +10,7 @@ class DeliveryCoordinates(BaseModel):
 class DeliveryInfos(BaseModel):
     number: int
     area_code: int
+    connection_point_number: int
     address: str
     coordinates: Optional[DeliveryCoordinates]
 
@@ -22,6 +23,7 @@ class DeliveryPointInput(DeliveryPointUpdate):
 class DeliveryPointBase(DeliveryPointInput):
     delivery_point_number: int
     area_id: int
+    connection_point_id: int
 
     class Config:
         orm_mode = True

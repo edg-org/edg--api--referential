@@ -1,9 +1,34 @@
 [
     {
         "infos": {
-            "area_code": 301190001,
-            "transformer_code": 301190001,
-            "address": "quartier aviation"
+            "number": 1,
+            "area_code": 30119101102301,
+            "transformer_code": 301191011023011,
+            "address": "quartier banankoroda"
+        }
+    },
+    {
+        "infos": {
+            "number": 2,
+            "area_code": 30119101102301,
+            "transformer_code": 301191011023011,
+            "address": "quartier banankoroda"
+        }
+    },
+    {
+        "infos": {
+            "number": 3,
+            "area_code": 30119101102301,
+            "transformer_code": 301191011023011,
+            "address": "quartier banankoroda"
+        }
+    },
+    {
+        "infos": {
+            "number": 4,
+            "area_code": 30119101102301,
+            "transformer_code": 301191011023011,
+            "address": "quartier banankoroda"
         }
     }
 ]
