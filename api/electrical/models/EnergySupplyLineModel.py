@@ -7,9 +7,9 @@ from sqlalchemy import (
     Column,
     String,
     DateTime,
-    ForeignKey,
+    Boolean,
+    ForeignKey
 )
-
 
 class EnergySupplyLineModel(EntityMeta):
     __tablename__ = "energy_supply_lines"
@@ -18,9 +18,9 @@ class EnergySupplyLineModel(EntityMeta):
     code = Column(BIGINT(unsigned=True), index=True, unique=True, nullable=False)
     infos = Column(JSON, nullable=False)
     departure_city_id = Column(SMALLINT(unsigned=True), ForeignKey("cities.id"), nullable=True)
-    arrival_city_id = Column(SMALLINT(unsigned=True), nullable=True)
     line_type_id = Column(TINYINT(unsigned=True), ForeignKey("supply_line_types.id"), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=datetime.utcnow().isoformat(), nullable=False)
+    is_activated = Column(Boolean, index=True, default=True)
     updated_at = Column(DateTime(timezone=True), onupdate=datetime.utcnow().isoformat(), nullable=True)
 
     departure_city = relationship("CityModel", back_populates="departure_supply_lines")

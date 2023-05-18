@@ -1,21 +1,23 @@
 [
     {
         "code": 1,
-        "name": "consommation domestique",
+        "name": "Départ Basse Tension",
+        "shortname": "Départ BT",
         "infos": {
-            "minimum_power": 1000,
-            "maximum_power": 2000,
-            "measurement_unit": "kW",
+            "minimum_power": 0.220,
+            "maximum_power": 0.380,
+            "measurement_unit": "kV",
             "color": "blue"
         }
     },
     {
         "code": 2,
-        "name": "consommation industrielle",
+        "name": "Départ Moyenne Tension",
+        "shortname": "Départ MT",
         "infos": {
-            "minimum_power": 2000,
-            "maximum_power": 4000,
-            "measurement_unit": "kW",
+            "minimum_power": 20,
+            "maximum_power": 30,
+            "measurement_unit": "kV",
             "color": "red"
         }
     }

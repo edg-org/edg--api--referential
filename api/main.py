@@ -24,7 +24,7 @@ from api.ageographical.routers.v1.CityLevel import citylevelRouter
 from api.ageographical.routers.v1.Prefecture import prefectureRouter
 from api.ageographical.routers.v1.DeliveryPoint import deliverypointRouter
 
-from api.electrical.routers.v1.PowerMode import powermodeRouter
+from api.electrical.routers.v1.SupplyMode import supplymodeRouter
 from api.electrical.routers.v1.ElectricMeter import meterRouter
 from api.electrical.routers.v1.MeterType import metertypeRouter
 
@@ -70,7 +70,7 @@ app.include_router(areaRouter)
 app.include_router(deliverypointRouter)
 
 
-app.include_router(powermodeRouter)
+app.include_router(supplymodeRouter)
 app.include_router(metertypeRouter)
 app.include_router(meterRouter)
 app.include_router(meterdeliveryRouter)

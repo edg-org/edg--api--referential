@@ -47,7 +47,7 @@ class TypeInfosBase(BaseModel):
 
 class TypeInfosInput(TypeInfosBase):
     tracking_type: str
-    power_mode: str
+    supply_mode: str
 
 class SubscriptionTypeUpdate(BaseModel):
     name: str

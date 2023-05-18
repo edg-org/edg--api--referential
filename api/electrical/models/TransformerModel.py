@@ -7,7 +7,8 @@ from sqlalchemy import (
     DateTime,
     JSON,
     String,
-    ForeignKey,
+    Boolean,
+    ForeignKey
 )
 
 #
@@ -16,10 +17,10 @@ class TransformerModel(EntityMeta):
 
     id = Column(MEDIUMINT(unsigned=True), primary_key=True, index=True)
     transformer_code = Column(String(15), index=True, unique=True, nullable=False)
-    energy_supply_lines = Column(JSON, nullable=False)
     infos = Column(JSON, nullable=False)
     city_id = Column(SMALLINT(unsigned=True), ForeignKey("cities.id"), nullable=False)
     area_id = Column(MEDIUMINT(unsigned=True), ForeignKey("areas.id"), nullable=True)
+    is_activated = Column(Boolean, index=True, default=True)
     created_at = Column(DateTime(timezone=True), server_default=datetime.utcnow().isoformat(), nullable=False)
     updated_at = Column(DateTime(timezone=True), onupdate=datetime.utcnow().isoformat(), nullable=True)
 

@@ -9,7 +9,6 @@ from sqlalchemy import (
     String,
 )
 
-
 class MeterDeliveryPointModel(EntityMeta):
     __tablename__ = "meter_delivery_points"
 

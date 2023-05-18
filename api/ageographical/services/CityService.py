@@ -74,10 +74,10 @@ class CityService:
             step += 1
             prefecture_code = item.infos.prefecture_code
             city_level_id = CityLevelRepo.getbyname(self.city, item.infos.city_level).id
-            suffix = (prefecture_code*10)+city_level_id
+            #suffix = (prefecture_code*10)+city_level_id
             maxzipcode = self.city.maxzipcodebypref(prefecture_code)
             result = generate_code(
-                init_codebase=city_basecode(suffix),
+                init_codebase=city_basecode(prefecture_code),
                 maxcode=self.city.maxcodebypref(prefecture_code),
                 step=step
             )
@@ -88,8 +88,8 @@ class CityService:
                 zipcode_step += 1
                 zipcode_base = maxzipcode
             else:
-                suffix = prefecture_code*100
-                zipcode_base = ((suffix % 10000) // 100) * 1000
+                #suffix = prefecture_code*100
+                zipcode_base = ((prefecture_code % 10000) // 100) * 1000
 
                 if (str(item.infos.city_level).lower() == "préfecture"):
                     zipcode_step = 0

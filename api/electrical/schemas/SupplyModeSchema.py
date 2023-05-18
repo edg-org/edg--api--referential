@@ -2,22 +2,22 @@ from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
 
-class PowerModeUpdate(BaseModel):
+class SupplyModeUpdate(BaseModel):
     name: str
 
-class PowerModeInput(PowerModeUpdate):
+class SupplyModeInput(SupplyModeUpdate):
     code: int
 
-class PowerModeBase(PowerModeInput):
+class SupplyModeBase(SupplyModeInput):
     pass
 
     class Config:
         orm_mode = True
 
-class CreatePowerMode(PowerModeBase):
+class CreateSupplyMode(SupplyModeBase):
     pass
 
-class PowerModeSchema(PowerModeBase):
+class SupplyModeSchema(SupplyModeBase):
     id: int
     created_at: datetime
     updated_at: Optional[datetime]

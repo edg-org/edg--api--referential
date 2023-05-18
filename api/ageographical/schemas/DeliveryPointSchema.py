@@ -1,6 +1,6 @@
 from datetime import datetime
 from pydantic import BaseModel
-from typing import Optional, Dict
+from typing import Optional, List, Dict
 
 class DeliveryCoordinates(BaseModel):
     altitude: float
@@ -14,8 +14,13 @@ class DeliveryInfos(BaseModel):
     address: str
     coordinates: Optional[DeliveryCoordinates]
 
+class ConnectionPoint(BaseModel):
+    code: int
+    is_active: bool
+    
 class DeliveryPointUpdate(BaseModel):
     infos: DeliveryInfos
+    connection_points: List[ConnectionPoint]
 
 class DeliveryPointInput(DeliveryPointUpdate):
     pass

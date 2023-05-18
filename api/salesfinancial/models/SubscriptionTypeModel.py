@@ -14,10 +14,10 @@ class SubscriptionTypeModel(EntityMeta):
     pricing = Column(JSON, nullable=False)
     dunning = Column(JSON, nullable=False)
     tracking_type_id = Column(TINYINT(unsigned=True), ForeignKey("tracking_types.id"), nullable=False)
-    power_mode_id = Column(TINYINT(unsigned=True), ForeignKey("power_modes.id"), nullable=False)
+    supply_mode_id = Column(TINYINT(unsigned=True), ForeignKey("supply_modes.id"), nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=datetime.utcnow().isoformat(), nullable=False)
     updated_at = Column(DateTime(timezone=True), onupdate=datetime.utcnow().isoformat(), nullable=True)
     deleted_at = Column(DateTime(timezone=True), nullable=True)
 
-    power_mode = relationship("PowerModeModel", back_populates="subscription_types")
+    supply_mode = relationship("SupplyModeModel", back_populates="subscription_types")
     tracking_type = relationship("TrackingTypeModel", back_populates="subscription_types")

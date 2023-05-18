@@ -7,8 +7,8 @@ from api.salesfinancial.schemas.SubscriptionTypeSchema import SubscriptionTypeIn
 from api.salesfinancial.repositories.TrackingTypeRepo import (
     TrackingTypeRepo,
 )
-from api.electrical.repositories.PowerModeRepo import (
-    PowerModeRepo,
+from api.electrical.repositories.SupplyModeRepo import (
+    SupplyModeRepo,
 )
 
 class SubscriptionTypeService:
@@ -65,7 +65,7 @@ class SubscriptionTypeService:
                 infos = item.infos,
                 pricing = item.pricing,
                 dunning = item.dunning,
-                power_mode_id = PowerModeRepo.getidbyname(self.subscriptiontype, item.infos.power_mode),
+                power_mode_id = SupplyModeRepo.getidbyname(self.subscriptiontype, item.infos.power_mode),
                 tracking_type_id = TrackingTypeRepo.getidbyname(self.subscriptiontype, item.infos.tracking_type)
             )
             datalist.append(subscription)
@@ -87,7 +87,7 @@ class SubscriptionTypeService:
             infos = data.infos,
             pricing = data.pricing,
             dunning = data.dunning,
-            power_mode_id = PowerModeRepo.getidbyname(self.subscriptiontype, data.infos.power_mode),
+            power_mode_id = SupplyModeRepo.getidbyname(self.subscriptiontype, data.infos.power_mode),
             tracking_type_id = TrackingTypeRepo.getidbyname(self.subscriptiontype, data.infos.tracking_type)
         )
         typedict = subscription.dict(exclude_unset=True)

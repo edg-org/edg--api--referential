@@ -5,7 +5,7 @@ from pydantic import BaseModel
 class ElectricMeterInfos(BaseModel):
     brand: str
     meter_type: str
-    power_mode: str
+    supply_mode: str
     index_reading: float
     manufacturing_country: str
 
@@ -17,7 +17,7 @@ class ElectricMeterInput(ElectricMeterUpdate):
 
 class ElectricMeterBase(ElectricMeterInput):
     meter_type_id: int
-    power_mode_id: int
+    supply_mode_id: int
 
     class Config:
         orm_mode = True

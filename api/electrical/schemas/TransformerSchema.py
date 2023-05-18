@@ -8,26 +8,27 @@ class TransformerCoordinates(BaseModel):
     latitude: float
     longitude: float
 
+class EnergySupplyLines(BaseModel):
+    code: int
+    is_active: bool
+
 class TransformerInfos(BaseModel):
     name: str
     brand: Optional[str]
     city_code: int
+    power: float
+    power_mesurement: str
     area_code: Optional[int] = None
     tranformer_serial_number: Optional[str]
     manufacturing_country: Optional[str] = None
+    energy_supply_lines: List[EnergySupplyLines]
     coordinates: Optional[TransformerCoordinates] = None
-
-class EnergySupplyLinesInfos(BaseModel):
-    code: int
-    is_active: bool
 
 class TransformerUpdate(BaseModel):
     infos: TransformerInfos
-    energy_supply_lines: List[EnergySupplyLinesInfos]
 
 class TransformerInput(TransformerUpdate):
     pass
-
 
 class TransformerBase(TransformerInput):
     transformer_code: str
@@ -42,7 +43,7 @@ class CreateTransformer(TransformerBase):
 
 class TransformerSchema(TransformerBase):
     id: int
-    #is_activated: bool
+    is_activated: bool
     created_at: datetime
     updated_at: Optional[datetime]
     deleted_at: Optional[datetime]

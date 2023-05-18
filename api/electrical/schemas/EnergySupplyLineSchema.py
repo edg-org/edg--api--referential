@@ -1,19 +1,24 @@
-from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
+from typing import Optional, List
 
 class SupplyCoordinates(BaseModel):
     altitude: float
     latitude: float
     longitude: float
 
+class AgenciesServed(BaseModel):
+    code: int
+
+
 class SupplyInfos(BaseModel):
     name: str
     line_type : str
-    real_supply_power: float
-    measurement_unit : str
+    is_owner : bool = True,
+    real_power: float
+    power_measurement_unit : str
     departure_city_code: int
-    arrival_city_code: Optional[int] = None
+    agencies_served: Optional[List[AgenciesServed]] = None
     address: Optional[str] = None
     coordinates: Optional[SupplyCoordinates] = None
 
@@ -26,7 +31,6 @@ class EnergySupplyLineInput(EnergySupplyLineUpdate):
 class EnergySupplyLineBase(EnergySupplyLineInput):
     code: int
     departure_city_id: int
-    arrival_city_id: int
     line_type_id: int
 
     class Config:

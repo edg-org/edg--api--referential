@@ -8,8 +8,8 @@ Tags = [
         "description": "Contains CRUD operation on Meter Types",
     },
     {
-        "name": "Power Modes",
-        "description": "Contains CRUD operation on Power Modes",
+        "name": "Supply Modes",
+        "description": "Contains CRUD operation on Supply Modes",
     },
     {
         "name": "Contact Types",

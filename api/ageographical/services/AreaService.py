@@ -108,9 +108,9 @@ class AreaService:
                 step = 0
 
             step += 1
-            suffix = (input_code*10)+area_type_id
+            #suffix = (input_code*10)+area_type_id
             result = generate_code(
-                init_codebase=area_basecode(suffix),
+                init_codebase=area_basecode(input_code),
                 maxcode=maxcode,
                 step=step
             )

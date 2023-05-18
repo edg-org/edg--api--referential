@@ -4,7 +4,7 @@
         "name": "Basse Tension Domestique Monophasé",
         "infos": {
             "tracking_type": "postpayé",
-            "power_mode": "monophasé",
+            "supply_mode": "monophasé",
             "payment_deadline": 30,
             "deadline_measurement_unit": "day",
             "tva": 18,
@@ -121,7 +121,7 @@
         "name": "Basse Tension Domestique Triphasé",
         "infos": {
             "tracking_type": "postpayé",
-            "power_mode": "monophasé",
+            "supply_mode": "monophasé",
             "payment_deadline": 30,
             "deadline_measurement_unit": "day",
             "tva": 18,

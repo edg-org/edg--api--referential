@@ -10,7 +10,8 @@ from sqlalchemy import (
     DateTime,
     JSON,
     String,
-    ForeignKey,
+    Boolean,
+    ForeignKey
 )
 
 #
@@ -22,6 +23,7 @@ class ConnectionPointModel(EntityMeta):
     infos = Column(JSON, nullable=False)
     area_id = Column(MEDIUMINT(unsigned=True), ForeignKey("areas.id"), nullable=False)
     transformer_id = Column(MEDIUMINT(unsigned=True), ForeignKey("transformers.id"), nullable=False)
+    is_activated = Column(Boolean, index=True, default=True)
     created_at = Column(DateTime(timezone=True), server_default=datetime.utcnow().isoformat(), nullable=False)
     updated_at = Column(DateTime(timezone=True), onupdate=datetime.utcnow().isoformat(), nullable=True)
 

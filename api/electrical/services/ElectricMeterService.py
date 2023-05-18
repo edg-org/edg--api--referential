@@ -1,6 +1,6 @@
 from typing import List
 from fastapi import Depends, HTTPException, status
-from api.electrical.repositories.PowerModeRepo import PowerModeRepo
+from api.electrical.repositories.SupplyModeRepo import SupplyModeRepo
 from api.electrical.repositories.MeterTypeRepo import MeterTypeRepo
 from api.electrical.models.ElectricMeterModel import ElectricMeterModel
 from api.electrical.repositories.ElectricMeterRepo import ElectricMeterRepo
@@ -51,7 +51,7 @@ class ElectricMeterService:
             meter = CreateElectricMeter(
                 meter_number = item.meter_number,
                 meter_type_id = MeterTypeRepo.getbyname(self.meter, item.infos.meter_type).id,
-                power_mode_id = PowerModeRepo.getbyname(self.meter, item.infos.power_mode).id,
+                power_mode_id = SupplyModeRepo.getbyname(self.meter, item.infos.power_mode).id,
                 infos = item.infos
             )
             metriclist.append(meter)
