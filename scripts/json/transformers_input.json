@@ -1,19 +1,26 @@
 [
     {
         "infos": {
-            "name": "transfo banankoroda",
-            "city_code": 30119101,
-            "area_code": 30119101102301,
+            "name": "Poste Teminetaye",
+            "brand": "schneider",
+            "power": 70,
+            "power_mesurement_unit": "kWh",
+            "fixation_type": "Poste Cabine",
+            "area_code": 3011910102301,
+            "electrical_code": "011001001",
             "manufacturing_country": "Allemagne"
         },
         "energy_supply_lines": [
             {
-                "code": 30119201110,
-                "is_active": true
+                "electrical_code": "011001",
+                "activation_date": "2023-05-10",
+                "is_actived": true
             },
             {
-                "code": 30119211110,
-                "is_active": false
+                "electrical_code": "011002",
+                "activation_date": "2021-05-10",
+                "desactivation_date": "2023-05-10",
+                "is_actived": false
             }
         ]
     }

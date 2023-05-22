@@ -31,6 +31,7 @@ class Pricing(BaseModel):
 
 
 class PowerToSubscribe(BaseModel):
+    housing_type: str
     lower_power: float
     upper_power: float
     estimated_consumption: float
@@ -43,6 +44,7 @@ class TypeInfosBase(BaseModel):
     currency: str
     power_measurement_unit: str
     consumption_measurement_unit: str
+    consumption_frequency: str
     power_to_subscribe: List[PowerToSubscribe]
 
 class TypeInfosInput(TypeInfosBase):
@@ -60,7 +62,7 @@ class SubscriptionTypeInput(SubscriptionTypeUpdate):
     infos: TypeInfosInput
 
 class SubscriptionTypeBase(SubscriptionTypeInput):
-    power_mode_id: int
+    supply_mode_id: int
     tracking_type_id: int
 
     class Config:

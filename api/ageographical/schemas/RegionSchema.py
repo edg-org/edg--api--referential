@@ -14,7 +14,7 @@ class RegionSearchParams(BaseModel):
     name: str | None = Field(description="Field of the region name")
 
 class RegionInfos(BaseModel):
-    zone_code: int
+    natural_zone: str
     coordinates: Optional[RegionCoordinates]
 
 class RegionUpdate(BaseModel):

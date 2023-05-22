@@ -14,12 +14,6 @@ class SupplyLineTypeRepo:
     ) -> None:
         self.db = db
 
-    # get max code
-    def maxcode(self) -> int:
-        return self.db.query(
-            func.max(SupplyLineTypeModel.code)
-        ).one()[0]
-
     # get all supply line types function
     def list(self, skip: int = 0, limit: int = 100) -> List[SupplyLineTypeModel]:
         return (

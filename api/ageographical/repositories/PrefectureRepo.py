@@ -53,6 +53,14 @@ class PrefectureRepo:
             .one()[0]
         )
 
+    # get prefecture id by name function
+    def getidbyname(self, name: str) -> PrefectureModel:
+        return (
+            self.db.query(PrefectureModel.id)
+            .where(func.lower(PrefectureModel.name) == name.lower())
+            .one()[0]
+        )
+
     # get all prefectures function
     def list(
         self, skip: int = 0, limit: int = 100

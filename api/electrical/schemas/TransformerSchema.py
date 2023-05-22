@@ -1,7 +1,7 @@
-from datetime import datetime
 from pydantic import BaseModel
 from typing import Optional, List
-from api.electrical.schemas.ConnectionPointSchema import ConnectionPointSchema
+from datetime import date, datetime
+from api.electrical.schemas.ConnectionPoleSchema import ConnectionPoleSchema
 
 class TransformerCoordinates(BaseModel):
     altitude: float
@@ -9,19 +9,23 @@ class TransformerCoordinates(BaseModel):
     longitude: float
 
 class EnergySupplyLines(BaseModel):
-    code: int
-    is_active: bool
+    electrical_code: int
+    activation_dated: date
+    desactivation_date: Optional[date]=None
+    is_actived: bool
 
 class TransformerInfos(BaseModel):
     name: str
     brand: Optional[str]
-    city_code: int
     power: float
-    power_mesurement: str
-    area_code: Optional[int] = None
+    power_mesurement_unit: str
+    fixation_type: str
+    area_code: int
+    electrical_code: int
     tranformer_serial_number: Optional[str]
     manufacturing_country: Optional[str] = None
     energy_supply_lines: List[EnergySupplyLines]
+    address: Optional[str]
     coordinates: Optional[TransformerCoordinates] = None
 
 class TransformerUpdate(BaseModel):
@@ -32,8 +36,8 @@ class TransformerInput(TransformerUpdate):
 
 class TransformerBase(TransformerInput):
     transformer_code: str
-    city_id: int
-    area_id: Optional[int] = None
+    area_id: int
+    fixation_type_id: int
 
     class Config:
         orm_mode = True
@@ -49,4 +53,4 @@ class TransformerSchema(TransformerBase):
     deleted_at: Optional[datetime]
 
 class TransformerItemSchema(TransformerSchema):
-    tranformers: list[ConnectionPointSchema] = []
+    tranformers: list[ConnectionPoleSchema] = []

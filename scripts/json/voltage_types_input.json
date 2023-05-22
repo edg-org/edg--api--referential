@@ -1,0 +1,32 @@
+[
+    {
+        "code": 1,
+        "name": "Départ Basse Tension",
+        "shortname": "Départ BT",
+        "infos": {
+            "minimum_voltage": 0.220,
+            "maximum_voltage": 0.380,
+            "measurement_unit": "kV"
+        }
+    },
+    {
+        "code": 2,
+        "name": "Départ Moyenne Tension",
+        "shortname": "Départ MT",
+        "infos": {
+            "minimum_voltage": 20,
+            "maximum_voltage": 30,
+            "measurement_unit": "kV"
+        }
+    },
+    {
+        "code": 3,
+        "name": "Départ Haute Tension",
+        "shortname": "Départ HT",
+        "infos": {
+            "minimum_voltage": 100,
+            "maximum_voltage": 900,
+            "measurement_unit": "kV"
+        }
+    }
+]

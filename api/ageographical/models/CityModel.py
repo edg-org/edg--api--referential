@@ -25,5 +25,3 @@ class CityModel(EntityMeta):
     
     areas = relationship("AreaModel", back_populates="city")
     agencies = relationship("AgencyModel", back_populates="city")
-    transformers = relationship("TransformerModel", back_populates="city")
-    departure_supply_lines = relationship("EnergySupplyLineModel", back_populates="departure_city")

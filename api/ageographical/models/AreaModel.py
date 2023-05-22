@@ -37,6 +37,8 @@ class AreaModel(EntityMeta):
     agency = relationship("AgencyModel", back_populates="areas")
     area_type = relationship("AreaTypeModel", back_populates="areas")
 
+
     transformers = relationship("TransformerModel", back_populates="area")
     delivery_points = relationship("DeliveryPointModel", back_populates="area")
-    connection_points = relationship("ConnectionPointModel", back_populates="area")
+    connection_poles = relationship("ConnectionPoleModel", back_populates="area")
+    energy_supply_lines = relationship("EnergySupplyLineModel", back_populates="departure_area")

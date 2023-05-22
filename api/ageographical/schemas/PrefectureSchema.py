@@ -13,7 +13,7 @@ class PrefectureCoordinates(BaseModel):
     longitude: float
 
 class PrefectureInfos(BaseModel):
-    region_code: int
+    region: str
     coordinates: Optional[PrefectureCoordinates]
 
 class PrefectureUpdate(BaseModel):

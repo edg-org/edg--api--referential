@@ -52,7 +52,8 @@ class PrefectureService:
                 )
             
             step += 1
-            basecode = prefecture_basecode(item.infos.region_code)
+            region = RegionRepo.getbyname(self.prefecture, item.infos.region)
+            basecode = prefecture_basecode(region.code)
             prefecture_code = basecode + step
             count = self.prefecture.countbycode(code=prefecture_code)
             if count > 0:
@@ -66,7 +67,7 @@ class PrefectureService:
                 name = item.name,
                 is_capital = item.is_capital,
                 prefecture_number = str((prefecture_code % 100)).zfill(2),
-                region_id = RegionRepo.getidbycode(self.prefecture, item.infos.region_code),
+                region_id = region.id,
                 infos = item.infos
             )
             prefecturelist.append(prefecture)

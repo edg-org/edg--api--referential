@@ -1,6 +1,8 @@
 from datetime import datetime
 from pydantic import BaseModel
 from typing import Optional, List
+#from api.ageographical.schemas.AreaSchema import AreaSchema
+#from api.ageographical.schemas.AgencySchema import AgencySchema
 
 class SupplyCoordinates(BaseModel):
     altitude: float
@@ -10,16 +12,23 @@ class SupplyCoordinates(BaseModel):
 class AgenciesServed(BaseModel):
     code: int
 
+class AreasServed(BaseModel):
+    code: int
 
 class SupplyInfos(BaseModel):
     name: str
+    electrical_code: int
     line_type : str
-    is_owner : bool = True,
-    real_power: float
-    power_measurement_unit : str
-    departure_city_code: int
+    voltage_type: str
+    real_voltage: float
+    voltage_measurement_unit : str
+    maximum_power: float
+    power_measurement_unit: str
+    departure_area_code: int
+    departure_address: str
+    is_owner : bool = True
+    areas_served: Optional[List[AreasServed]] = None
     agencies_served: Optional[List[AgenciesServed]] = None
-    address: Optional[str] = None
     coordinates: Optional[SupplyCoordinates] = None
 
 class EnergySupplyLineUpdate(BaseModel):
@@ -30,8 +39,9 @@ class EnergySupplyLineInput(EnergySupplyLineUpdate):
 
 class EnergySupplyLineBase(EnergySupplyLineInput):
     code: int
-    departure_city_id: int
     line_type_id: int
+    voltage_type_id: int
+    departure_area_id: int
 
     class Config:
         orm_mode = True
@@ -44,3 +54,9 @@ class EnergySupplyLineSchema(EnergySupplyLineBase):
     is_activated: bool
     created_at: datetime
     updated_at: Optional[datetime]
+
+#class EnergySupplyLineItemSchema(EnergySupplyLineBase):
+#    areas: list[AreaSchema] = []
+
+#class EnergySupplyLineAgenciesSchema(EnergySupplyLineBase):
+#    agencies: list[AgenciesSchema] = []

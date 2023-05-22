@@ -24,10 +24,10 @@ class RegionRepo:
         )
 
     # get max id of administrative region by natural region
-    def maxcodebyzone(self, zone_code: int) -> int:
+    def maxcodebyzone(self, natural_zone: str) -> int:
         codemax = (
             self.db.query(func.max(RegionModel.code))
-            .where(RegionModel.infos["zone_code"] == zone_code)
+            .where(func.lower(RegionModel.infos["natural_zone"]) == natural_zone.lower())
             .one()[0]
         )
         return 0 if codemax is None else codemax
@@ -37,6 +37,14 @@ class RegionRepo:
         return (
             self.db.query(RegionModel.id)
             .where(RegionModel.code == code)
+            .one()[0]
+        )
+
+    # get administrative region id by name function
+    def getidbyname(self, name: str) -> RegionModel:
+        return (
+            self.db.query(RegionModel.id)
+            .where(func.lower(RegionModel.name) == name.lower())
             .one()[0]
         )
 
@@ -69,7 +77,7 @@ class RegionRepo:
     def getbyname(self, name: str) -> RegionModel:
         return (
             self.db.query(RegionModel)
-            .where(func.lower(func.json_unquote(RegionModel.infos["name"])) == name.lower())
+            .where(func.lower(RegionModel.name) == name.lower())
             .first()
         )
 

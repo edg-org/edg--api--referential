@@ -17,10 +17,10 @@ class DeliveryPointModel(EntityMeta):
     id = Column(MEDIUMINT(unsigned=True), primary_key=True, index=True)
     delivery_point_number = Column(BIGINT(unsigned=True), index=True, unique=True, nullable=False)
     area_id = Column(MEDIUMINT(unsigned=True), ForeignKey("areas.id"), nullable=False)
-    connection_point_id = Column(MEDIUMINT(unsigned=True), ForeignKey("connection_points.id"), nullable=False)
+    pole_id = Column(MEDIUMINT(unsigned=True), ForeignKey("connection_poles.id"), nullable=False)
     infos = Column(JSON, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=datetime.utcnow().isoformat(), nullable=False)
     updated_at = Column(DateTime(timezone=True), onupdate=datetime.utcnow().isoformat(), nullable=True)
 
     area = relationship("AreaModel", back_populates="delivery_points")
-    connection_point = relationship("ConnectionPointModel", back_populates="delivery_points")
+    connection_pole = relationship("ConnectionPoleModel", back_populates="delivery_points")

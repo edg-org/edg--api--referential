@@ -5,7 +5,7 @@ from fastapi import Depends, HTTPException, status
 from api.ageographical.repositories.AreaRepo import AreaRepo
 from api.tools.Helper import deliverypoint_basecode, generate_code
 from api.ageographical.models.DeliveryPointModel import DeliveryPointModel
-from api.electrical.repositories.ConnectionPointRepo import ConnectionPointRepo
+from api.electrical.repositories.ConnectionPoleRepo import ConnectionPoleRepo
 from api.ageographical.repositories.DeliveryPointRepo import DeliveryPointRepo
 from api.ageographical.schemas.DeliveryPointSchema import (
     CreateDeliveryPoint,
@@ -112,7 +112,7 @@ class DeliveryPointService:
             deliverypoint = CreateDeliveryPoint(
                 delivery_point_number = delivery_point_number,
                 area_id = AreaRepo.getidbycode(self.deliverypoint, item.infos.area_code),
-                connection_point_id = ConnectionPointRepo.getbynumber(self.deliverypoint, item.infos.connection_point_number).id,
+                connection_point_id = ConnectionPoleRepo.getbynumber(self.deliverypoint, item.infos.connection_point_number).id,
                 infos = item.infos
             )
             

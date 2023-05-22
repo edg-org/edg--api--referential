@@ -17,14 +17,14 @@ from api.salesfinancial.schemas.TrackingTypeSchema import (
 env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
-trackingtypeRouter = APIRouter(
+trackingRouter = APIRouter(
     prefix=router_path + "/trackingtypes",
     tags=["Tracking Types"],
 )
 
 
 # get all tracking type route
-@trackingtypeRouter.get(
+@trackingRouter.get(
     "/",
     summary="Getting router for all tracking types",
     description="This router allows to get all tracking types",
@@ -39,7 +39,7 @@ async def list(
 
 
 # get tracking type route
-@trackingtypeRouter.get(
+@trackingRouter.get(
     "/{code}",
     summary="Getting router a tracking type without items",
     description="This router allows to get a tracking type without items",
@@ -58,7 +58,7 @@ async def get(
 
 
 # post tracking type route
-@trackingtypeRouter.post(
+@trackingRouter.post(
     "/",
     summary="Creation router a tracking type",
     description="This router allows to create a tracking type",
@@ -72,7 +72,7 @@ async def create(
 
 
 # update tracking type route
-@trackingtypeRouter.put(
+@trackingRouter.put(
     "/{code}",
     summary="Update router a tracking type",
     description="This router allows to update a tracking type",

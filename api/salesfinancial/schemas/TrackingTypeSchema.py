@@ -1,9 +1,7 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
-from api.salesfinancial.schemas.SubscriptionTypeSchema import (
-    SubscriptionTypeSchema,
-)
+from api.salesfinancial.schemas.SubscriptionTypeSchema import SubscriptionTypeSchema
 
 class TrackingTypeUpdate(BaseModel):
     name: str

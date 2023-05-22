@@ -1,7 +1,11 @@
 Tags = [
     {
-        "name": "Tracking Types",
-        "description": "Contains CRUD operation on Tracking Types",
+        "name": "Housing Types",
+        "description": "Contains CRUD operation on Housing Types",
+    },
+    {
+        "name": "Housing Types",
+        "description": "Contains CRUD operation on Housing Types",
     },
     {
         "name": "Meter Types",
@@ -10,6 +14,18 @@ Tags = [
     {
         "name": "Supply Modes",
         "description": "Contains CRUD operation on Supply Modes",
+    },
+    {
+        "name": "Supply Line Voltage Types",
+        "description": "Contains CRUD operation on Supply Line Voltage Types",
+    },
+    {
+        "name": "Transformer Fixation Types",
+        "description": "Contains CRUD operation on Transformer Fixation Types",
+    },
+    {
+        "name": "Supply Line Types",
+        "description": "Contains CRUD operation on Supply Line Types",
     },
     {
         "name": "Contact Types",
@@ -48,10 +64,6 @@ Tags = [
         "description": "Contains CRUD operation on City Types",
     },
     {
-        "name": "Supply Line Types",
-        "description": "Contains CRUD operation on Supply Line Types",
-    },
-    {
         "name": "Natural Regions",
         "description": "Contains CRUD operation on Natural Regions",
     },
@@ -84,8 +96,8 @@ Tags = [
         "description": "Contains CRUD operation on Transformers",
     },
     {
-        "name": "Connection Points",
-        "description": "Contains CRUD operation on Connection Points",
+        "name": "Connection Poles",
+        "description": "Contains CRUD operation on Connection Poles",
     },
     {
         "name": "Delivery Points",

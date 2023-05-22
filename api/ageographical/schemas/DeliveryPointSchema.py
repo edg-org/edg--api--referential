@@ -1,5 +1,5 @@
-from datetime import datetime
 from pydantic import BaseModel
+from datetime import date, datetime
 from typing import Optional, List, Dict
 
 class DeliveryCoordinates(BaseModel):
@@ -10,17 +10,20 @@ class DeliveryCoordinates(BaseModel):
 class DeliveryInfos(BaseModel):
     number: int
     area_code: int
-    connection_point_number: int
+    electrical_code: int
+    pole_number: int
     address: str
     coordinates: Optional[DeliveryCoordinates]
 
-class ConnectionPoint(BaseModel):
-    code: int
-    is_active: bool
+class ConnectionPole(BaseModel):
+    electrical_code: int
+    activation_date: date
+    desactivation_date: Optional[date]=None
+    is_actived: bool
     
 class DeliveryPointUpdate(BaseModel):
     infos: DeliveryInfos
-    connection_points: List[ConnectionPoint]
+    connection_poles: List[ConnectionPole]
 
 class DeliveryPointInput(DeliveryPointUpdate):
     pass
@@ -28,7 +31,7 @@ class DeliveryPointInput(DeliveryPointUpdate):
 class DeliveryPointBase(DeliveryPointInput):
     delivery_point_number: int
     area_id: int
-    connection_point_id: int
+    pole_id: int
 
     class Config:
         orm_mode = True

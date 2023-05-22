@@ -57,7 +57,7 @@ class EnergySupplyLineService:
             if (city_code is not None) and  (city_code != item.infos.departure_city_code):
                 step = 0
                 
-            step += 10
+            step += 1
             line_type_id = SupplyLineTypeRepo.getbyname(self.energysupply, item.infos.line_type).id
             departure_city_code = item.infos.departure_city_code
             suffix = (departure_city_code*10)+line_type_id
@@ -75,15 +75,9 @@ class EnergySupplyLineService:
                     detail="Energy Departure already registered with code " + str(supply_code),
                 )
             
-            departure_city_id = CityRepo.getidbycode(self.energysupply, item.infos.departure_city_code)
-            arrival_city_id = departure_city_id
-            if (hasattr(item.infos, "arrival_city_code") and item.infos.arrival_city_code is not None):
-                arrival_city_id = CityRepo.getidbycode(self.energysupply, item.infos.arrival_city_code)
-
             energy_supply = CreateEnergySupplyLine(
                 code = energy_supply_code,
-                departure_city_id = departure_city_id,
-                arrival_city_id = arrival_city_id,
+                departure_city_id =  CityRepo.getidbycode(self.energysupply, item.infos.departure_city_code),
                 line_type_id = line_type_id,
                 infos = item.infos
             )

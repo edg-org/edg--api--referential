@@ -16,31 +16,31 @@ class CityRepo:
         self.db = db
 
     # get max code of city by prefecture
-    def maxcodebypref(self, prefecture_code: int) -> int:
+    def maxcodebypref(self, prefecture_id: int) -> int:
         codemax = (
             self.db.query(func.max(CityModel.code))
-            .where(CityModel.infos["prefecture_code"] == prefecture_code)
+            .where(CityModel.prefecture_id == prefecture_id)
             .one()[0]
         )
         return 0 if codemax is None else codemax
 
     # get max zipcode of city by prefecture
-    def maxzipcodebypref(self, prefecture_code: int) -> int:
+    def maxzipcodebypref(self, prefecture_id: int) -> int:
         codemax = (
             self.db.query(func.max(CityModel.zipcode))
-            .where(CityModel.infos["prefecture_code"] == prefecture_code)
+            .where(CityModel.prefecture_id == prefecture_id)
             .one()[0]
         )
         return 0 if codemax is None else codemax
     
     # get max zipcode of city by prefecture and city level
-    def maxzipcodebyprefandlevel(self, prefecture_code: int, city_level_id: int) -> int:
+    def maxzipcodebyprefandlevel(self, prefecture_id: int, city_level_id: int) -> int:
         codemax = (
             self.db.query(func.max(CityModel.zipcode))
             .where(
                 and_(
                     CityModel.city_level_id == city_level_id,
-                    CityModel.infos["prefecture_code"] == prefecture_code
+                    CityModel.prefecture_id == prefecture_id
                 )
             )
             .one()[0]
@@ -114,12 +114,12 @@ class CityRepo:
         )
     
     # check city name in the prefecture function
-    def checkcityname(self, prefecture_code: int, name: str) -> int:
+    def checkcityname(self, prefecture_id: int, name: str) -> int:
         return (
             self.db.query(func.count(CityModel.id))
             .where(
                 and_(
-                    CityModel.infos["prefecture_code"] == prefecture_code,
+                    CityModel.prefecture_id == prefecture_id,
                     func.lower(func.json_unquote(CityModel.infos["name"])) == name.lower()
                 )
             ).one()[0]

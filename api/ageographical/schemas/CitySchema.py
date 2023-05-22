@@ -16,7 +16,7 @@ class CityInfos(BaseModel):
     name: str
     city_type: str
     city_level: str
-    prefecture_code: int
+    prefecture: str
     coordinates: Optional[CityCoordinates]
 
 class CityUpdate(BaseModel):

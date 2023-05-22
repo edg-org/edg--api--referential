@@ -2,49 +2,49 @@
     {
         "name": "Région de Conakry",
         "infos": {
-            "zone_code": 10
+            "natural_zone": "basse guinée"
         }
     },
     {
         "name": "Région de Boké",
         "infos": {
-            "zone_code": 10
+            "natural_zone": "basse guinée"
         }
     },
     {
         "name": "Région de Kindia",
         "infos": {
-            "zone_code": 10
+            "natural_zone": "basse guinée"
         }
     },
     {
         "name": "Région de Labé",
         "infos": {
-            "zone_code": 20
+            "natural_zone": "moyenne guinée"
         }
     },
     {
         "name": "Région de Mamou",
         "infos": {
-            "zone_code": 20
+            "natural_zone": "moyenne guinée"
         }
     },
     {
         "name": "Région de Kankan",
         "infos": {
-            "zone_code": 30
+            "natural_zone": "haute guinée"
         }
     },
     {
         "name": "Région de Faranah",
         "infos": {
-            "zone_code": 30
+            "natural_zone": "haute guinée"
         }
     },
     {
         "name": "Région de N'zérékoré",
         "infos": {
-            "zone_code": 40
+            "natural_zone": "guinée forestière"
         }
     }
 ]

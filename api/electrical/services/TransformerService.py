@@ -86,15 +86,11 @@ class TransformerService:
                         status_code=status.HTTP_400_BAD_REQUEST,
                         detail="Transformer already registered with code " + str(transformer_code),
                     )
-                
-                area_id = None
-                if (hasattr(item.infos, "area_code") and item.infos.area_code is not None):
-                    area_id = AreaRepo.getidbycode(self.transformer, item.infos.area_code)
 
                 transformer = CreateTransformer(
                     transformer_code = transformer_code,
-                    city_id = CityRepo.getidbycode(self.transformer, item.infos.city_code),
-                    area_id = area_id,
+                    area_id = AreaRepo.getidbycode(self.transformer, item.infos.area_code),
+                    fixation_type_id = CityRepo.getidbycode(self.transformer, item.infos.city_code),
                     infos = item.infos,
                     energy_supply_lines = item.energy_supply_lines
                 )

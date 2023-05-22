@@ -43,7 +43,7 @@ def transformer_basecode(code: int, multiple: int)-> int:
     return code*multiple
 
 # Function to generate connection point base code
-def connectionpoint_basecode(code: int)-> int:
+def pole_basecode(code: int)-> int:
     return code*1000
 
 # Function to generate zipcode

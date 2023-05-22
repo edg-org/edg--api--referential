@@ -39,7 +39,7 @@ class RegionService:
     # create region function
     async def create(self, data: List[RegionInput]) -> List[CreateRegion]:
         step = 0
-        zone_code = None
+        zone_name = None
         regionlist = []
 
         for item in data:
@@ -50,17 +50,17 @@ class RegionService:
                     detail="Administrative Region already registered with name " + str(item.name),
                 )
 
-            if (zone_code is not None) and  (zone_code != item.infos.zone_code):
+            if (zone_name is not None) and  (zone_name != item.infos.natural_zone):
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="You should only have the list of administrative regions for one natural region at a time"
                 )
 
             step += 1
-            maxcode = self.region.maxcodebyzone(item.infos.zone_code)
+            natural_zone = ZoneRepo.getbyname(self.region, item.infos.natural_zone)
             result = generate_code(
-                init_codebase=region_basecode(item.infos.zone_code),
-                maxcode=self.region.maxcodebyzone(item.infos.zone_code),
+                init_codebase=region_basecode(natural_zone.code),
+                maxcode=self.region.maxcodebyzone(item.infos.natural_zone),
                 step=step
             )
             step = result["step"]
@@ -75,11 +75,11 @@ class RegionService:
             region = CreateRegion(
                 code = region_code,
                 name = item.name,
-                zone_id = ZoneRepo.getidbycode(self.region, item.infos.zone_code),
+                zone_id = natural_zone.id,
                 infos = item.infos
             )
             regionlist.append(region)
-            zone_code = item.infos.zone_code
+            zone_name = item.infos.natural_zone
 
         return self.region.create(data=regionlist)
 

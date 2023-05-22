@@ -2,22 +2,22 @@ from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
 
-class SupplyLineTypeUpdate(BaseModel):
+class FixationTypeUpdate(BaseModel):
     name: str
 
-class SupplyLineTypeInput(SupplyLineTypeUpdate):
+class FixationTypeInput(FixationTypeUpdate):
     code: int
 
-class SupplyLineTypeBase(SupplyLineTypeInput):
+class FixationTypeBase(FixationTypeInput):
     pass
 
     class Config:
         orm_mode = True
 
-class CreateSupplyLineType(SupplyLineTypeBase):
+class CreateFixationType(FixationTypeBase):
     pass
 
-class SupplyLineTypeSchema(SupplyLineTypeBase):
+class FixationTypeSchema(FixationTypeBase):
     id: int
     created_at: datetime
     updated_at: Optional[datetime]

@@ -51,6 +51,14 @@ class ZoneRepo:
             .one()[0]
         )
 
+     # get region id by name function
+    def getidbyname(self, name: str) -> ZoneModel:
+        return (
+            self.db.query(ZoneModel.id)
+            .where(func.lower(ZoneModel.name) == name.lower())
+            .one()[0]
+        )
+
     # get region by code function
     def getbycode(self, code: int) -> ZoneModel:
         return (

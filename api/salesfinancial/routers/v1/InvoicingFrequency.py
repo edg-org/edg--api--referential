@@ -19,14 +19,14 @@ from api.salesfinancial.schemas.InvoicingFrequencySchema import (
 env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
-invoicingfrequencyRouter = APIRouter(
+invoicingRouter = APIRouter(
     prefix=router_path + "/invoicingfrequencies",
     tags=["Invoicing Frequencies"],
 )
 
 
 # get all invoicing frequency route
-@invoicingfrequencyRouter.get(
+@invoicingRouter.get(
     "/",
     summary="Getting router for all invoicing frequencies",
     description="This router allows to get all invoicing frequencies",
@@ -41,7 +41,7 @@ async def list(
 
 
 # get invoicing frequency route
-@invoicingfrequencyRouter.get(
+@invoicingRouter.get(
     "/{code}",
     summary="Getting router a invoicing frequency without items",
     description="This router allows to get a invoicing frequency without items",
@@ -63,7 +63,7 @@ async def get(
 
 
 # post invoicing frequency route
-@invoicingfrequencyRouter.post(
+@invoicingRouter.post(
     "/",
     summary="Creation router a invoicing frequency",
     description="This router allows to create a invoicing frequency",
@@ -77,7 +77,7 @@ async def create(
 
 
 # update invoicing frequency route
-@invoicingfrequencyRouter.put(
+@invoicingRouter.put(
     "/{code}",
     summary="Update router a invoicing frequency",
     description="This router allows to update a invoicing frequency",

@@ -2,22 +2,23 @@ from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
 
-class SupplyLineTypeUpdate(BaseModel):
+class HousingTypeUpdate(BaseModel):
     name: str
+    shortname: str
 
-class SupplyLineTypeInput(SupplyLineTypeUpdate):
+class HousingTypeInput(HousingTypeUpdate):
     code: int
 
-class SupplyLineTypeBase(SupplyLineTypeInput):
+class HousingTypeBase(HousingTypeInput):
     pass
 
     class Config:
         orm_mode = True
 
-class CreateSupplyLineType(SupplyLineTypeBase):
+class CreateHousingType(HousingTypeBase):
     pass
 
-class SupplyLineTypeSchema(SupplyLineTypeBase):
+class HousingTypeSchema(HousingTypeBase):
     id: int
     created_at: datetime
     updated_at: Optional[datetime]
