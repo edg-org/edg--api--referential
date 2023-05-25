@@ -22,10 +22,10 @@ class AreaInfos(BaseModel):
     hierarchical_area_code: Optional[int] = None
     coordinates: Optional[AreaCoordinates] = None
 
-class AreaUpdate(BaseModel):
+class AreaInput(BaseModel):
     infos: AreaInfos
 
-class AreaInput(AreaUpdate):
+class AreaUpdate(AreaInput):
     pass
 
 class AreaBase(AreaInput):

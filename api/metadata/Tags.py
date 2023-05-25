@@ -4,6 +4,10 @@ Tags = [
         "description": "Contains CRUD operation on Housing Types",
     },
     {
+        "name": "Tracking Types",
+        "description": "Contains CRUD operation on Tracking Types",
+    },
+    {
         "name": "Housing Types",
         "description": "Contains CRUD operation on Housing Types",
     },

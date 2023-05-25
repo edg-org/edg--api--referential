@@ -1,12 +1,15 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
+from api.configs.Environment import OmitFields
 
-class MeterTypeUpdate(BaseModel):
+class MeterTypeInput(BaseModel):
+    code: int
     name: str
 
-class MeterTypeInput(MeterTypeUpdate):
-    code: int
+class MeterTypeUpdate(MeterTypeInput, metaclass=OmitFields):
+    class Config:
+        omit_fields = {'code'}
 
 class MeterTypeBase(MeterTypeInput):
     pass

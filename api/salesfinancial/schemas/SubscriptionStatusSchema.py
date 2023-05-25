@@ -1,12 +1,15 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
+from api.configs.Environment import OmitFields
 
-class SubscriptionStatusUpdate(BaseModel):
+class SubscriptionStatusInput(BaseModel):
+    code: int
     name: str
 
-class SubscriptionStatusInput(SubscriptionStatusUpdate):
-    code: int
+class SubscriptionStatusUpdate(SubscriptionStatusInput, metaclass=OmitFields):
+    class Config:
+        omit_fields = {'code'}
 
 class SubscriptionStatusBase(SubscriptionStatusInput):
     pass

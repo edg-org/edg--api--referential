@@ -1,12 +1,15 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
+from api.configs.Environment import OmitFields
 
-class SupplyModeUpdate(BaseModel):
+class SupplyModeInput(BaseModel):
+    code: int
     name: str
 
-class SupplyModeInput(SupplyModeUpdate):
-    code: int
+class SupplyModeUpdate(SupplyModeInput, metaclass=OmitFields):
+    class Config:
+        omit_fields = {'code'}
 
 class SupplyModeBase(SupplyModeInput):
     pass

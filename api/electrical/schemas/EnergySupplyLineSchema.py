@@ -1,8 +1,6 @@
 from datetime import datetime
 from pydantic import BaseModel
 from typing import Optional, List
-#from api.ageographical.schemas.AreaSchema import AreaSchema
-#from api.ageographical.schemas.AgencySchema import AgencySchema
 
 class SupplyCoordinates(BaseModel):
     altitude: float
@@ -54,9 +52,3 @@ class EnergySupplyLineSchema(EnergySupplyLineBase):
     is_activated: bool
     created_at: datetime
     updated_at: Optional[datetime]
-
-#class EnergySupplyLineItemSchema(EnergySupplyLineBase):
-#    areas: list[AreaSchema] = []
-
-#class EnergySupplyLineAgenciesSchema(EnergySupplyLineBase):
-#    agencies: list[AgenciesSchema] = []

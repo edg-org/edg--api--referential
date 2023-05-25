@@ -1,14 +1,17 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
+from api.configs.Environment import OmitFields
 
-class CityLevelUpdate(BaseModel):
+class CityLevelInput(BaseModel):
     name: str
-
-class CityLevelInput(CityLevelUpdate):
     code: int
 
-class CityLevelBase(CityLevelInput):
+class CityLevelUpdate(CityLevelInput):
+    class Config:
+        omit_fields = {'code'}
+
+class CityLevelBase(CityLevelInput, metaclass=OmitFields):
     pass
 
     class Config:

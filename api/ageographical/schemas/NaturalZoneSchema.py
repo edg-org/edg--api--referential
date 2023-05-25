@@ -12,11 +12,11 @@ class ZoneCoordinates(BaseModel):
     latitude: float
     longitude: float
 
-class ZoneUpdate(BaseModel):
+class ZoneInput(BaseModel):
     name: str
     coordinates: Optional[ZoneCoordinates]
 
-class ZoneInput(ZoneUpdate):
+class ZoneUpdate(ZoneInput):
     pass
 #
 class ZoneBase(ZoneInput):
@@ -24,7 +24,6 @@ class ZoneBase(ZoneInput):
 
     class Config:
         orm_mode = True
-
 #
 class CreateZone(ZoneBase):
     pass

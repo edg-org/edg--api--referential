@@ -21,11 +21,11 @@ class ConnectionPole(BaseModel):
     desactivation_date: Optional[date]=None
     is_actived: bool
     
-class DeliveryPointUpdate(BaseModel):
+class DeliveryPointInput(BaseModel):
     infos: DeliveryInfos
     connection_poles: List[ConnectionPole]
 
-class DeliveryPointInput(DeliveryPointUpdate):
+class DeliveryPointUpdate(DeliveryPointInput):
     pass
 
 class DeliveryPointBase(DeliveryPointInput):

@@ -17,11 +17,11 @@ class RegionInfos(BaseModel):
     natural_zone: str
     coordinates: Optional[RegionCoordinates]
 
-class RegionUpdate(BaseModel):
+class RegionInput(BaseModel):
     name: str
     infos: RegionInfos
 
-class RegionInput(RegionUpdate):
+class RegionUpdate(RegionInput):
     pass
 
 class RegionBase(RegionInput):

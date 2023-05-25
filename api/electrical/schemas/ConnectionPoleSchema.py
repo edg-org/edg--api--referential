@@ -24,10 +24,10 @@ class PoleInfos(BaseModel):
     transformers: List[Transformers]
     coordinates: Optional[PoleCoordinates]=None
     
-class ConnectionPoleUpdate(BaseModel):
+class ConnectionPoleInput(BaseModel):
     infos: PoleInfos
 
-class ConnectionPoleInput(ConnectionPoleUpdate):
+class ConnectionPoleUpdate(ConnectionPoleInput):
     pass
 class ConnectionPoleBase(ConnectionPoleInput):
     area_id: int

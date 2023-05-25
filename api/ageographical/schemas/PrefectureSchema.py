@@ -16,12 +16,12 @@ class PrefectureInfos(BaseModel):
     region: str
     coordinates: Optional[PrefectureCoordinates]
 
-class PrefectureUpdate(BaseModel):
+class PrefectureInput(BaseModel):
     name: str
     is_capital: bool
     infos: PrefectureInfos
 
-class PrefectureInput(PrefectureUpdate):
+class PrefectureUpdate(PrefectureInput):
     pass
 
 class PrefectureBase(PrefectureInput):

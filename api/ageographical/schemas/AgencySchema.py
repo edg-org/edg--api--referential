@@ -19,10 +19,10 @@ class AgencyInfos(BaseModel):
     city_code: int
     coordinates: Optional[AgencyCoordinates]
 
-class AgencyUpdate(BaseModel):
+class AgencyInput(BaseModel):
     infos: AgencyInfos
 
-class AgencyInput(AgencyUpdate):
+class AgencyUpdate(AgencyInput):
     pass
 
 class AgencyBase(AgencyInput):

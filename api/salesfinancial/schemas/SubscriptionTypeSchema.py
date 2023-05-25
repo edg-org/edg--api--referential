@@ -1,7 +1,6 @@
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime, date
-from pydantic.dataclasses import dataclass
 from api.configs.Environment import OmitFields
 from api.salesfinancial.schemas.PricingHistorySchema import PricingHistorySchema
 
@@ -13,13 +12,11 @@ class Dunning(BaseModel):
     deadline_unit_time: str
     delay_penality_rate: float
 
-
 class PricingSlices(BaseModel):
     name: str
     unit_price: float
     lower_index: float
     upper_index: Optional[float] | None
-
 
 class Pricing(BaseModel):
     code: str
@@ -27,7 +24,6 @@ class Pricing(BaseModel):
     start_date: date
     subscription_fee: float
     slices: List[PricingSlices]
-
 
 class PowerToSubscribe(BaseModel):
     housing_type: str
@@ -60,7 +56,6 @@ class SubscriptionTypeInput(BaseModel):
 class SubscriptionTypeUpdate(SubscriptionTypeInput, metaclass=OmitFields):
     class Config:
         omit_fields = {'code'}
-        arbitrary_types_allowed = True
 
 class SubscriptionTypeBase(SubscriptionTypeInput):
     supply_mode_id: int
@@ -77,7 +72,6 @@ class SubscriptionTypeSchema(SubscriptionTypeBase):
     id: int
     created_at: datetime
     updated_at: Optional[datetime]
-
 
 class SubscriptionTypeItemSchema(SubscriptionTypeSchema):
     pricing_histories: list[PricingHistorySchema] = []

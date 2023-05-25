@@ -19,10 +19,10 @@ class CityInfos(BaseModel):
     prefecture: str
     coordinates: Optional[CityCoordinates]
 
-class CityUpdate(BaseModel):
+class CityInput(BaseModel):
     infos: CityInfos
 
-class CityInput(CityUpdate):
+class CityUpdate(CityInput):
     pass
 
 class CityBase(CityInput):

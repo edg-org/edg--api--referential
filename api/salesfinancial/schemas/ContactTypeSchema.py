@@ -1,12 +1,15 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
+from api.configs.Environment import OmitFields
 
-class ContactTypeUpdate(BaseModel):
+class ContactTypeInput(BaseModel):
+    code: int
     name: str
 
-class ContactTypeInput(ContactTypeUpdate):
-    code: int
+class ContactTypeUpdate(ContactTypeInput, metaclass=OmitFields):
+    class Config:
+        omit_fields = {'code'}
 
 class ContactTypeBase(ContactTypeInput):
     pass

@@ -1,12 +1,15 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
+from api.configs.Environment import OmitFields
 
-class SupplyLineTypeUpdate(BaseModel):
+class SupplyLineTypeInput(BaseModel):
+    code: int
     name: str
 
-class SupplyLineTypeInput(SupplyLineTypeUpdate):
-    code: int
+class SupplyLineTypeUpdate(SupplyLineTypeInput, metaclass=OmitFields):
+    class Config:
+        omit_fields = {'code'}
 
 class SupplyLineTypeBase(SupplyLineTypeInput):
     pass

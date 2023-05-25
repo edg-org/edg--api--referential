@@ -1,6 +1,7 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
+from api.configs.Environment import OmitFields
 
 class ElectricMeterInfos(BaseModel):
     brand: str
@@ -9,11 +10,13 @@ class ElectricMeterInfos(BaseModel):
     index_reading: float
     manufacturing_country: str
 
-class ElectricMeterUpdate(BaseModel):
+class ElectricMeterInput(BaseModel):
+    meter_number: str
     infos: ElectricMeterInfos
 
-class ElectricMeterInput(ElectricMeterUpdate):
-    meter_number: str
+class ElectricMeterUpdate(ElectricMeterInput, metaclass=OmitFields):
+    class Config:
+        omit_fields = {'code'}
 
 class ElectricMeterBase(ElectricMeterInput):
     meter_type_id: int
