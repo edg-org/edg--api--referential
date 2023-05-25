@@ -1,10 +1,9 @@
-from typing import List, Optional
 from pydantic import BaseModel
+from typing import List, Optional
 from datetime import datetime, date
-from api.salesfinancial.schemas.PricingHistorySchema import (
-    PricingHistorySchema,
-)
-
+from pydantic.dataclasses import dataclass
+from api.configs.Environment import OmitFields
+from api.salesfinancial.schemas.PricingHistorySchema import PricingHistorySchema
 
 class Dunning(BaseModel):
     code: str
@@ -25,8 +24,8 @@ class PricingSlices(BaseModel):
 class Pricing(BaseModel):
     code: str
     name: str
-    subscription_fee: float
     start_date: date
+    subscription_fee: float
     slices: List[PricingSlices]
 
 
@@ -34,32 +33,34 @@ class PowerToSubscribe(BaseModel):
     housing_type: str
     lower_power: float
     upper_power: float
-    estimated_consumption: float
     deposit_to_pay: float
+    estimated_consumption: float
 
 class TypeInfosBase(BaseModel):
     payment_deadline: int
     deadline_measurement_unit: str
     tva: float
     currency: str
+    consumption_frequency: str
     power_measurement_unit: str
     consumption_measurement_unit: str
-    consumption_frequency: str
     power_to_subscribe: List[PowerToSubscribe]
 
 class TypeInfosInput(TypeInfosBase):
     tracking_type: str
     supply_mode: str
 
-class SubscriptionTypeUpdate(BaseModel):
+class SubscriptionTypeInput(BaseModel):
+    code: str
     name: str
     infos: TypeInfosBase
     pricing: Pricing
     dunning: List[Dunning]
 
-class SubscriptionTypeInput(SubscriptionTypeUpdate):
-    code: str
-    infos: TypeInfosInput
+class SubscriptionTypeUpdate(SubscriptionTypeInput, metaclass=OmitFields):
+    class Config:
+        omit_fields = {'code'}
+        arbitrary_types_allowed = True
 
 class SubscriptionTypeBase(SubscriptionTypeInput):
     supply_mode_id: int

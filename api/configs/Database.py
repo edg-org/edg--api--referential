@@ -19,7 +19,9 @@ Engine = create_engine(
 
 EntityMeta = declarative_base()
 SessionLocal = sessionmaker(
-    autocommit=False, autoflush=False, bind=Engine
+    autocommit=False, 
+    autoflush=False, 
+    bind=Engine
 )
 
 

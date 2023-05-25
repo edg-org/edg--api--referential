@@ -1,6 +1,6 @@
 from typing import Optional
 from datetime import datetime
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, EmailStr, Field, constr
 
 class AgencySearchParams(BaseModel):
     code: int | None = Field(description="Field of the agency name")
@@ -13,8 +13,8 @@ class AgencyCoordinates(BaseModel):
 
 class AgencyInfos(BaseModel):
     name: str
-    email: str
-    telephone: str
+    email: EmailStr
+    telephone: constr(regex=r'^\+224-\d{3}-\d{2}-\d{2}-\d{2}$')
     address: str
     city_code: int
     coordinates: Optional[AgencyCoordinates]
