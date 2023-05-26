@@ -22,9 +22,7 @@ class __EnvironmentSettings(BaseSettings):
 
     class Config:
         runtime_env = getenv("ENV")
-        env_file = (
-            f".env.{runtime_env}" if runtime_env else ".env"
-        )
+        env_file = (f".env.{runtime_env}" if runtime_env else ".env")
         env_file_encoding = "utf-8"
 
 class HideFields(ModelMetaclass):
