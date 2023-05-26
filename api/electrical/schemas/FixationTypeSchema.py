@@ -1,15 +1,15 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
-from api.configs.Environment import OmitFields
+from api.configs.Environment import HideFields
 
 class FixationTypeInput(BaseModel):
     code: int
     name: str
 
-class FixationTypeUpdate(FixationTypeInput, metaclass=OmitFields):
+class FixationTypeUpdate(FixationTypeInput, metaclass=HideFields):
     class Config:
-        omit_fields = {'code'}
+        fields_hided = {'code'}
 
 class FixationTypeBase(FixationTypeInput):
     pass

@@ -1,7 +1,7 @@
 from datetime import datetime
 from pydantic import BaseModel
 from typing import Optional, List
-from api.configs.Environment import OmitFields
+from api.configs.Environment import HideFields
 
 class PaymentMode(BaseModel):
     code: int
@@ -12,9 +12,9 @@ class SubscriptionLevelInput(BaseModel):
     name: str
     payment_mode: List[PaymentMode]
 
-class SubscriptionLevelUpdate(SubscriptionLevelInput, metaclass=OmitFields):
+class SubscriptionLevelUpdate(SubscriptionLevelInput, metaclass=HideFields):
     class Config:
-        omit_fields = {'code'}
+        fields_hided = {'code'}
         
 class SubscriptionLevelBase(SubscriptionLevelInput):
     pass

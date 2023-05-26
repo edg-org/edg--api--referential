@@ -1,15 +1,15 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
-from api.configs.Environment import OmitFields
+from api.configs.Environment import HideFields
 
 class AreaTypeInput(BaseModel):
     code: int
     name: str
 
-class AreaTypeUpdate(AreaTypeInput, metaclass=OmitFields):
+class AreaTypeUpdate(AreaTypeInput, metaclass=HideFields):
     class Config:
-        omit_fields = {'code'}
+        fields_hided = {'code'}
 
 class AreaTypeBase(AreaTypeInput):
     pass

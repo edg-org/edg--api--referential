@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime, date
-from api.configs.Environment import OmitFields
+from api.configs.Environment import HideFields
 from api.salesfinancial.schemas.PricingHistorySchema import PricingHistorySchema
 
 class Dunning(BaseModel):
@@ -53,9 +53,9 @@ class SubscriptionTypeInput(BaseModel):
     pricing: Pricing
     dunning: List[Dunning]
 
-class SubscriptionTypeUpdate(SubscriptionTypeInput, metaclass=OmitFields):
+class SubscriptionTypeUpdate(SubscriptionTypeInput, metaclass=HideFields):
     class Config:
-        omit_fields = {'code'}
+        fields_hided = {'code'}
 
 class SubscriptionTypeBase(SubscriptionTypeInput):
     supply_mode_id: int

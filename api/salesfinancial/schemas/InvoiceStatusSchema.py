@@ -1,15 +1,15 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
-from api.configs.Environment import OmitFields
+from api.configs.Environment import HideFields
 
 class InvoiceStatusInput(BaseModel):
     code: int
     name: str
 
-class InvoiceStatusUpdate(InvoiceStatusInput, metaclass=OmitFields):
+class InvoiceStatusUpdate(InvoiceStatusInput, metaclass=HideFields):
     class Config:
-        omit_fields = {'code'}
+        fields_hided = {'code'}
 
 class InvoiceStatusBase(InvoiceStatusInput):
     pass

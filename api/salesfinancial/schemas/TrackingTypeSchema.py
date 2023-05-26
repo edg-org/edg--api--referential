@@ -1,16 +1,16 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
-from api.configs.Environment import OmitFields
+from api.configs.Environment import HideFields
 from api.salesfinancial.schemas.SubscriptionTypeSchema import SubscriptionTypeSchema
 
 class TrackingTypeInput(BaseModel):
     code: int
     name: str
 
-class TrackingTypeUpdate(TrackingTypeInput, metaclass=OmitFields):
+class TrackingTypeUpdate(TrackingTypeInput, metaclass=HideFields):
     class Config:
-        omit_fields = {'code'}
+        fields_hided = {'code'}
         
 class TrackingTypeBase(TrackingTypeInput):
     pass

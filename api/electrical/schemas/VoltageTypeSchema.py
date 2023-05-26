@@ -1,7 +1,7 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
-from api.configs.Environment import OmitFields
+from api.configs.Environment import HideFields
 
 class VoltageTypeInfos(BaseModel):
     minimum_voltage: float
@@ -14,9 +14,9 @@ class VoltageTypeInput(BaseModel):
     shortname: str
     infos: VoltageTypeInfos
 
-class VoltageTypeUpdate(VoltageTypeInput, metaclass=OmitFields):
+class VoltageTypeUpdate(VoltageTypeInput, metaclass=HideFields):
     class Config:
-        omit_fields = {'code'}
+        fields_hided = {'code'}
 
 class VoltageTypeBase(VoltageTypeInput):
     pass

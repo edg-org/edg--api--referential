@@ -27,9 +27,9 @@ class __EnvironmentSettings(BaseSettings):
         )
         env_file_encoding = "utf-8"
 
-class OmitFields(ModelMetaclass):
+class HideFields(ModelMetaclass):
     def __new__(self, name, bases, namespaces, **kwargs):
-        omit_fields = getattr(namespaces.get("Config", {}), "omit_fields", {})
+        fields_hided = getattr(namespaces.get("Config", {}), "fields_hided", {})
         fields = namespaces.get('__fields__', {})
         annotations = namespaces.get('__annotations__', {})
         for base in bases:
@@ -40,7 +40,7 @@ class OmitFields(ModelMetaclass):
         new_fields = {}
         new_annotations = {}
         for field in merged_keys:
-            if not field.startswith('__') and field not in omit_fields:
+            if not field.startswith('__') and field not in fields_hided:
                 new_annotations[field] = annotations.get(field, fields[field].type_)
                 new_fields[field] = fields[field]
         namespaces['__annotations__'] = new_annotations

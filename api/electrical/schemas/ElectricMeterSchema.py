@@ -1,7 +1,7 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
-from api.configs.Environment import OmitFields
+from api.configs.Environment import HideFields
 
 class ElectricMeterInfos(BaseModel):
     brand: str
@@ -14,9 +14,9 @@ class ElectricMeterInput(BaseModel):
     meter_number: str
     infos: ElectricMeterInfos
 
-class ElectricMeterUpdate(ElectricMeterInput, metaclass=OmitFields):
+class ElectricMeterUpdate(ElectricMeterInput, metaclass=HideFields):
     class Config:
-        omit_fields = {'code'}
+        fields_hided = {'code'}
 
 class ElectricMeterBase(ElectricMeterInput):
     meter_type_id: int

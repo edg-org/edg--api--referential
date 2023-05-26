@@ -24,7 +24,6 @@ SessionLocal = sessionmaker(
     bind=Engine
 )
 
-
 # Getting database function
 def get_db():
     db = scoped_session(SessionLocal)

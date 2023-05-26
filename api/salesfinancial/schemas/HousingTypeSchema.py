@@ -1,16 +1,16 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
-from api.configs.Environment import OmitFields
+from api.configs.Environment import HideFields
 
 class HousingTypeInput(BaseModel):
     code: int
     name: str
     shortname: str
 
-class HousingTypeUpdate(HousingTypeInput, metaclass=OmitFields):
+class HousingTypeUpdate(HousingTypeInput, metaclass=HideFields):
     class Config:
-        omit_fields = {'code'}
+        fields_hided = {'code'}
 
 class HousingTypeBase(HousingTypeInput):
     pass
