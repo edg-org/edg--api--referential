@@ -58,7 +58,7 @@ async def get(
 
 # get details of delivery point route
 @deliverypointRouter.get(
-    "/details/{number}",
+    "/{number}/details",
     summary="Getting router details of delivery point without items",
     description="This router allows to get details of delivery point without items",
     response_model=DeliveryPointDetails,

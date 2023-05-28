@@ -61,7 +61,7 @@ async def get(
 
 # route of get tranformer with item
 @transformerRouter.get(
-    "/items/{code}",
+    "/{code}/items",
     summary="Getting router a transformer with items",
     description="This router allows to get a transformer with items",
     response_model=TransformerItemSchema,

@@ -6,9 +6,7 @@ from fastapi import (
     status,
     HTTPException,
 )
-from api.ageographical.services.RegionService import (
-    RegionService,
-)
+from api.ageographical.services.RegionService import RegionService
 from api.ageographical.schemas.RegionSchema import (
     RegionInput,
     RegionSchema,
@@ -25,7 +23,6 @@ regionRouter = APIRouter(
     tags=["Administrative Regions"],
 )
 
-
 # get all administrative regions route
 @regionRouter.get(
     "/",
@@ -40,7 +37,6 @@ async def list(
 ):
     return await regionService.list(skip, limit)
 
-
 # get administrative region route
 @regionRouter.get(
     "/{code}",
@@ -49,25 +45,6 @@ async def list(
     response_model=RegionSchema,
 )
 async def get(
-    code: int, regionService: RegionService = Depends()
-):
-    region = await regionService.getbycode(code=code)
-    if region is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Administrative Region not found",
-        )
-    return region
-
-
-# route of get administrative region with item
-@regionRouter.get(
-    "/items/{code}",
-    summary="Getting router a administrative region with items",
-    description="This router allows to get a administrative region with items",
-    response_model=RegionItemSchema,
-)
-async def get_region_item(
     code: int, 
     regionService: RegionService = Depends()
 ):
@@ -79,6 +56,24 @@ async def get_region_item(
         )
     return region
 
+# route of get administrative region with item
+@regionRouter.get(
+    "/{code}/items",
+    summary="Getting router a administrative region with items",
+    description="This router allows to get a administrative region with items",
+    response_model=RegionItemSchema,
+)
+async def get_region_item(
+    code: int,
+    regionService: RegionService = Depends()
+):
+    region = await regionService.getbycode(code=code)
+    if region is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Administrative Region not found",
+        )
+    return region
 
 # post administrative region route
 @regionRouter.post(
@@ -92,7 +87,6 @@ async def create(
     regionService: RegionService = Depends(),
 ):
     return await regionService.create(data=data)
-
 
 # update administrative region route
 @regionRouter.put(

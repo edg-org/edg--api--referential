@@ -6,9 +6,7 @@ from fastapi import (
     status,
     HTTPException,
 )
-from api.ageographical.services.CityLevelService import (
-    CityLevelService,
-)
+from api.ageographical.services.CityLevelService import CityLevelService
 from api.ageographical.schemas.CityLevelSchema import (
     CityLevelInput,
     CreateCityLevel,
@@ -22,7 +20,6 @@ router_path = env.api_routers_prefix + env.api_version
 citylevelRouter = APIRouter(
     prefix=router_path + "/citylevels", tags=["City Levels"]
 )
-
 
 # get all city levels route
 @citylevelRouter.get(
@@ -57,7 +54,6 @@ async def get(
         )
     return citylevel
 
-
 # post city level route
 @citylevelRouter.post(
     "/",
@@ -70,7 +66,6 @@ async def create(
     levelService: CityLevelService = Depends(),
 ):
     return await levelService.create(data=data)
-
 
 # update city level route
 @citylevelRouter.put(

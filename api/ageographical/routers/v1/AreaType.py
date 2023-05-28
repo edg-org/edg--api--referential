@@ -6,9 +6,7 @@ from fastapi import (
     status,
     HTTPException,
 )
-from api.ageographical.services.AreaTypeService import (
-    AreaTypeService,
-)
+from api.ageographical.services.AreaTypeService import AreaTypeService
 from api.ageographical.schemas.AreaTypeSchema import (
     AreaTypeInput,
     CreateAreaType,
@@ -22,7 +20,6 @@ router_path = env.api_routers_prefix + env.api_version
 areatypeRouter = APIRouter(
     prefix=router_path + "/areatypes", tags=["Area Types"]
 )
-
 
 # get all area types route
 @areatypeRouter.get(
@@ -38,7 +35,6 @@ async def list(
 ):
     return await typeService.list(skip, limit)
 
-
 # get area type route
 @areatypeRouter.get(
     "/{code}",
@@ -47,7 +43,8 @@ async def list(
     response_model=AreaTypeSchema,
 )
 async def get(
-    code: int, typeService: AreaTypeService = Depends()
+    code: int, 
+    typeService: AreaTypeService = Depends()
 ):
     areatype = await typeService.getbycode(code=code)
     if areatype is None:
@@ -56,7 +53,6 @@ async def get(
             detail="Area Type not found",
         )
     return areatype
-
 
 # post area type route
 @areatypeRouter.post(
@@ -70,7 +66,6 @@ async def create(
     typeService: AreaTypeService = Depends(),
 ):
     return await typeService.create(data=data)
-
 
 # update area type route
 @areatypeRouter.put(

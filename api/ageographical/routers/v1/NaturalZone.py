@@ -6,9 +6,7 @@ from fastapi import (
     status,
     HTTPException,
 )
-from api.ageographical.services.NaturalZoneService import (
-    ZoneService,
-)
+from api.ageographical.services.NaturalZoneService import ZoneService
 from api.ageographical.schemas.NaturalZoneSchema import (
     ZoneInput,
     ZoneSchema,
@@ -25,7 +23,6 @@ zoneRouter = APIRouter(
     tags=["Natural Regions"],
 )
 
-
 # get all natural regions route
 @zoneRouter.get(
     "/",
@@ -39,7 +36,6 @@ async def list(
     zoneService: ZoneService = Depends(),
 ):
     return await zoneService.list(skip, limit)
-
 
 # get natural region route
 @zoneRouter.get(
@@ -59,10 +55,9 @@ async def get_by_code(
         )
     return zone
 
-
 # route of get natural region with item
 @zoneRouter.get(
-    "/items/{code}",
+    "/{code}/items",
     summary="Getting router a natural region with items",
     description="This router allows to get a natural region with items",
     response_model=ZoneItemSchema,
@@ -78,7 +73,6 @@ async def get_zone_item(
         )
     return zone
 
-
 # post natural region route
 @zoneRouter.post(
     "/",
@@ -91,7 +85,6 @@ async def create(
     zoneService: ZoneService = Depends(),
 ):
     return await zoneService.create(data=data)
-
 
 # update natural region route
 @zoneRouter.put(

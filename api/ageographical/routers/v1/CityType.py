@@ -6,9 +6,7 @@ from fastapi import (
     status,
     HTTPException,
 )
-from api.ageographical.services.CityTypeService import (
-    CityTypeService,
-)
+from api.ageographical.services.CityTypeService import CityTypeService
 from api.ageographical.schemas.CityTypeSchema import (
     CityTypeInput,
     CreateCityType,
@@ -23,7 +21,6 @@ citytypeRouter = APIRouter(
     prefix=router_path + "/citytypes", tags=["City Types"]
 )
 
-
 # get all city types route
 @citytypeRouter.get(
     "/",
@@ -37,7 +34,6 @@ async def list(
     typeService: CityTypeService = Depends(),
 ):
     return await typeService.list(skip, limit)
-
 
 # get city type route
 @citytypeRouter.get(
@@ -57,7 +53,6 @@ async def get(
         )
     return citytype
 
-
 # post city type route
 @citytypeRouter.post(
     "/",
@@ -70,7 +65,6 @@ async def create(
     typeService: CityTypeService = Depends(),
 ):
     return await typeService.create(data=data)
-
 
 # update city type route
 @citytypeRouter.put(

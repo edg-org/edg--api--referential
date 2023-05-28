@@ -6,9 +6,7 @@ from fastapi import (
     status,
     HTTPException,
 )
-from api.ageographical.services.AgencyService import (
-    AgencyService,
-)
+from api.ageographical.services.AgencyService import AgencyService
 from api.ageographical.schemas.AgencySchema import (
     AgencyInput,
     CreateAgency,
@@ -54,7 +52,6 @@ async def get(
             detail="Agency not found",
         )
     return agency
-
 
 # post agency route
 @agencyRouter.post(

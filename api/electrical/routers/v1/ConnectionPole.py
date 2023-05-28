@@ -60,7 +60,7 @@ async def get(
 
 # route of get tranformer with item
 @poleRouter.get(
-    "/items/{number}",
+    "/{number}/items",
     summary="Getting router a connection pole with items",
     description="This router allows to get a connection pole with items",
     response_model=ConnectionPoleItemSchema,

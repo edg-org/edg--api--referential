@@ -6,9 +6,7 @@ from fastapi import (
     status,
     HTTPException,
 )
-from api.ageographical.services.PrefectureService import (
-    PrefectureService,
-)
+from api.ageographical.services.PrefectureService import PrefectureService
 from api.ageographical.schemas.PrefectureSchema import (
     PrefectureInput,
     PrefectureSchema,
@@ -25,7 +23,6 @@ prefectureRouter = APIRouter(
     tags=["Prefectures"],
 )
 
-
 # get all prefectures route
 @prefectureRouter.get(
     "/",
@@ -39,7 +36,6 @@ async def list(
     prefectureService: PrefectureService = Depends(),
 ):
     return await prefectureService.list(skip, limit)
-
 
 # get prefecture route
 @prefectureRouter.get(
@@ -60,10 +56,9 @@ async def get(
         )
     return prefecture
 
-
 # route of get prefecture with item
 @prefectureRouter.get(
-    "/items/{code}",
+    "/{code}/items",
     summary="Getting router a prefecture with items",
     description="This router allows to get a prefecture with items",
     response_model=PrefectureItemSchema,
@@ -80,7 +75,6 @@ async def get_prefecture_item(
         )
     return prefecture
 
-
 # post prefecture route
 @prefectureRouter.post(
     "/",
@@ -93,7 +87,6 @@ async def create(
     prefectureService: PrefectureService = Depends(),
 ):
     return await prefectureService.create(data=data)
-
 
 # update prefecture route
 @prefectureRouter.put(

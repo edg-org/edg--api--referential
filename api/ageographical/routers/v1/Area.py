@@ -57,7 +57,7 @@ async def get(
 
 # route of get area with item
 @areaRouter.get(
-    "/items/{code}",
+    "/{code}/items",
     summary="Getting router a area with items",
     description="This router allows to get a area with items",
     response_model=AreaItemSchema,

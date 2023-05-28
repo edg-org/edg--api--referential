@@ -4,11 +4,9 @@ from fastapi import (
     Depends,
     APIRouter,
     status,
-    HTTPException,
+    HTTPException
 )
-from api.ageographical.services.CityService import (
-    CityService,
-)
+from api.ageographical.services.CityService import CityService
 from api.ageographical.schemas.CitySchema import (
     CityInput,
     CreateCity,
