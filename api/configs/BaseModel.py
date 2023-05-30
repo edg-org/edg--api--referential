@@ -1,9 +1,5 @@
 from functools import lru_cache
-from api.configs.Database import Engine
-from sqlalchemy.ext.declarative import declarative_base
-
-# Base Entity Model Schema
-EntityMeta = declarative_base()
+from api.configs.Database import Engine, EntityMeta
 
 # create database function
 @lru_cache()

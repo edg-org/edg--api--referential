@@ -78,7 +78,7 @@ class ZoneService:
         zonedict = zone.dict(exclude_unset=True)
         for key, val in zonedict.items():
             setattr(zone, key, val)
-        return self.zone.update(data=datatoupdate)
+        return self.zone.update(data=zone)
 
     # activate or desactivate natural region function
     async def activate_desactivate(self, code: int, flag: bool) -> None:

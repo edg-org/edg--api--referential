@@ -45,7 +45,8 @@ async def list(
     response_model=ZoneSchema,
 )
 async def get_by_code(
-    code: int, zoneService: ZoneService = Depends()
+    code: int, 
+    zoneService: ZoneService = Depends()
 ):
     zone = await zoneService.getbycode(code=code)
     if zone is None:
@@ -63,7 +64,8 @@ async def get_by_code(
     response_model=ZoneItemSchema,
 )
 async def get_zone_item(
-    code: int, zoneService: ZoneService = Depends()
+    code: int, 
+    zoneService: ZoneService = Depends()
 ):
     zone = await zoneService.getbycode(code=code)
     if zone is None:

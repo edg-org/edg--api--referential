@@ -78,7 +78,7 @@ class ZoneRepo:
         )
 
     # create region function
-    def create(self, data: List[CreateZone]) -> List[ZoneModel]:
+    def create(self, data: List[CreateZone]) -> List[CreateZone]:
         self.db.execute(
             insert(ZoneModel),
             encoders.jsonable_encoder(data),
