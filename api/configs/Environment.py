@@ -27,7 +27,7 @@ class __EnvironmentSettings(BaseSettings):
 
 class HideFields(ModelMetaclass):
     def __new__(self, name, bases, namespaces, **kwargs):
-        fields_hided = getattr(namespaces.get("Config", {}), "fields_hided", {})
+        fields_to_hide = getattr(namespaces.get("Config", {}), "fields_to_hide", {})
         fields = namespaces.get('__fields__', {})
         annotations = namespaces.get('__annotations__', {})
         for base in bases:
@@ -38,7 +38,7 @@ class HideFields(ModelMetaclass):
         new_fields = {}
         new_annotations = {}
         for field in merged_keys:
-            if not field.startswith('__') and field not in fields_hided:
+            if not field.startswith('__') and field not in fields_to_hide:
                 new_annotations[field] = annotations.get(field, fields[field].type_)
                 new_fields[field] = fields[field]
         namespaces['__annotations__'] = new_annotations

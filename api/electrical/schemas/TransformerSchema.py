@@ -1,24 +1,24 @@
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import date, datetime
-from api.configs.Environment import HideFields
+from api.configs.BaseModel import SchemaModel
 from api.electrical.schemas.ConnectionPoleSchema import ConnectionPoleSchema
 
 #
-class TransformerCoordinates(BaseModel):
+class TransformerCoordinates(SchemaModel):
     altitude: float
     latitude: float
     longitude: float
 
 #
-class EnergySupplyLines(BaseModel):
+class EnergySupplyLines(SchemaModel):
     electrical_code: int
     activation_dated: date
     desactivation_date: Optional[date]=None
     is_actived: bool
 
 #
-class TransformerInfos(BaseModel):
+class TransformerInfos(SchemaModel):
     name: str
     brand: Optional[str]
     power: float
@@ -33,7 +33,7 @@ class TransformerInfos(BaseModel):
     coordinates: Optional[TransformerCoordinates] = None
 
 #
-class TransformerSchema(BaseModel):
+class TransformerSchema(SchemaModel):
     id: int
     transformer_code: str
     area_id: int
@@ -48,9 +48,9 @@ class TransformerSchema(BaseModel):
         orm_mode = True
 
 #
-class CreateTransformer(TransformerSchema, metaclass=HideFields):
+class CreateTransformer(TransformerSchema):
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             "id",
             "created_at",
             "updated_at",
@@ -58,9 +58,9 @@ class CreateTransformer(TransformerSchema, metaclass=HideFields):
         }
         
 #
-class TransformerInput(CreateTransformer, metaclass=HideFields):
+class TransformerInput(CreateTransformer):
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             "transformer_code",
             "area_id",
             "fixation_type_id"

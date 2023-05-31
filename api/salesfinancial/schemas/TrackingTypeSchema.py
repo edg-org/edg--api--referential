@@ -1,11 +1,11 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
-from api.configs.Environment import HideFields
+from api.configs.BaseModel import SchemaModel
 from api.salesfinancial.schemas.SubscriptionTypeSchema import SubscriptionTypeSchema
 
 #
-class TrackingTypeSchema(BaseModel):
+class TrackingTypeSchema(SchemaModel):
     id: int
     code: int
     name: str
@@ -16,18 +16,18 @@ class TrackingTypeSchema(BaseModel):
         orm_mode = True
 
 #
-class CreateTrackingType(TrackingTypeSchema, metaclass=HideFields):
+class CreateTrackingType(TrackingTypeSchema):
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             "id", 
             "created_at",
             "updated_at"
         }
 
 #
-class TrackingTypeInput(CreateTrackingType, metaclass=HideFields):
+class TrackingTypeInput(CreateTrackingType):
     class Config:
-        fields_hided = {"code"}
+        fields_to_hide = {"code"}
 
 #
 class TrackingTypeUpdate(TrackingTypeInput):

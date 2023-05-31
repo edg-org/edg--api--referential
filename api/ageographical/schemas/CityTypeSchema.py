@@ -1,10 +1,9 @@
 from typing import Optional
 from datetime import datetime
-from pydantic import BaseModel
-from api.configs.Environment import HideFields
+from api.configs.BaseModel import SchemaModel
 
 #
-class CityTypeSchema(BaseModel):
+class CityTypeSchema(SchemaModel):
     id: int
     code: int
     name: str
@@ -16,9 +15,9 @@ class CityTypeSchema(BaseModel):
         orm_mode = True
 
 #
-class CreateCityType(CityTypeSchema, metaclass=HideFields):
+class CreateCityType(CityTypeSchema):
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             "id", 
             "created_at",
             "updated_at",
@@ -26,9 +25,9 @@ class CreateCityType(CityTypeSchema, metaclass=HideFields):
         }
 
 #
-class CityTypeInput(CreateCityType, metaclass=HideFields):
+class CityTypeInput(CreateCityType):
     class Config:
-        fields_hided = {"code"}
+        fields_to_hide = {"code"}
 
 #
 class CityTypeUpdate(CityTypeInput):

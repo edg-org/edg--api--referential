@@ -1,9 +1,9 @@
 from pydantic import BaseModel
 from datetime import datetime, date
-from api.configs.Environment import HideFields
+from api.configs.BaseModel import SchemaModel
 
 #
-class MeterHistorySchema(BaseModel):
+class MeterHistorySchema(SchemaModel):
     id: int
     meter_number: str
     delivery_point_number: str
@@ -15,9 +15,9 @@ class MeterHistorySchema(BaseModel):
         orm_mode = True
  
  #   
-class MeterHistoryCreate(MeterHistorySchema, metaclass=HideFields):
+class MeterHistoryCreate(MeterHistorySchema):
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             "id",
             "created_at"
         }

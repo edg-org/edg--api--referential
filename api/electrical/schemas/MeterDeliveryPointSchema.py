@@ -1,7 +1,7 @@
-from pydantic import BaseModel
 from datetime import datetime, date
+from api.configs.BaseModel import SchemaModel
 
-class MeterDeliveryPointInput(BaseModel):
+class MeterDeliveryPointInput(SchemaModel):
     meter_number: str
     delivery_point_number: str
     installation_date: date

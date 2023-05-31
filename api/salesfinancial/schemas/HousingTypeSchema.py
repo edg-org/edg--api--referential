@@ -1,10 +1,10 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
-from api.configs.Environment import HideFields
+from api.configs.BaseModel import SchemaModel
 
 #
-class HousingTypeSchema(BaseModel):
+class HousingTypeSchema(SchemaModel):
     id: int
     code: int
     name: str
@@ -16,18 +16,18 @@ class HousingTypeSchema(BaseModel):
         orm_mode = True
 
 #
-class CreateHousingType(HousingTypeSchema, metaclass=HideFields):
+class CreateHousingType(HousingTypeSchema):
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             "id", 
             "created_at",
             "updated_at"
         }
 
 #
-class HousingTypeInput(CreateHousingType, metaclass=HideFields):
+class HousingTypeInput(CreateHousingType):
     class Config:
-        fields_hided = {"code"}
+        fields_to_hide = {"code"}
 
 #
 class HousingTypeUpdate(HousingTypeInput):

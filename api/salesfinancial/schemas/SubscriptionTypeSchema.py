@@ -1,11 +1,11 @@
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime, date
-from api.configs.Environment import HideFields
+from api.configs.BaseModel import SchemaModel
 from api.salesfinancial.schemas.PricingHistorySchema import PricingHistorySchema
 
 #
-class Dunning(BaseModel):
+class Dunning(SchemaModel):
     code: str
     rank: int
     name: str
@@ -14,14 +14,14 @@ class Dunning(BaseModel):
     delay_penality_rate: float
 
 #
-class PricingSlices(BaseModel):
+class PricingSlices(SchemaModel):
     name: str
     unit_price: float
     lower_index: float
     upper_index: Optional[float] | None
 
 #
-class Pricing(BaseModel):
+class Pricing(SchemaModel):
     code: str
     name: str
     start_date: date
@@ -29,7 +29,7 @@ class Pricing(BaseModel):
     slices: List[PricingSlices]
 
 #
-class PowerToSubscribe(BaseModel):
+class PowerToSubscribe(SchemaModel):
     housing_type: str
     lower_power: float
     upper_power: float
@@ -37,7 +37,7 @@ class PowerToSubscribe(BaseModel):
     estimated_consumption: float
 
 #
-class TypeInfosBase(BaseModel):
+class TypeInfosBase(SchemaModel):
     tracking_type: str
     supply_mode: str
     payment_deadline: int
@@ -50,7 +50,7 @@ class TypeInfosBase(BaseModel):
     power_to_subscribe: List[PowerToSubscribe]
     
 #
-class SubscriptionTypeSchema(BaseModel):
+class SubscriptionTypeSchema(SchemaModel):
     id: int
     code: str
     name: str
@@ -66,18 +66,18 @@ class SubscriptionTypeSchema(BaseModel):
         orm_mode = True
 
 #
-class CreateSubscriptionType(SubscriptionTypeSchema, metaclass=HideFields):
+class CreateSubscriptionType(SubscriptionTypeSchema):
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             "id",  
             "created_at",
             "updated_at"
         }
 
 #
-class SubscriptionTypeInput(SubscriptionTypeSchema, metaclass=HideFields):
+class SubscriptionTypeInput(SubscriptionTypeSchema):
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             "supply_mode_id", 
             "tracking_type_id"
         }

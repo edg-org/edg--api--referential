@@ -1,10 +1,10 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
-from api.configs.Environment import HideFields
+from api.configs.BaseModel import SchemaModel
 
 #
-class FixationTypeSchema(BaseModel):
+class FixationTypeSchema(SchemaModel):
     id: int
     code: int
     name: str
@@ -15,18 +15,18 @@ class FixationTypeSchema(BaseModel):
         orm_mode = True
 
 #
-class CreateFixationType(FixationTypeSchema, metaclass=HideFields):
+class CreateFixationType(FixationTypeSchema):
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             "id", 
             "created_at",
             "updated_at"
         }
 
 #
-class FixationTypeInput(CreateFixationType, metaclass=HideFields):
+class FixationTypeInput(CreateFixationType):
     class Config:
-        fields_hided = {"code"}
+        fields_to_hide = {"code"}
 
 #
 class FixationTypeUpdate(FixationTypeInput):

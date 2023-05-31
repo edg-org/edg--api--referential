@@ -1,27 +1,27 @@
+from pydantic import Field
 from typing import Optional
 from datetime import datetime
-from pydantic import BaseModel, Field
-from api.configs.Environment import HideFields
+from api.configs.BaseModel import SchemaModel
 from api.ageographical.schemas.CitySchema import CitySchema
 
 #
-class PrefectureSearchParams(BaseModel):
+class PrefectureSearchParams(SchemaModel):
     code: int = Field(description="Field of the prefecture code")
     name: str | None = Field(description="Field of the prefecture name")
 
 #
-class PrefectureCoordinates(BaseModel):
+class PrefectureCoordinates(SchemaModel):
     altitude: float
     latitude: float
     longitude: float
 
 #
-class PrefectureInfos(BaseModel):
+class PrefectureInfos(SchemaModel):
     region: str
     coordinates: Optional[PrefectureCoordinates]
     
 #
-class PrefectureSchema(BaseModel):
+class PrefectureSchema(SchemaModel):
     id: int
     name: str
     is_capital: bool
@@ -38,9 +38,9 @@ class PrefectureSchema(BaseModel):
         orm_mode = True
 
 #
-class CreatePrefecture(PrefectureSchema, metaclass=HideFields):
+class CreatePrefecture(PrefectureSchema):
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             'id', 
             'created_at', 
             'updated_at', 
@@ -48,13 +48,13 @@ class CreatePrefecture(PrefectureSchema, metaclass=HideFields):
         }
 
 #
-class PrefectureInput(PrefectureSchema, metaclass=HideFields):
+class PrefectureInput(PrefectureSchema):
     name: str
     is_capital: bool
     infos: PrefectureInfos
     
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             'code', 
             'prefecture_number', 
             'region_id'

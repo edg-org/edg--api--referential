@@ -2,7 +2,7 @@ import json
 from faker import Faker
 from typing import List
 from unittest import TestCase
-from unittest.mock import create_autospec, patch
+from unittest.mock import Mock, create_autospec, patch
 from api.ageographical.repositories.NaturalZoneRepo import ZoneRepo
 from api.ageographical.services.NaturalZoneService import ZoneService
 
@@ -16,8 +16,29 @@ class TestNaturalZoneService(TestCase):
         self.zoneService = ZoneService(self.zoneRepository)
 
     @patch("api.ageographical.schemas.NaturalZoneSchema.ZoneInput", autospec=True)
-    def test_create(self, ZoneInput):
+    async def test_create(self, ZoneInput):
         fake = Faker()
-        zone: List[ZoneInput] = ZoneInput(name=fake.name())
+        zone: List[ZoneInput] = ZoneInput(
+            name=fake,
+            coordinates=fake
+        )
+        self.zoneService.create = Mock()
         self.zoneService.create(zone)
-        self.zoneRepository.create.assert_called_one()
+        self.zoneService.create.assert_called_once_with(zone)
+        
+    
+    @patch("api.ageographical.schemas.NaturalZoneSchema.ZoneUpdate", autospec=True)
+    async def test_update(self, ZoneUpdate):
+        fake = Faker()
+        zone: ZoneUpdate = ZoneUpdate(
+            name=fake,
+            coordinates=fake
+        )
+        self.zoneService.update = Mock()
+        self.zoneService.update(zone)
+        self.zoneService.update.assert_called_once_with(zone)
+    
+    #
+    async def test_activate_desactivate(self):
+        self.zoneService.activate_desactivate(code=1)
+        self.session.delete.assert_called_once()

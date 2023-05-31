@@ -1,10 +1,10 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
-from api.configs.Environment import HideFields
+from api.configs.BaseModel import SchemaModel
 
 #
-class SubscriptionStatusSchema(BaseModel):
+class SubscriptionStatusSchema(SchemaModel):
     id: int
     code: int
     name: str
@@ -15,18 +15,18 @@ class SubscriptionStatusSchema(BaseModel):
         orm_mode = True
 
 #
-class CreateSubscriptionStatus(SubscriptionStatusSchema, metaclass=HideFields):
+class CreateSubscriptionStatus(SubscriptionStatusSchema):
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             "id", 
             "created_at",
             "updated_at"
         }
 
 #
-class SubscriptionStatusInput(CreateSubscriptionStatus, metaclass=HideFields):
+class SubscriptionStatusInput(CreateSubscriptionStatus):
     class Config:
-        fields_hided = {"code"}
+        fields_to_hide = {"code"}
 
 #
 class SubscriptionStatusUpdate(SubscriptionStatusInput):

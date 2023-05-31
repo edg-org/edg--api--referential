@@ -1,20 +1,20 @@
 from typing import List, Optional
 from pydantic import BaseModel
 from datetime import datetime, date
-from api.configs.Environment import HideFields
+from api.configs.BaseModel import SchemaModel
 
-class PricingSlices(BaseModel):
+class PricingSlices(SchemaModel):
     name: str
     unit_price: float
     lower_index: float
     upper_index: Optional[float] | None
 
-class PricingInfos(BaseModel):
+class PricingInfos(SchemaModel):
     subscription_fee: float
     slices: List[PricingSlices]
     
 
-class PricingHistorySchema(BaseModel):
+class PricingHistorySchema(SchemaModel):
     id: int
     code: int
     name: str
@@ -27,9 +27,9 @@ class PricingHistorySchema(BaseModel):
     class Config:
         orm_mode = True
 
-class CreatePricingHistory(PricingHistorySchema, metaclass=HideFields):
+class CreatePricingHistory(PricingHistorySchema):
      class Config:
-        fields_hided = {
+        fields_to_hide = {
             "id",  
             "created_at"
         }

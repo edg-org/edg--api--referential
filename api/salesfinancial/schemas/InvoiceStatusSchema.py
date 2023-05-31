@@ -1,9 +1,9 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
-from api.configs.Environment import HideFields
+from api.configs.BaseModel import SchemaModel
 
-class InvoiceStatusSchema(BaseModel):
+class InvoiceStatusSchema(SchemaModel):
     id: int
     code: int
     name: str
@@ -14,18 +14,18 @@ class InvoiceStatusSchema(BaseModel):
         orm_mode = True
 
 #
-class CreateInvoiceStatus(InvoiceStatusSchema, metaclass=HideFields):
+class CreateInvoiceStatus(InvoiceStatusSchema):
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             "id", 
             "created_at",
             "updated_at"
         }
 
 #
-class InvoiceStatusInput(CreateInvoiceStatus, metaclass=HideFields):
+class InvoiceStatusInput(CreateInvoiceStatus):
     class Config:
-        fields_hided = {"code"}
+        fields_to_hide = {"code"}
 
 #
 class InvoiceStatusUpdate(InvoiceStatusInput):

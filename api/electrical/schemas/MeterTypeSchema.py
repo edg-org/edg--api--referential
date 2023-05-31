@@ -1,10 +1,10 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
-from api.configs.Environment import HideFields
+from api.configs.BaseModel import SchemaModel
 
 #
-class MeterTypeSchema(BaseModel):
+class MeterTypeSchema(SchemaModel):
     id: int
     code: int
     name: str
@@ -15,18 +15,18 @@ class MeterTypeSchema(BaseModel):
         orm_mode = True
 
 #
-class CreateMeterType(MeterTypeSchema, metaclass=HideFields):
+class CreateMeterType(MeterTypeSchema):
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             "id", 
             "created_at",
             "updated_at"
         }
 
 #
-class MeterTypeInput(CreateMeterType, metaclass=HideFields):
+class MeterTypeInput(CreateMeterType):
     class Config:
-        fields_hided = {"code"}
+        fields_to_hide = {"code"}
 
 #
 class MeterTypeUpdate(MeterTypeInput):

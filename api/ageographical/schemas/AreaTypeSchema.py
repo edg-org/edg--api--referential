@@ -1,9 +1,9 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import BaseModel
-from api.configs.Environment import HideFields
+from api.configs.BaseModel import SchemaModel
 
-class AreaTypeSchema(BaseModel):
+class AreaTypeSchema(SchemaModel):
     id: int
     code: int
     name: str
@@ -15,18 +15,18 @@ class AreaTypeSchema(BaseModel):
         orm_mode = True
 
 #
-class CreateAreaType(AreaTypeSchema, metaclass=HideFields):
+class CreateAreaType(AreaTypeSchema):
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             "id", 
             "created_at",
             "updated_at"
         }
 
 #
-class AreaTypeInput(CreateAreaType, metaclass=HideFields):
+class AreaTypeInput(CreateAreaType):
     class Config:
-        fields_hided = {"code"}
+        fields_to_hide = {"code"}
 
 #
 class AreaTypeUpdate(AreaTypeInput):

@@ -1,8 +1,8 @@
 from pydantic import BaseModel
 from datetime import datetime, date
-from api.configs.Environment import HideFields
+from api.configs.BaseModel import SchemaModel
 
-class SubscriptionHistorySchema(BaseModel):
+class SubscriptionHistorySchema(SchemaModel):
     id: int
     contract_number: str
     delivery_point_number: str
@@ -13,9 +13,9 @@ class SubscriptionHistorySchema(BaseModel):
     class Config:
         orm_mode = True
     
-class SubscriptionHistoryCreate(SubscriptionHistorySchema, metaclass=HideFields):
+class SubscriptionHistoryCreate(SubscriptionHistorySchema):
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             "id",
             "created_at"
         }

@@ -1,21 +1,21 @@
 from datetime import datetime, date
 from pydantic import BaseModel
 from typing import Optional, List
-from api.configs.Environment import HideFields
+from api.configs.BaseModel import SchemaModel
 from api.ageographical.schemas.DeliveryPointSchema import DeliveryPointSchema
 
-class PoleCoordinates(BaseModel):
+class PoleCoordinates(SchemaModel):
     altitude: float
     latitude: float
     longitude: float
 
-class Transformers(BaseModel):
+class Transformers(SchemaModel):
     electrical_code: int
     activation_dated: date
     desactivation_date: Optional[date]=None
     is_actived: bool
     
-class PoleInfos(BaseModel):
+class PoleInfos(SchemaModel):
     number: int
     name: Optional[str]=None
     area_code: int
@@ -26,7 +26,7 @@ class PoleInfos(BaseModel):
     coordinates: Optional[PoleCoordinates]=None
     
 
-class ConnectionPoleSchema(BaseModel):
+class ConnectionPoleSchema(SchemaModel):
     id: int
     pole_number: str
     transformer_id: int
@@ -40,9 +40,9 @@ class ConnectionPoleSchema(BaseModel):
     class Config:
         orm_mode = True
 
-class CreateConnectionPole(ConnectionPoleSchema, metaclass=HideFields):
+class CreateConnectionPole(ConnectionPoleSchema):
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             "id",
             "is_activated",
             "created_at",
@@ -50,9 +50,9 @@ class CreateConnectionPole(ConnectionPoleSchema, metaclass=HideFields):
             "deleted_at"
         }
 
-class ConnectionPoleInput(CreateConnectionPole, metaclass=HideFields):
+class ConnectionPoleInput(CreateConnectionPole):
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             "transformer_id",
             "pole_number",
             "area_id"

@@ -1,22 +1,22 @@
 from typing import Optional
 from datetime import datetime
-from pydantic import BaseModel, Field
-from api.configs.Environment import HideFields
+from pydantic import Field
+from api.configs.BaseModel import SchemaModel
 from api.ageographical.schemas.AgencySchema import AgencySchema
 
 #
-class AreaSearchParams(BaseModel):
+class AreaSearchParams(SchemaModel):
     code: int | None = Field(description="Field of the area code")
     zipcode: str | None = Field(description="Field of the area zipcode")
 
 #
-class AreaCoordinates(BaseModel):
+class AreaCoordinates(SchemaModel):
     altitude: float
     latitude: float
     longitude: float
 
 #
-class AreaInfos(BaseModel):
+class AreaInfos(SchemaModel):
     name: str
     area_type: str  # district, neighborhood, village,  industrial area, administrative area
     city_code: Optional[int]
@@ -26,7 +26,7 @@ class AreaInfos(BaseModel):
     coordinates: Optional[AreaCoordinates] = None
 
 #
-class AreaSchema(BaseModel):
+class AreaSchema(SchemaModel):
     id: int
     code: int
     zipcode: int
@@ -44,9 +44,9 @@ class AreaSchema(BaseModel):
         orm_mode = True
  
  #       
-class CreateArea(AreaSchema, metaclass=HideFields):
+class CreateArea(AreaSchema):
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             "id", 
             "is_activated",
             "created_at",
@@ -55,9 +55,9 @@ class CreateArea(AreaSchema, metaclass=HideFields):
         }    
 
 #
-class AreaInput(AreaSchema, metaclass=HideFields):    
+class AreaInput(AreaSchema):    
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             "code", 
             "zipcode",
             "city_type_id",

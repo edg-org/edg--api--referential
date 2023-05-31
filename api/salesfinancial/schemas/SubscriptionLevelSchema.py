@@ -1,15 +1,15 @@
 from datetime import datetime
 from pydantic import BaseModel
 from typing import Optional, List
-from api.configs.Environment import HideFields
+from api.configs.BaseModel import SchemaModel
 
 #
-class PaymentMode(BaseModel):
+class PaymentMode(SchemaModel):
     code: int
     name: str  
 
 #
-class SubscriptionLevelSchema(BaseModel):
+class SubscriptionLevelSchema(SchemaModel):
     id: int
     code: int
     name: str
@@ -21,18 +21,18 @@ class SubscriptionLevelSchema(BaseModel):
         orm_mode = True
 
 #
-class CreateSubscriptionLevel(SubscriptionLevelSchema, metaclass=HideFields):
+class CreateSubscriptionLevel(SubscriptionLevelSchema):
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             "id", 
             "created_at",
             "updated_at"
         }
 
 #
-class SubscriptionLevelInput(CreateSubscriptionLevel, metaclass=HideFields):
+class SubscriptionLevelInput(CreateSubscriptionLevel):
     class Config:
-        fields_hided = {"code"}
+        fields_to_hide = {"code"}
 
 #
 class SubscriptionLevelUpdate(SubscriptionLevelInput):

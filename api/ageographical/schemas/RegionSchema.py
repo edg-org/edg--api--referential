@@ -1,27 +1,27 @@
+from pydantic import Field
 from typing import Optional
 from datetime import datetime
-from pydantic import BaseModel, Field
-from api.configs.Environment import HideFields
+from api.configs.BaseModel import SchemaModel
 from api.ageographical.schemas.PrefectureSchema import PrefectureSchema
 
 #
-class RegionSearchParams(BaseModel):
+class RegionSearchParams(SchemaModel):
     code: int = Field(description="Field of the region code")
     name: str | None = Field(description="Field of the region name")
 
 #
-class RegionCoordinates(BaseModel):
+class RegionCoordinates(SchemaModel):
     altitude: float
     latitude: float
     longitude: float
 
 #
-class RegionInfos(BaseModel):
+class RegionInfos(SchemaModel):
     natural_zone: str
     coordinates: Optional[RegionCoordinates]
 
 #  
-class RegionSchema(BaseModel):
+class RegionSchema(SchemaModel):
     id: int
     name: str
     code: int
@@ -36,9 +36,9 @@ class RegionSchema(BaseModel):
         orm_mode = True
 
 #
-class CreateRegion(RegionSchema, metaclass=HideFields):
+class CreateRegion(RegionSchema):
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             'id', 
             'is_activated', 
             'created_at', 
@@ -47,9 +47,9 @@ class CreateRegion(RegionSchema, metaclass=HideFields):
         }
 
 #
-class RegionInput(CreateRegion, metaclass=HideFields):
+class RegionInput(CreateRegion):
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             'code', 
             'zone_id'
         }

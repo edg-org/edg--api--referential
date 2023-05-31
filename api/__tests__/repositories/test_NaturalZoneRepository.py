@@ -18,7 +18,11 @@ class TestZoneRepository(TestCase):
     @patch("api.ageographical.schemas.NaturalZoneSchema.CreateZone", autospec=True)
     def test_create(self, CreateZone):
         fake = Faker()
-        zone: List[CreateZone] = CreateZone(name=fake.name())
+        zone: List[CreateZone] = CreateZone(
+            name=fake,
+            code=fake,
+            coordinates=fake
+        )
         a: List[CreateZone] = self.zoneRepository.create(zone)
         self.session.execute.assert_called_once()
         self.session.commit.assert_called_once()
@@ -38,14 +42,16 @@ class TestZoneRepository(TestCase):
     
     def test_list(self):
         self.zoneRepository.list(0, 100)
-        # Should call query method on Session
         self.session.query.assert_called_once()
-        # Should call filter_by method on QueryResponse
 
     @patch("api.ageographical.schemas.NaturalZoneSchema.CreateZone", autospec=True)
     def test_update(self, CreateZone):
         fake = Faker()
-        zone : CreateZone = CreateZone(name=fake.name())
+        zone : CreateZone = CreateZone(
+            name=fake,
+            code=fake,
+            coordinates=fake   
+        )
         self.zoneRepository.update(zone)
         self.session.add.assert_called_once()
         self.session.commit.assert_called_once()

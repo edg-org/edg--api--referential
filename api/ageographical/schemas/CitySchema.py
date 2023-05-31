@@ -1,22 +1,22 @@
+from pydantic import Field
 from typing import Optional
 from datetime import datetime
-from pydantic import BaseModel, Field
-from api.configs.Environment import HideFields
+from api.configs.BaseModel import SchemaModel
 from api.ageographical.schemas.AreaSchema import AreaSchema
 
 #
-class CitySearchParams(BaseModel):
+class CitySearchParams(SchemaModel):
     code: int | None = Field(description="Field of the city code")
     zipcode: str | None = Field(description="Field of the city zipcode")
 
 #
-class CityCoordinates(BaseModel):
+class CityCoordinates(SchemaModel):
     altitude: float
     latitude: float
     longitude: float
 
 #
-class CityInfos(BaseModel):
+class CityInfos(SchemaModel):
     name: str
     city_type: str
     city_level: str
@@ -24,7 +24,7 @@ class CityInfos(BaseModel):
     coordinates: Optional[CityCoordinates]
 
 #
-class CitySchema(BaseModel):
+class CitySchema(SchemaModel):
     id: int
     code: int
     zipcode: str
@@ -41,9 +41,9 @@ class CitySchema(BaseModel):
         orm_mode = True
 
 #
-class CreateCity(CitySchema, metaclass=HideFields):
+class CreateCity(CitySchema):
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             "id", 
             "is_activated",
             "created_at",
@@ -52,9 +52,9 @@ class CreateCity(CitySchema, metaclass=HideFields):
         }
 
 #
-class CityInput(CreateCity, metaclass=HideFields):
+class CityInput(CreateCity):
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             "code", 
             "zipcode",
             "city_type_id",

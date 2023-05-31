@@ -1,14 +1,13 @@
-from pydantic import BaseModel
 from datetime import date, datetime
 from typing import Optional, List, Dict
-from api.configs.Environment import HideFields
+from api.configs.BaseModel import SchemaModel
 
-class DeliveryCoordinates(BaseModel):
+class DeliveryCoordinates(SchemaModel):
     altitude: float
     latitude: float
     longitude: float
 
-class DeliveryInfos(BaseModel):
+class DeliveryInfos(SchemaModel):
     number: int
     area_code: int
     electrical_code: int
@@ -16,13 +15,13 @@ class DeliveryInfos(BaseModel):
     address: str
     coordinates: Optional[DeliveryCoordinates]
 
-class ConnectionPole(BaseModel):
+class ConnectionPole(SchemaModel):
     electrical_code: int
     activation_date: date
     desactivation_date: Optional[date]=None
     is_actived: bool
     
-class DeliveryPointSchema(BaseModel):
+class DeliveryPointSchema(SchemaModel):
     id: int
     delivery_point_number: int
     infos: DeliveryInfos
@@ -37,9 +36,9 @@ class DeliveryPointSchema(BaseModel):
     class Config:
         orm_mode = True
     
-class CreateDeliveryPoint(DeliveryPointSchema, metaclass=HideFields):
+class CreateDeliveryPoint(DeliveryPointSchema):
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             "id",
             "is_activated",
             "created_at",
@@ -48,9 +47,9 @@ class CreateDeliveryPoint(DeliveryPointSchema, metaclass=HideFields):
         }
 
 #
-class DeliveryPointInput(CreateDeliveryPoint, metaclass=HideFields):
+class DeliveryPointInput(CreateDeliveryPoint):
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             "id",
             "area_id",
             "pole_id",
@@ -62,10 +61,10 @@ class DeliveryPointUpdate(DeliveryPointInput):
  pass
 
 
-class DeliveryPointDetails(CreateDeliveryPoint, metaclass=HideFields):
+class DeliveryPointDetails(CreateDeliveryPoint):
     details: Dict
     class Config:
-        fields_hided = {
+        fields_to_hide = {
             "id",
             "area_id",
             "pole_id",
