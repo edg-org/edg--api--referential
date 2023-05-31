@@ -3,24 +3,31 @@ from datetime import datetime
 from pydantic import BaseModel
 from api.configs.Environment import HideFields
 
-class SubscriptionStatusInput(BaseModel):
+#
+class SubscriptionStatusSchema(BaseModel):
+    id: int
     code: int
     name: str
-
-class SubscriptionStatusUpdate(SubscriptionStatusInput, metaclass=HideFields):
-    class Config:
-        fields_hided = {'code'}
-
-class SubscriptionStatusBase(SubscriptionStatusInput):
-    pass
+    created_at: datetime
+    updated_at: Optional[datetime]
     
     class Config:
         orm_mode = True
 
-class CreateSubscriptionStatus(SubscriptionStatusBase):
-    pass
+#
+class CreateSubscriptionStatus(SubscriptionStatusSchema, metaclass=HideFields):
+    class Config:
+        fields_hided = {
+            "id", 
+            "created_at",
+            "updated_at"
+        }
 
-class SubscriptionStatusSchema(SubscriptionStatusBase):
-    id: int
-    created_at: datetime
-    updated_at: Optional[datetime]
+#
+class SubscriptionStatusInput(CreateSubscriptionStatus, metaclass=HideFields):
+    class Config:
+        fields_hided = {"code"}
+
+#
+class SubscriptionStatusUpdate(SubscriptionStatusInput):
+    pass

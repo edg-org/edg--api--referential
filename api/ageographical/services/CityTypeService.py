@@ -2,11 +2,7 @@ from typing import List
 from fastapi import Depends, HTTPException, status
 from api.ageographical.models.CityTypeModel import CityTypeModel
 from api.ageographical.repositories.CityTypeRepo import CityTypeRepo
-from api.ageographical.schemas.CityTypeSchema import (
-    CityTypeBase,
-    CityTypeUpdate,
-    CreateCityType,
-)
+from api.ageographical.schemas.CityTypeSchema import CreateCityType
 
 #
 class CityTypeService:
@@ -26,11 +22,11 @@ class CityTypeService:
         return self.citytype.get(id=id)
 
     # get city type by code function
-    async def getbycode(self, code: str) -> CityTypeBase:
+    async def getbycode(self, code: str) -> CityTypeModel:
         return self.citytype.getbycode(code=code)
 
     # get city type by name function
-    async def getbyname(self, name: str) -> CityTypeBase:
+    async def getbyname(self, name: str) -> CityTypeModel:
         return self.citytype.getbyname(name=name)
 
     # create city type function

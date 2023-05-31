@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 from datetime import date, datetime
 from typing import Optional, List, Dict
+from api.configs.Environment import HideFields
 
 class DeliveryCoordinates(BaseModel):
     altitude: float
@@ -21,29 +22,52 @@ class ConnectionPole(BaseModel):
     desactivation_date: Optional[date]=None
     is_actived: bool
     
-class DeliveryPointInput(BaseModel):
+class DeliveryPointSchema(BaseModel):
+    id: int
+    delivery_point_number: int
     infos: DeliveryInfos
     connection_poles: List[ConnectionPole]
-
-class DeliveryPointUpdate(DeliveryPointInput):
-    pass
-
-class DeliveryPointBase(DeliveryPointInput):
-    delivery_point_number: int
     area_id: int
     pole_id: int
-
-    class Config:
-        orm_mode = True
-
-class CreateDeliveryPoint(DeliveryPointBase):
-    pass
-
-class DeliveryPointSchema(DeliveryPointBase):
-    id: int
+    is_activated: bool
     created_at: datetime
     updated_at: Optional[datetime]
+    deleted_at: Optional[datetime]
+    
+    class Config:
+        orm_mode = True
+    
+class CreateDeliveryPoint(DeliveryPointSchema, metaclass=HideFields):
+    class Config:
+        fields_hided = {
+            "id",
+            "is_activated",
+            "created_at",
+            "updated_at",
+            "deleted_at",
+        }
 
-class DeliveryPointDetails(DeliveryPointInput):
-    delivery_point_number: int
+#
+class DeliveryPointInput(CreateDeliveryPoint, metaclass=HideFields):
+    class Config:
+        fields_hided = {
+            "id",
+            "area_id",
+            "pole_id",
+            "delivery_point_number"
+        }
+ 
+ #   
+class DeliveryPointUpdate(DeliveryPointInput):
+ pass
+
+
+class DeliveryPointDetails(CreateDeliveryPoint, metaclass=HideFields):
     details: Dict
+    class Config:
+        fields_hided = {
+            "id",
+            "area_id",
+            "pole_id",
+            "infos"
+        }

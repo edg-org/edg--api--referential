@@ -3,31 +3,41 @@ from datetime import datetime
 from pydantic import BaseModel
 from api.configs.Environment import HideFields
 
+#
 class VoltageTypeInfos(BaseModel):
     minimum_voltage: float
     maximum_voltage: float
     measurement_unit: str
-
-class VoltageTypeInput(BaseModel):
+    
+#
+class VoltageTypeSchema(BaseModel):
+    id: int
     code: int
     name: str
     shortname: str
     infos: VoltageTypeInfos
-
-class VoltageTypeUpdate(VoltageTypeInput, metaclass=HideFields):
-    class Config:
-        fields_hided = {'code'}
-
-class VoltageTypeBase(VoltageTypeInput):
-    pass
-
+    created_at: datetime
+    updated_at: Optional[datetime]
+    deleted_at: Optional[datetime]
+    
     class Config:
         orm_mode = True
 
-class CreateVoltageType(VoltageTypeBase):
-    pass
+#
+class CreateVoltageType(VoltageTypeSchema, metaclass=HideFields):
+    class Config:
+        fields_hided = {
+            "id", 
+            "created_at",
+            "updated_at",
+            "deleted_at"
+        }
 
-class VoltageTypeSchema(VoltageTypeBase):
-    id: int
-    created_at: datetime
-    updated_at: Optional[datetime]
+#
+class VoltageTypeInput(CreateVoltageType, metaclass=HideFields):
+    class Config:
+        fields_hided = {"code"}
+
+#
+class VoltageTypeUpdate(VoltageTypeInput):
+    pass

@@ -1,16 +1,13 @@
 from typing import List
 from api.configs.Environment import get_env_var
+from api.salesfinancial.services.SubscriptionLevelService import SubscriptionLevelService
 from fastapi import (
     Depends,
     APIRouter,
     status,
     HTTPException,
 )
-from api.salesfinancial.services.SubscriptionLevelService import (
-    SubscriptionLevelService,
-)
 from api.salesfinancial.schemas.SubscriptionLevelSchema import (
-    SubscriptionLevelBase,
     CreateSubscriptionLevel,
     SubscriptionLevelUpdate,
     SubscriptionLevelSchema,

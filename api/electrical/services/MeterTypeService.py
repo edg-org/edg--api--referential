@@ -3,7 +3,6 @@ from fastapi import Depends, HTTPException, status
 from api.electrical.models.MeterTypeModel import MeterTypeModel
 from api.electrical.repositories.MeterTypeRepo import MeterTypeRepo
 from api.electrical.schemas.MeterTypeSchema import (
-    MeterTypeBase,
     MeterTypeUpdate,
     CreateMeterType
 )
@@ -29,11 +28,11 @@ class MeterTypeService:
         return self.metertype.get(id=id)
 
     # get meter type by code function
-    async def getbycode(self, code: str) -> MeterTypeBase:
+    async def getbycode(self, code: str) -> MeterTypeModel:
         return self.metertype.getbycode(code=code)
 
     # get meter type by name function
-    async def getbyname(self, name: str) -> MeterTypeBase:
+    async def getbyname(self, name: str) -> MeterTypeModel:
         return self.metertype.getbyname(name=name)
 
     # create meter type function

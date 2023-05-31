@@ -2,11 +2,7 @@ from typing import List
 from fastapi import Depends, HTTPException, status
 from api.ageographical.models.CityLevelModel import CityLevelModel
 from api.ageographical.repositories.CityLevelRepo import CityLevelRepo
-from api.ageographical.schemas.CityLevelSchema import (
-    CityLevelBase,
-    CityLevelUpdate,
-    CreateCityLevel,
-)
+from api.ageographical.schemas.CityLevelSchema import CreateCityLevel
 
 #
 class CityLevelService:
@@ -26,11 +22,11 @@ class CityLevelService:
         return self.citylevel.get(id=id)
 
     # get city level by code function
-    async def getbycode(self, code: str) -> CityLevelBase:
+    async def getbycode(self, code: str) -> CityLevelModel:
         return self.citylevel.getbycode(code=code)
 
     # get city level by name function
-    async def getbyname(self, name: str) -> CityLevelBase:
+    async def getbyname(self, name: str) -> CityLevelModel:
         return self.citylevel.getbyname(name=name)
 
     # create city level function

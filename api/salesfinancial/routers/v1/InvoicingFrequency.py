@@ -1,16 +1,13 @@
 from typing import List
 from api.configs.Environment import get_env_var
+from api.salesfinancial.services.InvoicingFrequencyService import InvoicingFrequencyService
 from fastapi import (
     Depends,
     APIRouter,
     status,
     HTTPException,
 )
-from api.salesfinancial.services.InvoicingFrequencyService import (
-    InvoicingFrequencyService,
-)
 from api.salesfinancial.schemas.InvoicingFrequencySchema import (
-    InvoicingFrequencyBase,
     CreateInvoicingFrequency,
     InvoicingFrequencyUpdate,
     InvoicingFrequencySchema

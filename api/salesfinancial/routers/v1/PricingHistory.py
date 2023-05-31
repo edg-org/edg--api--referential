@@ -1,16 +1,13 @@
 from typing import List
 from api.configs.Environment import get_env_var
+from api.salesfinancial.services.PricingHistoryService import PricingHistoryService
 from fastapi import (
     Depends,
     APIRouter,
     status,
     HTTPException,
 )
-from api.salesfinancial.services.PricingHistoryService import (
-    PricingHistoryService,
-)
 from api.salesfinancial.schemas.PricingHistorySchema import (
-    PricingHistoryBase,
     CreatePricingHistory,
     PricingHistorySchema,
 )

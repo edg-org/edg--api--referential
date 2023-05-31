@@ -3,24 +3,30 @@ from datetime import datetime
 from pydantic import BaseModel
 from api.configs.Environment import HideFields
 
-class InvoiceStatusInput(BaseModel):
+class InvoiceStatusSchema(BaseModel):
+    id: int
     code: int
     name: str
-
-class InvoiceStatusUpdate(InvoiceStatusInput, metaclass=HideFields):
-    class Config:
-        fields_hided = {'code'}
-
-class InvoiceStatusBase(InvoiceStatusInput):
-    pass
+    created_at: datetime
+    updated_at: Optional[datetime]
     
     class Config:
         orm_mode = True
 
-class CreateInvoiceStatus(InvoiceStatusBase):
-    pass
+#
+class CreateInvoiceStatus(InvoiceStatusSchema, metaclass=HideFields):
+    class Config:
+        fields_hided = {
+            "id", 
+            "created_at",
+            "updated_at"
+        }
 
-class InvoiceStatusSchema(InvoiceStatusBase):
-    id: int
-    created_at: datetime
-    updated_at: Optional[datetime]
+#
+class InvoiceStatusInput(CreateInvoiceStatus, metaclass=HideFields):
+    class Config:
+        fields_hided = {"code"}
+
+#
+class InvoiceStatusUpdate(InvoiceStatusInput):
+    pass

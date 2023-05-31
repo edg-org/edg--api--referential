@@ -23,6 +23,19 @@ zoneRouter = APIRouter(
     tags=["Natural Regions"],
 )
 
+# post natural region route
+@zoneRouter.post(
+    "/",
+    summary="Creation router a natural region",
+    description="This router allows to create a natural region",
+    response_model=List[CreateZone],
+)
+async def create(
+    data: List[ZoneInput],
+    zoneService: ZoneService = Depends(),
+):
+    return await zoneService.create(data=data)
+
 # get all natural regions route
 @zoneRouter.get(
     "/",
@@ -74,19 +87,6 @@ async def get_zone_item(
             detail="Natural Zone not found",
         )
     return zone
-
-# post natural region route
-@zoneRouter.post(
-    "/",
-    summary="Creation router a natural region",
-    description="This router allows to create a natural region",
-    response_model=List[CreateZone],
-)
-async def create(
-    data: List[ZoneInput],
-    zoneService: ZoneService = Depends(),
-):
-    return await zoneService.create(data=data)
 
 # update natural region route
 @zoneRouter.put(

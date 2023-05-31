@@ -3,7 +3,6 @@ from fastapi import Depends, HTTPException, status
 from api.electrical.models.FixationTypeModel import FixationTypeModel
 from api.electrical.repositories.FixationTypeRepo import FixationTypeRepo
 from api.electrical.schemas.FixationTypeSchema import (
-    FixationTypeBase,
     FixationTypeUpdate,
     CreateFixationType
 )
@@ -28,11 +27,11 @@ class FixationTypeService:
         return self.fixationtype.get(id=id)
 
     # get fixation type by code function
-    async def getbycode(self, code: str) -> FixationTypeBase:
+    async def getbycode(self, code: str) -> FixationTypeModel:
         return self.fixationtype.getbycode(code=code)
 
     # get fixation type by name function
-    async def getbyname(self, name: str) -> FixationTypeBase:
+    async def getbyname(self, name: str) -> FixationTypeModel:
         return self.fixationtype.getbyname(name=name)
 
     # create fixation type function

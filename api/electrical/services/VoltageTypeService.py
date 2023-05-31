@@ -3,7 +3,6 @@ from fastapi import Depends, HTTPException, status
 from api.electrical.models.VoltageTypeModel import VoltageTypeModel
 from api.electrical.repositories.VoltageTypeRepo import VoltageTypeRepo
 from api.electrical.schemas.VoltageTypeSchema import (
-    VoltageTypeBase,
     VoltageTypeUpdate,
     CreateVoltageType
 )
@@ -28,11 +27,11 @@ class VoltageTypeService:
         return self.voltagetype.get(id=id)
 
     # get voltage type by code function
-    async def getbycode(self, code: str) -> VoltageTypeBase:
+    async def getbycode(self, code: str) -> VoltageTypeModel:
         return self.voltagetype.getbycode(code=code)
 
     # get voltage type by name function
-    async def getbyname(self, name: str) -> VoltageTypeBase:
+    async def getbyname(self, name: str) -> VoltageTypeModel:
         return self.voltagetype.getbyname(name=name)
 
     # create voltage type function

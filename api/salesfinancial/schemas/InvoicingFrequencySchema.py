@@ -3,25 +3,32 @@ from datetime import datetime
 from pydantic import BaseModel
 from api.configs.Environment import HideFields
 
-class InvoicingFrequencyInput(BaseModel):
+#
+class InvoicingFrequencySchema(BaseModel):
+    id: int
     code: int
     name: str
     shortname: str
-
-class InvoicingFrequencyUpdate(InvoicingFrequencyInput, metaclass=HideFields):
-    class Config:
-        fields_hided = {'code'}
-
-class InvoicingFrequencyBase(InvoicingFrequencyInput):
-    pass
+    created_at: datetime
+    updated_at: Optional[datetime]
     
     class Config:
         orm_mode = True
 
-class CreateInvoicingFrequency(InvoicingFrequencyBase):
-    pass
+#
+class CreateInvoicingFrequency(InvoicingFrequencySchema, metaclass=HideFields):
+    class Config:
+        fields_hided = {
+            "id", 
+            "created_at",
+            "updated_at"
+        }
 
-class InvoicingFrequencySchema(InvoicingFrequencyBase):
-    id: int
-    created_at: datetime
-    updated_at: Optional[datetime]
+#
+class InvoicingFrequencyInput(CreateInvoicingFrequency, metaclass=HideFields):
+    class Config:
+        fields_hided = {"code"}
+
+#
+class InvoicingFrequencyUpdate(InvoicingFrequencyInput):
+    pass

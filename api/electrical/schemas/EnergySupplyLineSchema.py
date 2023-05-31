@@ -1,6 +1,7 @@
 from datetime import datetime
 from pydantic import BaseModel
 from typing import Optional, List
+from api.configs.Environment import HideFields
 
 class SupplyCoordinates(BaseModel):
     altitude: float
@@ -29,26 +30,37 @@ class SupplyInfos(BaseModel):
     agencies_served: Optional[List[AgenciesServed]] = None
     coordinates: Optional[SupplyCoordinates] = None
 
-class EnergySupplyLineUpdate(BaseModel):
-    infos: SupplyInfos
-
-class EnergySupplyLineInput(EnergySupplyLineUpdate):
-    pass
-
-class EnergySupplyLineBase(EnergySupplyLineInput):
+class EnergySupplyLineSchema(BaseModel):
+    id: int
     code: int
     line_type_id: int
     voltage_type_id: int
     departure_area_id: int
+    infos: SupplyInfos
+    is_activated: bool
+    created_at: datetime
+    updated_at: Optional[datetime]
 
     class Config:
         orm_mode = True
 
-class CreateEnergySupplyLine(EnergySupplyLineBase):
-    pass
+class CreateEnergySupplyLine(EnergySupplyLineSchema, metaclass=HideFields):
+    class Config:
+        fields_hided = {
+            "id",
+            "is_activated",
+            "created_at",
+            "updated_at"
+        }
 
-class EnergySupplyLineSchema(EnergySupplyLineBase):
-    id: int
-    is_activated: bool
-    created_at: datetime
-    updated_at: Optional[datetime]
+class EnergySupplyLineInput(CreateEnergySupplyLine, metaclass=HideFields):
+    class Config:
+        fields_hided = {
+            "code",
+            "line_type_id",
+            "voltage_type_id",
+            "departure_area_id"
+        }
+    
+class EnergySupplyLineUpdate(BaseModel):
+    pass

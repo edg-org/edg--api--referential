@@ -3,25 +3,33 @@ from datetime import datetime
 from pydantic import BaseModel
 from api.configs.Environment import HideFields
 
-class CityLevelInput(BaseModel):
-    name: str
-    code: int
-
-class CityLevelUpdate(CityLevelInput):
-    class Config:
-        fields_hided = {'code'}
-
-class CityLevelBase(CityLevelInput, metaclass=HideFields):
-    pass
-
-    class Config:
-        orm_mode = True
-
-class CreateCityLevel(CityLevelBase):
-    pass
-
-class CityLevelSchema(CityLevelBase):
+#
+class CityLevelSchema(BaseModel):
     id: int
+    code: int
+    name: str
     created_at: datetime
     updated_at: Optional[datetime]
     deleted_at: Optional[datetime]
+    
+    class Config:
+        orm_mode = True
+
+#
+class CreateCityLevel(CityLevelSchema, metaclass=HideFields):
+    class Config:
+        fields_hided = {
+            "id", 
+            "created_at",
+            "updated_at",
+            "deleted_at"
+        }
+
+#
+class CityLevelInput(CreateCityLevel, metaclass=HideFields):
+    class Config:
+        fields_hided = {"code"}
+
+#
+class CityLevelUpdate(CityLevelInput):
+    pass

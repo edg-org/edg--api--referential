@@ -3,24 +3,31 @@ from datetime import datetime
 from pydantic import BaseModel
 from api.configs.Environment import HideFields
 
-class ContactTypeInput(BaseModel):
+#
+class ContactTypeSchema(BaseModel):
+    id: int
     code: int
     name: str
-
-class ContactTypeUpdate(ContactTypeInput, metaclass=HideFields):
-    class Config:
-        fields_hided = {'code'}
-
-class ContactTypeBase(ContactTypeInput):
-    pass
+    created_at: datetime
+    updated_at: Optional[datetime]
     
     class Config:
         orm_mode = True
 
-class CreateContactType(ContactTypeBase):
-    pass
+#
+class CreateContactType(ContactTypeSchema, metaclass=HideFields):
+    class Config:
+        fields_hided = {
+            "id", 
+            "created_at",
+            "updated_at"
+        }
 
-class ContactTypeSchema(ContactTypeBase):
-    id: int
-    created_at: datetime
-    updated_at: Optional[datetime]
+#
+class ContactTypeInput(CreateContactType, metaclass=HideFields):
+    class Config:
+        fields_hided = {"code"}
+
+#
+class ContactTypeUpdate(ContactTypeInput):
+    pass

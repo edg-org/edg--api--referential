@@ -10,7 +10,6 @@ from api.electrical.schemas.ElectricMeterSchema import (
     CreateElectricMeter,
 )
 
-
 #
 class ElectricMeterService:
     meter: ElectricMeterRepo

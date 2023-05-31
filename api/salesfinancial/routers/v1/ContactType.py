@@ -1,16 +1,13 @@
 from typing import List
 from api.configs.Environment import get_env_var
+from api.salesfinancial.services.ContactTypeService import ContactTypeService
 from fastapi import (
     Depends,
     APIRouter,
     status,
     HTTPException,
 )
-from api.salesfinancial.services.ContactTypeService import (
-    ContactTypeService,
-)
 from api.salesfinancial.schemas.ContactTypeSchema import (
-    ContactTypeBase,
     CreateContactType,
     ContactTypeUpdate,
     ContactTypeSchema

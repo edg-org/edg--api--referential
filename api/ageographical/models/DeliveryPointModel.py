@@ -3,14 +3,14 @@ from sqlalchemy.orm import relationship
 from api.configs.BaseModel import EntityMeta
 from sqlalchemy.dialects.mysql import MEDIUMINT, BIGINT
 from sqlalchemy import (
-    Column,
-    DateTime,
     JSON,
-    String,
-    ForeignKey,
+    Column,
+    Boolean,
+    DateTime,
+    ForeignKey
 )
 
-
+#
 class DeliveryPointModel(EntityMeta):
     __tablename__ = "delivery_points"
 
@@ -19,8 +19,10 @@ class DeliveryPointModel(EntityMeta):
     area_id = Column(MEDIUMINT(unsigned=True), ForeignKey("areas.id"), nullable=False)
     pole_id = Column(MEDIUMINT(unsigned=True), ForeignKey("connection_poles.id"), nullable=False)
     infos = Column(JSON, nullable=False)
+    is_activated = Column(Boolean, index=True, default=True)
     created_at = Column(DateTime(timezone=True), server_default=datetime.utcnow().isoformat(), nullable=False)
     updated_at = Column(DateTime(timezone=True), onupdate=datetime.utcnow().isoformat(), nullable=True)
+    deleted_at = Column(DateTime(timezone=True), nullable=True)
 
     area = relationship("AreaModel", back_populates="delivery_points")
     connection_pole = relationship("ConnectionPoleModel", back_populates="delivery_points")

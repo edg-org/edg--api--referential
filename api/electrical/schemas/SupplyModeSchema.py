@@ -3,24 +3,31 @@ from datetime import datetime
 from pydantic import BaseModel
 from api.configs.Environment import HideFields
 
-class SupplyModeInput(BaseModel):
+#
+class SupplyModeSchema(BaseModel):
+    id: int
     code: int
     name: str
-
-class SupplyModeUpdate(SupplyModeInput, metaclass=HideFields):
-    class Config:
-        fields_hided = {'code'}
-
-class SupplyModeBase(SupplyModeInput):
-    pass
-
+    created_at: datetime
+    updated_at: Optional[datetime]
+    
     class Config:
         orm_mode = True
 
-class CreateSupplyMode(SupplyModeBase):
-    pass
+#
+class CreateSupplyMode(SupplyModeSchema, metaclass=HideFields):
+    class Config:
+        fields_hided = {
+            "id", 
+            "created_at",
+            "updated_at"
+        }
 
-class SupplyModeSchema(SupplyModeBase):
-    id: int
-    created_at: datetime
-    updated_at: Optional[datetime]
+#
+class SupplyModeInput(CreateSupplyMode, metaclass=HideFields):
+    class Config:
+        fields_hided = {"code"}
+
+#
+class SupplyModeUpdate(SupplyModeInput):
+    pass

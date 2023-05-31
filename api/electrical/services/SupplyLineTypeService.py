@@ -3,7 +3,6 @@ from fastapi import Depends, HTTPException, status
 from api.electrical.models.SupplyLineTypeModel import SupplyLineTypeModel
 from api.electrical.repositories.SupplyLineTypeRepo import SupplyLineTypeRepo
 from api.electrical.schemas.SupplyLineTypeSchema import (
-    SupplyLineTypeBase,
     SupplyLineTypeUpdate,
     CreateSupplyLineType
 )
@@ -28,11 +27,11 @@ class SupplyLineTypeService:
         return self.supplytype.get(id=id)
 
     # get supply line type by code function
-    async def getbycode(self, code: str) -> SupplyLineTypeBase:
+    async def getbycode(self, code: str) -> SupplyLineTypeModel:
         return self.supplytype.getbycode(code=code)
 
     # get supply line type by name function
-    async def getbyname(self, name: str) -> SupplyLineTypeBase:
+    async def getbyname(self, name: str) -> SupplyLineTypeModel:
         return self.supplytype.getbyname(name=name)
 
     # create supply line type function

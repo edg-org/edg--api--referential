@@ -3,6 +3,7 @@ from datetime import datetime
 from pydantic import BaseModel
 from api.configs.Environment import HideFields
 
+#
 class ElectricMeterInfos(BaseModel):
     brand: str
     meter_type: str
@@ -10,27 +11,35 @@ class ElectricMeterInfos(BaseModel):
     index_reading: float
     manufacturing_country: str
 
-class ElectricMeterInput(BaseModel):
+#
+class ElectricMeterSchema(BaseModel):
+    id: int
     meter_number: str
     infos: ElectricMeterInfos
-
-class ElectricMeterUpdate(ElectricMeterInput, metaclass=HideFields):
-    class Config:
-        fields_hided = {'code'}
-
-class ElectricMeterBase(ElectricMeterInput):
-    meter_type_id: int
-    supply_mode_id: int
-
-    class Config:
-        orm_mode = True
-
-class CreateElectricMeter(ElectricMeterBase):
-    pass
-
-class ElectricMeterSchema(ElectricMeterBase):
-    id: int
     is_activated: bool
     created_at: datetime
     updated_at: Optional[datetime]
     deleted_at: Optional[datetime]
+    
+    class Config:
+        orm_mode = True
+    
+#
+class CreateElectricMeter(ElectricMeterSchema, metaclass=HideFields):
+    class Config:
+        fields_hided = {
+            "id",
+            "is_activated",
+            "created_at",
+            "updated_at",
+            "deleted_at"
+        }
+
+#
+class ElectricMeterInput(ElectricMeterSchema, metaclass=HideFields):
+    class Config:
+        fields_hided = {"meter_number"}
+
+#
+class ElectricMeterUpdate(ElectricMeterInput):
+    pass

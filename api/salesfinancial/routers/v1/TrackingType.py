@@ -8,7 +8,6 @@ from fastapi import (
 )
 from api.salesfinancial.services.TrackingTypeService import TrackingTypeService
 from api.salesfinancial.schemas.TrackingTypeSchema import (
-    TrackingTypeBase,
     CreateTrackingType,
     TrackingTypeUpdate,
     TrackingTypeSchema,

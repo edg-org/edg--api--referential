@@ -1,16 +1,13 @@
 from typing import List
 from api.configs.Environment import get_env_var
+from api.salesfinancial.services.SubscriptionStatusService import SubscriptionStatusService
 from fastapi import (
     Depends,
     APIRouter,
     status,
     HTTPException,
 )
-from api.salesfinancial.services.SubscriptionStatusService import (
-    SubscriptionStatusService,
-)
 from api.salesfinancial.schemas.SubscriptionStatusSchema import (
-    SubscriptionStatusBase,
     CreateSubscriptionStatus,
     SubscriptionStatusUpdate,
     SubscriptionStatusSchema,

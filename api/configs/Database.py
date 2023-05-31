@@ -1,19 +1,19 @@
 from functools import lru_cache
 from sqlalchemy import create_engine
-#from api.configs.Environment import get_env_var
+from api.configs.Environment import get_env_var
 from sqlalchemy.orm import scoped_session, sessionmaker, declarative_base
 
 Engine = create_engine(
-    #"{0}://{1}:{2}@{3}:{4}/{5}".format(
-    #    get_env_var().database_dialect,
-    #    get_env_var().database_username,
-    #    get_env_var().database_password,
-    #    get_env_var().database_hostname,
-    #    get_env_var().database_port,
-    #    get_env_var().database_name,
-    #),
-    "mysql+pymysql://root:twuJe]M3hy{vF2MgA8@127.0.0.1:3306/ref_db",
-    echo=True, #get_env_var().debug_mode,
+    "{0}://{1}:{2}@{3}:{4}/{5}".format(
+        get_env_var().database_dialect,
+        get_env_var().database_username,
+        get_env_var().database_password,
+        get_env_var().database_hostname,
+        get_env_var().database_port,
+        get_env_var().database_name,
+    ),
+    #"mysql+pymysql://root:twuJe]M3hy{vF2MgA8@127.0.0.1:3306/ref_db",
+    echo=get_env_var().debug_mode,
     future=True,
 )
 

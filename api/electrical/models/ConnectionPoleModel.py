@@ -26,6 +26,7 @@ class ConnectionPoleModel(EntityMeta):
     is_activated = Column(Boolean, index=True, default=True)
     created_at = Column(DateTime(timezone=True), server_default=datetime.utcnow().isoformat(), nullable=False)
     updated_at = Column(DateTime(timezone=True), onupdate=datetime.utcnow().isoformat(), nullable=True)
+    deleted_at = Column(DateTime(timezone=True), nullable=True)
 
     area = relationship("AreaModel", back_populates="connection_poles")
     transformer = relationship("TransformerModel", back_populates="connection_poles")

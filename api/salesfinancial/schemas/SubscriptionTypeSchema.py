@@ -4,6 +4,7 @@ from datetime import datetime, date
 from api.configs.Environment import HideFields
 from api.salesfinancial.schemas.PricingHistorySchema import PricingHistorySchema
 
+#
 class Dunning(BaseModel):
     code: str
     rank: int
@@ -12,12 +13,14 @@ class Dunning(BaseModel):
     deadline_unit_time: str
     delay_penality_rate: float
 
+#
 class PricingSlices(BaseModel):
     name: str
     unit_price: float
     lower_index: float
     upper_index: Optional[float] | None
 
+#
 class Pricing(BaseModel):
     code: str
     name: str
@@ -25,6 +28,7 @@ class Pricing(BaseModel):
     subscription_fee: float
     slices: List[PricingSlices]
 
+#
 class PowerToSubscribe(BaseModel):
     housing_type: str
     lower_power: float
@@ -32,7 +36,10 @@ class PowerToSubscribe(BaseModel):
     deposit_to_pay: float
     estimated_consumption: float
 
+#
 class TypeInfosBase(BaseModel):
+    tracking_type: str
+    supply_mode: str
     payment_deadline: int
     deadline_measurement_unit: str
     tva: float
@@ -41,37 +48,44 @@ class TypeInfosBase(BaseModel):
     power_measurement_unit: str
     consumption_measurement_unit: str
     power_to_subscribe: List[PowerToSubscribe]
-
-class TypeInfosInput(TypeInfosBase):
-    tracking_type: str
-    supply_mode: str
-
-class SubscriptionTypeInput(BaseModel):
+    
+#
+class SubscriptionTypeSchema(BaseModel):
+    id: int
     code: str
     name: str
     infos: TypeInfosBase
-    pricing: Pricing
-    dunning: List[Dunning]
-
-class SubscriptionTypeUpdate(SubscriptionTypeInput, metaclass=HideFields):
-    class Config:
-        fields_hided = {'code'}
-
-class SubscriptionTypeBase(SubscriptionTypeInput):
     supply_mode_id: int
     tracking_type_id: int
-
+    pricing: Pricing
+    dunning: List[Dunning]
+    created_at: datetime
+    updated_at: Optional[datetime]
+    
     class Config:
         orm_mode = True
 
-class CreateSubscriptionType(SubscriptionTypeBase):
+#
+class CreateSubscriptionType(SubscriptionTypeSchema, metaclass=HideFields):
+    class Config:
+        fields_hided = {
+            "id",  
+            "created_at",
+            "updated_at"
+        }
+
+#
+class SubscriptionTypeInput(SubscriptionTypeSchema, metaclass=HideFields):
+    class Config:
+        fields_hided = {
+            "supply_mode_id", 
+            "tracking_type_id"
+        }
+
+#
+class SubscriptionTypeUpdate(SubscriptionTypeInput):
     pass
 
-
-class SubscriptionTypeSchema(SubscriptionTypeBase):
-    id: int
-    created_at: datetime
-    updated_at: Optional[datetime]
-
+#
 class SubscriptionTypeItemSchema(SubscriptionTypeSchema):
     pricing_histories: list[PricingHistorySchema] = []

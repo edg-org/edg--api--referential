@@ -3,24 +3,31 @@ from datetime import datetime
 from pydantic import BaseModel
 from api.configs.Environment import HideFields
 
-class MeterTypeInput(BaseModel):
+#
+class MeterTypeSchema(BaseModel):
+    id: int
     code: int
     name: str
-
-class MeterTypeUpdate(MeterTypeInput, metaclass=HideFields):
-    class Config:
-        fields_hided = {'code'}
-
-class MeterTypeBase(MeterTypeInput):
-    pass
-
+    created_at: datetime
+    updated_at: Optional[datetime]
+    
     class Config:
         orm_mode = True
 
-class CreateMeterType(MeterTypeBase):
-    pass
+#
+class CreateMeterType(MeterTypeSchema, metaclass=HideFields):
+    class Config:
+        fields_hided = {
+            "id", 
+            "created_at",
+            "updated_at"
+        }
 
-class MeterTypeSchema(MeterTypeBase):
-    id: int
-    created_at: datetime
-    updated_at: Optional[datetime]
+#
+class MeterTypeInput(CreateMeterType, metaclass=HideFields):
+    class Config:
+        fields_hided = {"code"}
+
+#
+class MeterTypeUpdate(MeterTypeInput):
+    pass

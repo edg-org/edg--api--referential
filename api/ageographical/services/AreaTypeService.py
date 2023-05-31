@@ -2,13 +2,9 @@ from typing import List
 from fastapi import Depends, HTTPException, status
 from api.ageographical.models.AreaTypeModel import AreaTypeModel
 from api.ageographical.repositories.AreaTypeRepo import AreaTypeRepo
-from api.ageographical.schemas.AreaTypeSchema import (
-    AreaTypeBase,
-    AreaTypeUpdate,
-    CreateAreaType,
-)
+from api.ageographical.schemas.AreaTypeSchema import CreateAreaType
 
-
+#
 class AreaTypeService:
     areatype: AreaTypeRepo
 
@@ -26,11 +22,11 @@ class AreaTypeService:
         return self.areatype.get(id=id)
 
     # get area type by code function
-    async def getbycode(self, code: str) -> AreaTypeBase:
+    async def getbycode(self, code: str) -> AreaTypeModel:
         return self.areatype.getbycode(code=code)
 
     # get area type by name function
-    async def getbyname(self, name: str) -> AreaTypeBase:
+    async def getbyname(self, name: str) -> AreaTypeModel:
         return self.areatype.getbyname(name=name)
 
     # create area type function

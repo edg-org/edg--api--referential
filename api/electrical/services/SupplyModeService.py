@@ -2,10 +2,7 @@ from typing import List
 from fastapi import Depends, HTTPException, status
 from api.electrical.models.SupplyModeModel import SupplyModeModel
 from api.electrical.repositories.SupplyModeRepo import SupplyModeRepo
-from api.electrical.schemas.SupplyModeSchema import (
-    SupplyModeBase,
-    CreateSupplyMode,
-)
+from api.electrical.schemas.SupplyModeSchema import CreateSupplyMode
 
 #
 class SupplyModeService:
@@ -27,11 +24,11 @@ class SupplyModeService:
         return self.supplymode.get(id=id)
 
     # get supply mode by code function
-    async def getbycode(self, code: str) -> SupplyModeBase:
+    async def getbycode(self, code: str) -> SupplyModeModel:
         return self.supplymode.getbycode(code=code)
 
     # get supply mode by name function
-    async def getbyname(self, name: str) -> SupplyModeBase:
+    async def getbyname(self, name: str) -> SupplyModeModel:
         return self.supplymode.getbyname(name=name)
 
     # create supply mode function
@@ -59,7 +56,7 @@ class SupplyModeService:
 
     # update supply mode function
     async def update(
-        self, code: int, data: SupplyModeBase
+        self, code: int, data: SupplyModeModel
     ) -> SupplyModeModel:
         supplymode = self.supplymode.getbycode(code=code)
         if supplymode is None:
