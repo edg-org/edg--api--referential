@@ -17,7 +17,7 @@ class TestRegionRepository(TestCase):
     @patch("api.ageographical.schemas.RegionSchema.CreateRegion", autospec=True)
     def test_create(self, CreateRegion):
         fake = Faker()
-        region = CreateRegion(
+        region: List[CreateRegion] = CreateRegion(
             name=fake,
             code=fake,
             zone_id=fake,

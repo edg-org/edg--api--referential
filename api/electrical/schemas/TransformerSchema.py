@@ -13,9 +13,9 @@ class TransformerCoordinates(SchemaModel):
 #
 class EnergySupplyLines(SchemaModel):
     electrical_code: int
+    is_actived: bool
     activation_dated: date
     desactivation_date: Optional[date]=None
-    is_actived: bool
 
 #
 class TransformerInfos(SchemaModel):

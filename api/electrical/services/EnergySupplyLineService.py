@@ -1,7 +1,7 @@
 from typing import List
 from fastapi import Depends, HTTPException, status
-from api.tools.Helper import generate_code, energy_supply_basecode
 from api.ageographical.repositories.CityRepo import CityRepo
+from api.tools.Helper import generate_code, energy_supply_basecode
 from api.electrical.repositories.SupplyLineTypeRepo import SupplyLineTypeRepo
 from api.electrical.models.EnergySupplyLineModel import EnergySupplyLineModel
 from api.electrical.repositories.EnergySupplyLineRepo import EnergySupplyLineRepo
@@ -9,7 +9,6 @@ from api.electrical.schemas.EnergySupplyLineSchema import (
     EnergySupplyLineInput,
     CreateEnergySupplyLine
 )
-
 
 #
 class EnergySupplyLineService:
