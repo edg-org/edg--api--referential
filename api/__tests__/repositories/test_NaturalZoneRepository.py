@@ -1,5 +1,4 @@
 import json
-from faker import Faker
 from typing import List
 from unittest import TestCase
 from sqlalchemy.orm import Session
@@ -17,12 +16,7 @@ class TestZoneRepository(TestCase):
 
     @patch("api.ageographical.schemas.NaturalZoneSchema.CreateZone", autospec=True)
     def test_create(self, CreateZone):
-        fake = Faker()
-        zone: List[CreateZone] = CreateZone(
-            name=fake,
-            code=fake,
-            coordinates=fake
-        )
+        zone = CreateZone(name=self.loadJson())
         a: List[CreateZone] = self.zoneRepository.create(zone)
         self.session.execute.assert_called_once()
         self.session.commit.assert_called_once()
@@ -46,13 +40,17 @@ class TestZoneRepository(TestCase):
 
     @patch("api.ageographical.schemas.NaturalZoneSchema.CreateZone", autospec=True)
     def test_update(self, CreateZone):
-        fake = Faker()
         zone : CreateZone = CreateZone(
-            name=fake,
-            code=fake,
-            coordinates=fake   
+            name="Moyenne Guinée",
+            code=10
         )
         self.zoneRepository.update(zone)
         self.session.add.assert_called_once()
         self.session.commit.assert_called_once()
         self.session.refresh.assert_called_once()
+        
+    def loadJson(self):
+        f = open("api/__tests__/json/natural_zones_input.json")
+        a = json.load(f)
+        f.close()
+        return a

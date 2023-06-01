@@ -1,5 +1,4 @@
 import json
-from faker import Faker
 from typing import List
 from unittest import TestCase
 from unittest.mock import Mock, create_autospec, patch
@@ -17,10 +16,11 @@ class TestNaturalZoneService(TestCase):
 
     @patch("api.ageographical.schemas.NaturalZoneSchema.ZoneInput", autospec=True)
     async def test_create(self, ZoneInput):
-        fake = Faker()
         zone: List[ZoneInput] = ZoneInput(
-            name=fake,
-            coordinates=fake
+            {
+                "code":20,
+                "name":"Moyenne Guinée"
+            }
         )
         self.zoneService.create = Mock()
         self.zoneService.create(zone)
@@ -29,10 +29,10 @@ class TestNaturalZoneService(TestCase):
     
     @patch("api.ageographical.schemas.NaturalZoneSchema.ZoneUpdate", autospec=True)
     async def test_update(self, ZoneUpdate):
-        fake = Faker()
         zone: ZoneUpdate = ZoneUpdate(
-            name=fake,
-            coordinates=fake
+            {
+                "name":"Moyenne Guinée"
+            }
         )
         self.zoneService.update = Mock()
         self.zoneService.update(zone)
@@ -42,3 +42,10 @@ class TestNaturalZoneService(TestCase):
     async def test_activate_desactivate(self):
         self.zoneService.activate_desactivate(code=1)
         self.session.delete.assert_called_once()
+        
+    
+    def loadJson():
+        f = open("api/subscription/__test__//create_contract.json")
+        a = json.load(f)
+        f.close()
+        return a

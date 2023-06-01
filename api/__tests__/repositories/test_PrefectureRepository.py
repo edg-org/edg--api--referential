@@ -1,5 +1,4 @@
 import json
-from faker import Faker
 from typing import List
 from unittest import TestCase
 from sqlalchemy.orm import Session
@@ -17,15 +16,7 @@ class TestPrefectureRepository(TestCase):
 
     @patch("api.ageographical.schemas.PrefectureSchema.CreatePrefecture", autospec=True)
     def test_create(self, CreatePrefecture):
-        fake = Faker()
-        prefecture: List[CreatePrefecture] = CreatePrefecture(
-            name=fake,
-            code=fake,
-            is_capital=fake,
-            prefecture_number=fake,
-            region_id=fake,
-            infos=fake
-        )
+        prefecture: List[CreatePrefecture] = CreatePrefecture(name=self.loadJson())
         a: List[CreatePrefecture] = self.prefectureRepository.create(prefecture)
         self.session.execute.assert_called_once()
         self.session.commit.assert_called_once()
@@ -49,16 +40,22 @@ class TestPrefectureRepository(TestCase):
 
     @patch("api.ageographical.schemas.PrefectureSchema.CreatePrefecture", autospec=True)
     def test_update(self, CreatePrefecture):
-        fake = Faker()
         prefecture : CreatePrefecture = CreatePrefecture(
-            name=fake,
-            code=fake,
-            is_capital=fake,
-            prefecture_number=fake,
-            region_id=fake,
-            infos=fake
+            name="Mamou",
+            region_id=10254,
+            prefecture_number=10,
+            is_capital=True,
+            infos=dict(
+                region="région de mamou"
+            )
         )
         self.prefectureRepository.update(prefecture)
         self.session.add.assert_called_once()
         self.session.commit.assert_called_once()
         self.session.refresh.assert_called_once()
+        
+    def loadJson(self):
+        f = open("api/__tests__/json/prefectures_input.json")
+        a = json.load(f)
+        f.close()
+        return a

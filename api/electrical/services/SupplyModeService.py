@@ -1,10 +1,12 @@
 from typing import List
 from fastapi import Depends, HTTPException, status
 from api.electrical.models.SupplyModeModel import SupplyModeModel
-from api.electrical.repositories.SupplyModeRepo import SupplyModeRepo
 from api.electrical.schemas.SupplyModeSchema import CreateSupplyMode
+from api.electrical.repositories.SupplyModeRepo import SupplyModeRepo
 
 #
+
+
 class SupplyModeService:
     supplymode: SupplyModeRepo
 

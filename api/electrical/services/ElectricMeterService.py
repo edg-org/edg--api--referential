@@ -1,7 +1,7 @@
 from typing import List
 from fastapi import Depends, HTTPException, status
-from api.electrical.repositories.SupplyModeRepo import SupplyModeRepo
 from api.electrical.repositories.MeterTypeRepo import MeterTypeRepo
+from api.electrical.repositories.SupplyModeRepo import SupplyModeRepo
 from api.electrical.models.ElectricMeterModel import ElectricMeterModel
 from api.electrical.repositories.ElectricMeterRepo import ElectricMeterRepo
 from api.electrical.schemas.ElectricMeterSchema import (
@@ -13,7 +13,6 @@ from api.electrical.schemas.ElectricMeterSchema import (
 #
 class ElectricMeterService:
     meter: ElectricMeterRepo
-
     def __init__(
         self,
         meter: ElectricMeterRepo = Depends(),
@@ -22,8 +21,8 @@ class ElectricMeterService:
 
     # get all electric meters function
     async def list(
-        self, 
-        skip: int = 0, 
+        self,
+        skip: int = 0,
         limit: int = 100
     ) -> List[ElectricMeterModel]:
         return self.meter.list(skip=skip, limit=limit)
@@ -44,14 +43,15 @@ class ElectricMeterService:
             if count > 0:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Electric Meter already registered with number " + str(item.meter_number),
+                    detail="Electric Meter already registered with number " +
+                    str(item.meter_number),
                 )
-            
+
             meter = CreateElectricMeter(
-                meter_number = item.meter_number,
-                meter_type_id = MeterTypeRepo.getbyname(self.meter, item.infos.meter_type).id,
-                power_mode_id = SupplyModeRepo.getbyname(self.meter, item.infos.power_mode).id,
-                infos = item.infos
+                meter_number=item.meter_number,
+                meter_type_id=MeterTypeRepo.getbyname(self.meter, item.infos.meter_type).id,
+                power_mode_id=SupplyModeRepo.getbyname(self.meter, item.infos.power_mode).id,
+                infos=item.infos
             )
             metriclist.append(meter)
 

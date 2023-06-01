@@ -7,7 +7,6 @@ from api.electrical.schemas.MeterDeliveryPointSchema import (
     CreateMeterDeliveryPoint,
 )
 
-
 #
 class MeterDeliveryPointService:
     meterdelivery: MeterDeliveryPointRepo
