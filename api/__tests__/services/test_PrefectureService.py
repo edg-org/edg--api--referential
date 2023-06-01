@@ -1,3 +1,4 @@
+from faker import Faker
 from typing import List
 from unittest import TestCase
 from unittest.mock import Mock, create_autospec, patch
@@ -15,14 +16,15 @@ class TestPrefectureService(TestCase):
 
     @patch("api.ageographical.schemas.PrefectureSchema.PrefectureInput", autospec=True)
     async def test_create(self, PrefectureInput):
+        fake = Faker()
         prefecture: List[PrefectureInput] = PrefectureInput(
             {
-                "name": "Mamou",
-                "region_id": 10254,
-                "prefecture_number": 10,
+                "name": fake,
+                "region_id": fake,
+                "prefecture_number": fake,
                 "is_capital": True,
                 "infos": {
-                    "region": "région de mamou"
+                    "region": fake
                 }
             }
         )
@@ -33,12 +35,13 @@ class TestPrefectureService(TestCase):
     
     @patch("api.ageographical.schemas.PrefectureSchema.PrefectureUpdate", autospec=True)
     async def test_update(self, PrefectureUpdate):
+        fake = Faker()
         prefecture: PrefectureUpdate = PrefectureUpdate(
             {
-                "name": "Mamou",
+                "name": fake,
                 "is_capital": True,
                 "infos": {
-                    "region": "région de mamou"
+                    "region": fake
                 }
             }
         )

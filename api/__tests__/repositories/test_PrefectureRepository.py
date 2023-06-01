@@ -1,4 +1,4 @@
-import json
+from faker import Faker
 from typing import List
 from unittest import TestCase
 from sqlalchemy.orm import Session
@@ -16,7 +16,16 @@ class TestPrefectureRepository(TestCase):
 
     @patch("api.ageographical.schemas.PrefectureSchema.CreatePrefecture", autospec=True)
     def test_create(self, CreatePrefecture):
-        prefecture: List[CreatePrefecture] = CreatePrefecture(name=self.loadJson())
+        fake = Faker()
+        prefecture: List[CreatePrefecture] = CreatePrefecture(
+            name=fake,
+            region_id=fake,
+            prefecture_number=fake,
+            is_capital=fake,
+            infos=dict(
+                region=fake
+            )
+        )
         a: List[CreatePrefecture] = self.prefectureRepository.create(prefecture)
         self.session.execute.assert_called_once()
         self.session.commit.assert_called_once()
@@ -53,9 +62,3 @@ class TestPrefectureRepository(TestCase):
         self.session.add.assert_called_once()
         self.session.commit.assert_called_once()
         self.session.refresh.assert_called_once()
-        
-    def loadJson(self):
-        f = open("api/__tests__/json/prefectures_input.json")
-        a = json.load(f)
-        f.close()
-        return a

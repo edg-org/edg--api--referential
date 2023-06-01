@@ -1,3 +1,4 @@
+from faker import Faker
 from typing import List
 from unittest import TestCase
 from unittest.mock import Mock, create_autospec, patch
@@ -15,13 +16,14 @@ class TestRegionService(TestCase):
 
     @patch("api.ageographical.schemas.RegionSchema.RegionInput", autospec=True)
     async def test_create(self, RegionInput):
+        fake = Faker()
         region: List[RegionInput] = RegionInput(
             {
-                "name": "Région de Mamou",
-                "code": 1042,
-                "zone_id": 10,
+                "name": fake,
+                "code": fake,
+                "zone_id": fake,
                 "infos": {
-                    "natural_zone": "moyenne guinée"
+                    "natural_zone": fake
                 }
             }
         )
@@ -31,11 +33,12 @@ class TestRegionService(TestCase):
         
     @patch("api.ageographical.schemas.RegionSchema.RegionUpdate", autospec=True)
     async def test_update(self, RegionUpdate):
+        fake = Faker()
         region: RegionUpdate = RegionUpdate(
             {
-                "name": "Région de Mamou",
+                "name": fake,
                 "infos": {
-                    "natural_zone": "moyenne guinée"
+                    "natural_zone": fake
                 }
             }
         )

@@ -1,3 +1,4 @@
+from faker import Faker
 from typing import List
 from unittest import TestCase
 from unittest.mock import Mock, create_autospec, patch
@@ -15,18 +16,19 @@ class TestCityService(TestCase):
 
     @patch("api.ageographical.schemas.CitySchema.CityInput", autospec=True)
     async def test_create(self, CityInput):
+        fake = Faker()
         city: List[CityInput] = CityInput(
             {
-                "code": 201458,
-                "zipcode": "02000",
-                "city_type_id": 1,
-                "city_level_id": 1,
-                "prefecture_id": 10,
+                "code": fake,
+                "zipcode": fake,
+                "city_type_id": fake,
+                "city_level_id": fake,
+                "prefecture_id": fake,
                 "infos": {
-                    "prefecture": "boké",
-                    "name": "Dabiss",
-                    "city_type": "Commune Urbaine",
-                    "city_level": "Sous-préfecture"
+                    "prefecture": fake,
+                    "name": fake,
+                    "city_type": fake,
+                    "city_level": fake
                 }
             }
         )
@@ -37,13 +39,14 @@ class TestCityService(TestCase):
     
     @patch("api.ageographical.schemas.CitySchema.CityUpdate", autospec=True)
     async def test_update(self, CityUpdate):
+        fake = Faker()
         city: CityUpdate = CityUpdate(
             {
                 "infos": {
-                    "prefecture": "boké",
-                    "name": "Dabiss",
-                    "city_type": "Commune Urbaine",
-                    "city_level": "Sous-préfecture"
+                    "prefecture": fake,
+                    "name": fake,
+                    "city_type": fake,
+                    "city_level": fake
                 }
             }
         )

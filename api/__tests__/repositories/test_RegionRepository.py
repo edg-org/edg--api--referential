@@ -1,4 +1,4 @@
-import json
+from faker import Faker
 from typing import List
 from unittest import TestCase
 from sqlalchemy.orm import Session
@@ -16,7 +16,15 @@ class TestRegionRepository(TestCase):
 
     @patch("api.ageographical.schemas.RegionSchema.CreateRegion", autospec=True)
     def test_create(self, CreateRegion):
-        region = CreateRegion(name=self.loadJson())
+        fake = Faker()
+        region = CreateRegion(
+            name=fake,
+            code=fake,
+            zone_id=fake,
+            infos= dict(
+                natural_zone=fake
+            )
+        )
         a: List[CreateRegion] = self.regionRepository.create(region)
         self.session.execute.assert_called_once()
         self.session.commit.assert_called_once()
@@ -40,11 +48,14 @@ class TestRegionRepository(TestCase):
 
     @patch("api.ageographical.schemas.RegionSchema.CreateRegion", autospec=True)
     def test_update(self, CreateRegion):
+        fake = Faker()
         region : CreateRegion = CreateRegion(
-            name="Région de Mamou",
-            code=1042,
-            zone_id=10,
-            infos= dict(natural_zone="moyenne guinée")
+            name=fake,
+            code=fake,
+            zone_id=fake,
+            infos= dict(
+                natural_zone=fake
+            )
         )
         self.regionRepository.update(region)
         self.session.add.assert_called_once()

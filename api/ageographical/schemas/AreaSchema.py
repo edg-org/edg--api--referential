@@ -1,6 +1,6 @@
 from typing import Optional
 from datetime import datetime
-from pydantic import Field
+from pydantic import BaseModel, Field
 from api.configs.BaseModel import SchemaModel
 from api.ageographical.schemas.AgencySchema import AgencySchema
 

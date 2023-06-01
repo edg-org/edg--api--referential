@@ -1,4 +1,4 @@
-import json
+from faker import Faker
 from typing import List
 from unittest import TestCase
 from sqlalchemy.orm import Session
@@ -16,7 +16,20 @@ class TestCityRepository(TestCase):
 
     @patch("api.ageographical.schemas.CitySchema.CreateCity", autospec=True)
     def test_create(self, CreateCity):
-        city = CreateCity(name=self.loadJson())
+        fake = Faker()
+        city: List[CreateCity] = CreateCity(
+            code=fake,
+            zipcode=fake,
+            city_type_id=fake,
+            city_level_id=fake,
+            prefecture_id=fake,
+            infos=dict(
+                prefecture=fake,
+                name=fake,
+                city_type=fake,
+                city_level=fake
+            )
+        )
         a: List[CreateCity] = self.cityRepository.create(city)
         self.session.execute.assert_called_once()
         self.session.commit.assert_called_once()
@@ -40,27 +53,21 @@ class TestCityRepository(TestCase):
 
     @patch("api.ageographical.schemas.CitySchema.CreateCity", autospec=True)
     def test_update(self, CreateCity):
+        fake = Faker()
         city : CreateCity = CreateCity(
-            code=201458,
-            zipcode="02000",
-            city_type_id=1,
-            city_level_id=1,
-            prefecture_id=10,
+            code=fake,
+            zipcode=fake,
+            city_type_id=fake,
+            city_level_id=fake,
+            prefecture_id=fake,
             infos=dict(
-                prefecture="boké",
-                name="Dabiss",
-                city_type="Commune Urbaine",
-                city_level="Sous-préfecture"
+                prefecture=fake,
+                name=fake,
+                city_type=fake,
+                city_level=fake
             )
         )
         self.cityRepository.update(city)
         self.session.add.assert_called_once()
         self.session.commit.assert_called_once()
         self.session.refresh.assert_called_once()
-        
-    #
-    def loadJson(self):
-        f = open("api/__tests__/json/cities_input.json")
-        a = json.load(f)
-        f.close()
-        return a
