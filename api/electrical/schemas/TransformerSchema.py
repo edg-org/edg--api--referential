@@ -1,4 +1,3 @@
-from pydantic import BaseModel
 from typing import Optional, List
 from datetime import date, datetime
 from api.configs.BaseModel import SchemaModel

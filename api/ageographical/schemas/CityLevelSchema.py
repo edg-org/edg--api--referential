@@ -1,6 +1,6 @@
 from typing import Optional
 from datetime import datetime
-from pydantic import BaseModel
+
 from api.configs.BaseModel import SchemaModel
 
 #

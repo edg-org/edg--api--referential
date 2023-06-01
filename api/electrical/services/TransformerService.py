@@ -2,9 +2,9 @@ from typing import List
 from fastapi import Depends, HTTPException, status
 from api.ageographical.repositories.AreaRepo import AreaRepo
 from api.ageographical.repositories.CityRepo import CityRepo
-from api.tools.Helper import transformer_basecode, generate_code
 from api.electrical.models.TransformerModel import TransformerModel
 from api.electrical.repositories.TransformerRepo import TransformerRepo
+from api.tools.Helper import transformer_basecode, generate_code, add_log
 from api.electrical.repositories.EnergySupplyLineRepo import EnergySupplyLineRepo
 from api.electrical.schemas.TransformerSchema import (
     TransformerUpdate,
@@ -114,7 +114,7 @@ class TransformerService:
             area_id = AreaRepo.getidbycode(self.supply, data.infos.area_code)
 
         transformer = CreateTransformer(
-            transformer_code = transformer_code,
+            transformer_code = code,
             city_id = CityRepo.getidbycode(self.transformer, data.infos.city_code),
             area_id = area_id,
             supply_line_id = EnergySupplyLineRepo.getbycode(self.transformer, data.infos.supply_line_code).id,

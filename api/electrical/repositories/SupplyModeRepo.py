@@ -54,7 +54,7 @@ class SupplyModeRepo:
         )
 
     # get supply mode id by name function
-    def getidbyname(self, name: str) -> SupplyModeModel:
+    def getidbyname(self, name: str) -> int:
         return (
             self.db.query(SupplyModeModel.id)
             .where(func.lower(SupplyModeModel.name) == name.lower())

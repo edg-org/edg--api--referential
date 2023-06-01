@@ -76,7 +76,7 @@ class ConnectionPoleRepo:
         )
 
      # count total rows of connection pole by number
-    def countbynumber(self, number: int) -> ConnectionPoleModel:
+    def countbynumber(self, number: int) -> int:
         return (
             self.db.query(ConnectionPoleModel)
             .where(ConnectionPoleModel.connection_pole_number == number)

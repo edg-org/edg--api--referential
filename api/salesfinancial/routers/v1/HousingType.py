@@ -8,8 +8,8 @@ from fastapi import (
     HTTPException,
 )
 from api.salesfinancial.schemas.HousingTypeSchema import (
-    CreateHousingType,
     HousingTypeUpdate,
+    CreateHousingType,
     HousingTypeSchema,
 )
 

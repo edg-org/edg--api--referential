@@ -36,7 +36,7 @@ from api.electrical.routers.v1.FixationType import fixationtypeRouter
 from api.electrical.routers.v1.EnergySupplyLine import energysupplyRouter
 from api.electrical.routers.v1.MeterDeliveryPoint import meterdeliveryRouter
 
-from api.loggers.routers.v1.Logger import loggerRouter
+from api.logs.routers.v1.Log import logRouter
 
 # Application Environment Configuration
 env = get_env_var()
@@ -83,7 +83,7 @@ app.include_router(transformerRouter)
 app.include_router(energysupplyRouter)
 app.include_router(poleRouter)
 
-app.include_router(loggerRouter)
+app.include_router(logRouter)
 
 # Initialize Data Model
 init()

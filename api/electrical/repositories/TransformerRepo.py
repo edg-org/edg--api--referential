@@ -60,7 +60,7 @@ class TransformerRepo:
         )
 
     # get transformer id by code function
-    def getidbycode(self, code: int) -> TransformerModel:
+    def getidbycode(self, code: int) -> int:
         return (
             self.db.query(TransformerModel.id)
             .where(TransformerModel.transformer_code == code)
@@ -76,7 +76,7 @@ class TransformerRepo:
         )
 
     # count total rows of transformer by code
-    def countbycode(self, code: str) -> TransformerModel:
+    def countbycode(self, code: str) -> int:
         return (
             self.db.query(TransformerModel)
             .where(TransformerModel.transformer_code == code)

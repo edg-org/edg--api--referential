@@ -10,7 +10,7 @@ class InfosSchema(SchemaModel):
     previous_metadata: Dict[str, Any]
     current_metadata: Dict[str, Any]
     
-class LoggerSchema(SchemaModel):
+class LogSchema(SchemaModel):
     id: int
     created_at: datetime
     infos: InfosSchema
@@ -18,12 +18,12 @@ class LoggerSchema(SchemaModel):
     class Config:
         orm_mode = True
 
-class CreateLogger(LoggerSchema):
+class CreateLog(LogSchema):
     class Config:
         fields_to_hide = {
             "id", 
             "created_at"
         }
 
-class LoggerInput(CreateLogger):
+class LogInput(CreateLog):
     pass

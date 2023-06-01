@@ -1,7 +1,7 @@
 from typing import Optional
 from datetime import datetime
+from pydantic import EmailStr, Field, constr
 from api.configs.BaseModel import SchemaModel
-from pydantic import BaseModel, EmailStr, Field, constr
 
 class AgencySearchParams(SchemaModel):
     code: int | None = Field(description="Field of the agency name")

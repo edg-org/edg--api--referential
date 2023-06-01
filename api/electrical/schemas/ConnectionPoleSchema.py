@@ -1,6 +1,5 @@
-from datetime import datetime, date
-from pydantic import BaseModel
 from typing import Optional, List
+from datetime import datetime, date
 from api.configs.BaseModel import SchemaModel
 from api.ageographical.schemas.DeliveryPointSchema import DeliveryPointSchema
 

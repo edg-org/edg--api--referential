@@ -24,6 +24,14 @@ class HousingTypeRepo:
             .all()
         )
 
+    # count total rows of transformer by code
+    def countbycode(self, code: str) -> int:
+        return (
+            self.db.query(HousingTypeModel)
+            .where(HousingTypeModel.code == code)
+            .count()
+        )
+        
     # get housing type by id function
     def get(self, id: int) -> HousingTypeModel:
         return (

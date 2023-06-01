@@ -1,8 +1,11 @@
 from typing import List
+from dataclasses import asdict
+from api.tools.Helper import add_log
+from api.configs.Environment import get_env_var
 from fastapi import Depends, HTTPException, status
 from api.salesfinancial.models.HousingTypeModel import HousingTypeModel
-from api.salesfinancial.schemas.HousingTypeSchema import CreateHousingType
 from api.salesfinancial.repositories.HousingTypeRepo import HousingTypeRepo
+from api.salesfinancial.schemas.HousingTypeSchema import CreateHousingType, HousingTypeUpdate
 
 class HousingTypeService:
     housingtype: HousingTypeRepo
@@ -52,21 +55,33 @@ class HousingTypeService:
         return self.housingtype.create(data=data)
 
     # update housing type function
-    async def update(self, code: int, data: CreateHousingType) -> HousingTypeModel:
-        housingtype = self.housingtype.getbycode(code=code)
-        if housingtype is None:
+    async def update(self, code: int, data: HousingTypeUpdate) -> HousingTypeModel:
+        housingtype_count = self.housingtype.countbycode(code=code)
+        if housingtype_count is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Housing Type not found",
             )
+        olddata = self.housingtype.getbycode(code=code)
+        housing = CreateHousingType(
+            name=data.name,
+            code=olddata.code,
+            shortname=data.shortname
+        )
 
-        typedict = data.dict(exclude_unset=True)
-        for key, val in typedict.items():
-            setattr(housingtype, key, val)
-        return self.housingtype.update(housingtype)
+        #logs = add_log(
+        #    microservice_name="referential",
+        #    endpoint="/housingtype/{code}",
+        #    verb="PUT",
+        #    user_email="ousou.diakite@gmail.com",
+        #    previous_metadata=olddata.__dict__,
+        #    current_metadata=data.dict()
+        #)
+        #print(logs)
+        return self.housingtype.update(housing)
 
     # delete housing type %function
-    async def delete(self, housing: HousingTypeModel) -> None:
+    async def delete(self, code: int) -> None:
         housingtype = self.housingtype.getbycode(code=code)
         if housingtype is None:
             raise HTTPException(
@@ -74,7 +89,7 @@ class HousingTypeService:
                 detail="Housing Type not found",
             )
 
-        self.housingtype.update(housing)
+        self.housingtype.update(housingtype)
         return HTTPException(
             status_code=status.HTTP_200_OK,
             detail="Housing Type deleted",

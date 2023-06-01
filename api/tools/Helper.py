@@ -1,6 +1,9 @@
 import requests
 from typing import Optional
 from fastapi.encoders import jsonable_encoder
+from api.configs.Environment import get_env_var
+
+env = get_env_var()
 
 # Function to generate geographical natural zone code
 def generate_zone_code(code: int):
@@ -72,17 +75,19 @@ def add_log(
     verb: str = "PUT",
     user_email: str = "",
     previous_metadata: Optional[dict] = {},
-    current_metadata: Optional[dict] = {},
+    current_metadata: Optional[dict] = {}
 ):
-    json_data = {
+    baseUrl = env.domaine_name + env.api_routers_prefix + env.api_version
+    input_data = [{
         "infos": {
             "microservice_name": microservice_name,
-            "endpoint": endpoint,
+            "endpoint": baseUrl+endpoint,
             "verb": verb,
             "user_email": user_email,
             "previous_medata": jsonable_encoder(previous_metadata),
             "current_metadata": jsonable_encoder(current_metadata),
         }
-    }
-    r = requests.post("http://127.0.0.1:8000/v1/logs/", json=json_data)
-    return r.status_code  # 201
+    }]
+    print(baseUrl+"/logs")
+    result = requests.post(baseUrl+"/logs", json=input_data)
+    return result.status_code  # 201

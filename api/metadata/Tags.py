@@ -120,7 +120,7 @@ Tags = [
         "description": "Contains CRUD operation on Pricing Histories",
     },
     {
-        "name": "Loggers",
+        "name": "Logs",
         "description": "Contains CRUD operation on Logs",
     }
 ]
