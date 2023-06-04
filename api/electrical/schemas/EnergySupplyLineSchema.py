@@ -62,5 +62,5 @@ class EnergySupplyLineInput(CreateEnergySupplyLine):
             "departure_area_id"
         }
     
-class EnergySupplyLineUpdate(BaseSchema):
+class EnergySupplyLineUpdate(EnergySupplyLineInput):
     pass

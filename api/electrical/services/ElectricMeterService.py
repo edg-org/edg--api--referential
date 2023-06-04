@@ -1,4 +1,8 @@
 from typing import List
+from datetime import datetime
+from api.tools.Helper import build_log
+from fastapi.encoders import jsonable_encoder
+from api.logs.repositories.LogRepo import LogRepo
 from fastapi import Depends, HTTPException, status
 from api.electrical.repositories.MeterTypeRepo import MeterTypeRepo
 from api.electrical.repositories.SupplyModeRepo import SupplyModeRepo
@@ -12,11 +16,15 @@ from api.electrical.schemas.ElectricMeterSchema import (
 
 #
 class ElectricMeterService:
+    log: LogRepo
     meter: ElectricMeterRepo
+    
     def __init__(
         self,
-        meter: ElectricMeterRepo = Depends(),
+        log: LogRepo = Depends(),
+        meter: ElectricMeterRepo = Depends()
     ) -> None:
+        self.log = log
         self.meter = meter
 
     # get all electric meters function
@@ -59,17 +67,47 @@ class ElectricMeterService:
 
     # update electric meter function
     async def update(self, number: int, data: ElectricMeterUpdate) -> ElectricMeterModel:
-        meter = self.meter.getbynumber(number=number)
-        if meter is None:
+        old_data = jsonable_encoder(self.meter.getbynumber(number=number))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Electric Meter not found",
             )
-
-        meterdict = data.dict(exclude_unset=True)
-        for key, val in meterdict.items():
-            setattr(meter, key, val)
-        return self.meter.update(meter)
+        
+        if (hasattr(data.infos, "meter_type") and data.infos.meter_type is not None):
+            data.meter_type_id = MeterTypeRepo.getbyname(self.meter, data.infos.meter_type).id
+        
+        if (hasattr(data.infos, "power_mode") and data.infos.power_mode is not None):
+            data.power_mode_id = SupplyModeRepo.getbyname(self.meter, data.infos.power_mode).id
+            
+        current_data = jsonable_encoder(self.meter.update(number=number, data=data.dict()))
+        logs = [build_log(f"/meters/{number}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return current_data
+    
+    # activate or desactivate electric meter function
+    async def activate_desactivate(self, number: int, flag: bool) -> None:
+        old_data = jsonable_encoder(self.meter.getbynumber(number=number))
+        if old_data is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Electric Meter not found",
+            )
+        message = "Electric Meterdesactivated"
+        deleted_at = datetime.utcnow().isoformat()
+        
+        if flag == True:
+            deleted_at = None
+            message = "Electric Meter activated"
+        
+        data = dict(
+            is_activated=flag,
+            deleted_at = deleted_at
+        )
+        current_data = jsonable_encoder(self.meter.update(number=number, data=data))
+        logs = [build_log(f"/meters/{number}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return HTTPException(status_code=status.HTTP_200_OK, detail=message)
 
     # delete electric meter function
     async def delete(self, meter: ElectricMeterModel) -> None:

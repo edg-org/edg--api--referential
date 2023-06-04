@@ -71,16 +71,16 @@ class MeterDeliveryPointService:
     # delete meter delivery point function
     async def delete(
         self, 
-        meterdelivery: MeterDeliveryPointModel
+        id: int
     ) -> None:
-        meterdelivery = self.meterdelivery.get(id=id)
-        if meterdelivery is None:
+        data = self.meterdelivery.get(id=id)
+        if data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Meter Delivery Point not found",
             )
 
-        self.meterdelivery.update(meterdelivery)
+        self.meterdelivery.delete(data)
         return HTTPException(
             status_code=status.HTTP_200_OK,
             detail="Meter Delivery Point deleted",

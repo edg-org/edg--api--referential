@@ -1,7 +1,10 @@
 from typing import List
+from datetime import datetime
+from fastapi.encoders import jsonable_encoder
+from api.logs.repositories.LogRepo import LogRepo
 from fastapi import Depends, HTTPException, status
-from api.tools.Helper import pole_basecode, generate_code
 from api.ageographical.repositories.AreaRepo import AreaRepo
+from api.tools.Helper import build_log, pole_basecode, generate_code
 from api.electrical.repositories.TransformerRepo import TransformerRepo
 from api.electrical.models.ConnectionPoleModel import ConnectionPoleModel
 from api.electrical.repositories.ConnectionPoleRepo import ConnectionPoleRepo
@@ -12,12 +15,15 @@ from api.electrical.schemas.ConnectionPoleSchema import (
 
 #
 class ConnectionPoleService:
+    log: LogRepo
     pole: ConnectionPoleRepo
 
     def __init__(
         self,
-        pole: ConnectionPoleRepo = Depends(),
+        log: LogRepo = Depends(),
+        pole: ConnectionPoleRepo = Depends()
     ) -> None:
+        self.log = log
         self.pole = pole
 
     # get all connection poles function
@@ -79,28 +85,58 @@ class ConnectionPoleService:
 
     # update connection pole function
     async def update(self, number: int, data: ConnectionPoleModel) -> ConnectionPoleModel:
-        pole = self.pole.getbynumber(number=number)
-        if pole is None:
+        old_data = jsonable_encoder(self.pole.getbynumber(number=number))
+        if old_data is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Electric Meter not found",
+            )
+        
+        if (hasattr(data.infos, "area_code") and data.infos.area_code is not None):
+            data.area_id = AreaRepo.getidbycode(self.pole, data.infos.area_code)
+        
+        if (hasattr(data.infos, "transformer_code") and data.infos.transformer_code is not None):
+            data.transformer_id = TransformerRepo.getidbycode(self.pole, data.infos.transformer_code)
+            
+        current_data = jsonable_encoder(self.pole.update(number=number, data=data.dict()))
+        logs = [build_log(f"/connectionpoles/{number}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return current_data
+
+    # activate or desactivate connection pole function
+    async def activate_desactivate(self, number: int, flag: bool) -> None:
+        old_data = jsonable_encoder(self.pole.getbynumber(number=number))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Connection Pole not found",
             )
-
-        poledict = data.dict(exclude_unset=True)
-        for key, val in poledict.items():
-            setattr(pole, key, val)
-        return self.pole.update(pole)
-
+        message = "Connection Pole desactivated"
+        deleted_at = datetime.utcnow().isoformat()
+        
+        if flag == True:
+            deleted_at = None
+            message = "Connection Pole activated"
+        
+        data = dict(
+            is_activated=flag,
+            deleted_at = deleted_at
+        )
+        current_data = jsonable_encoder(self.pole.update(number=number, data=data))
+        logs = [build_log(f"/connectionpoles/{number}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return HTTPException(status_code=status.HTTP_200_OK, detail=message)
+    
     # delete connection pole function
-    async def delete(self, pole: ConnectionPoleModel) -> None:
-        pole = self.pole.get(id=id)
-        if pole is None:
+    async def delete(self, number: int) -> None:
+        data = self.pole.getbynumber(number=number)
+        if data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Connection Pole not found",
             )
 
-        self.pole.update(pole)
+        self.pole.delete(data)
         return HTTPException(
             status_code=status.HTTP_200_OK,
             detail="Connection Pole deleted",
