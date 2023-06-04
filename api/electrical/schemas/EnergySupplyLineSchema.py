@@ -1,20 +1,20 @@
 from datetime import datetime
 
 from typing import Optional, List
-from api.configs.BaseModel import SchemaModel
+from api.configs.BaseModel import BaseSchema
 
-class SupplyCoordinates(SchemaModel):
+class SupplyCoordinates(BaseSchema):
     altitude: float
     latitude: float
     longitude: float
 
-class AgenciesServed(SchemaModel):
+class AgenciesServed(BaseSchema):
     code: int
 
-class AreasServed(SchemaModel):
+class AreasServed(BaseSchema):
     code: int
 
-class SupplyInfos(SchemaModel):
+class SupplyInfos(BaseSchema):
     name: str
     electrical_code: int
     line_type : str
@@ -30,7 +30,7 @@ class SupplyInfos(SchemaModel):
     agencies_served: Optional[List[AgenciesServed]] = None
     coordinates: Optional[SupplyCoordinates] = None
 
-class EnergySupplyLineSchema(SchemaModel):
+class EnergySupplyLineSchema(BaseSchema):
     id: int
     code: int
     line_type_id: int
@@ -62,5 +62,5 @@ class EnergySupplyLineInput(CreateEnergySupplyLine):
             "departure_area_id"
         }
     
-class EnergySupplyLineUpdate(SchemaModel):
+class EnergySupplyLineUpdate(BaseSchema):
     pass

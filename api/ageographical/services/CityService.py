@@ -1,11 +1,14 @@
 from typing import List
+from datetime import datetime
+from fastapi.encoders import jsonable_encoder
 from fastapi import Depends, HTTPException, status
+from api.logs.services.LogService import LogService
 from api.ageographical.models.CityModel import CityModel
 from api.ageographical.repositories.CityRepo import CityRepo
 from api.ageographical.repositories.CityTypeRepo import CityTypeRepo
 from api.ageographical.repositories.CityLevelRepo import CityLevelRepo
 from api.ageographical.repositories.PrefectureRepo import PrefectureRepo
-from api.tools.Helper import city_basecode, generate_zipcode, generate_code
+from api.tools.Helper import build_log, city_basecode, generate_zipcode, generate_code
 from api.ageographical.schemas.CitySchema import (
     CityInput,
     CityUpdate,
@@ -16,8 +19,14 @@ from api.ageographical.schemas.CitySchema import (
 #
 class CityService:
     city: CityRepo
+    log: LogService
 
-    def __init__(self, city: CityRepo = Depends()) -> None:
+    def __init__(
+        self, 
+        city: CityRepo = Depends(),
+        log: LogService = Depends()
+    ) -> None:
+        self.log = log
         self.city = city
 
     # get all citys function
@@ -57,8 +66,7 @@ class CityService:
             if count > 0:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="City already registered with name " + item.infos.name
-                    + " inside the prefecture with code "+ str(prefecture.code),
+                    detail=f"City already registered with name {item.infos.name} inside the prefecture with code {prefecture.code}",
                 )
             
             if (prefecture_name is not None) and  (prefecture_name != item.infos.prefecture):
@@ -97,7 +105,7 @@ class CityService:
             if count > 0:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="City already registered with code " + str(city_code),
+                    detail=f"City already registered with code {city_code}",
                 )
             
             zipcode = generate_zipcode(zipcode_base, zipcode_step)
@@ -105,7 +113,7 @@ class CityService:
             if count > 0:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="City already registered with zip code " + str(item.zipcode),
+                    detail=f"City already registered with zip code {item.zipcode}",
                 )
             
             city = CreateCity(
@@ -123,41 +131,40 @@ class CityService:
 
     # update city function
     async def update(self, code: int, data: CityUpdate) -> CityModel:
-        count = self.city.countbycode(code=code)
-        if count ==  0:
+        old_data = jsonable_encoder(self.city.getbycode(code=code))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="City not found",
             )
+
+        data.city_type_id = CityTypeRepo.getbyname(self.city, data.infos.city_type).id
+        data.city_level_id = CityLevelRepo.getbyname(self.city, data.infos.city_level).id
+        current_data = jsonable_encoder(self.city.update(code=code, data=data.dict()))
+        logs = [build_log(f"/cities/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return current_data
+
+    # activate or desactivate city function
+    async def activate_desactivate(self, code: int, flag: bool) -> None:
+        old_data = jsonable_encoder(self.city.getbycode(code=code))
+        if old_data is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="City not found",
+            )
+        message = "City desactivated"
+        deleted_at = datetime.utcnow().isoformat()
         
-        olddata = self.city.getbycode(code=code)
-        city = CreateCity(
-            code = code,
-            city_type_id = CityTypeRepo.getbyname(self.city, data.infos.city_type).id,
-            city_level_id = CityLevelRepo.getbyname(self.city, data.infos.city_level).id,
-            prefecture_id = PrefectureRepo.getbyname(self.city, data.infos.prefecture).id,
-            zipcode = olddata.zipcode,
-            infos = data.infos
+        if flag == True:
+            deleted_at = None
+            message = "City activated"
+        
+        data = dict(
+            is_activated=flag,
+            deleted_at = deleted_at
         )
-        citydict = data.city(exclude_unset=True)
-        for key, val in citydict.items():
-            setattr(city, key, val)
-        return self.city.update(city)
-
-    # delete city function
-    async def delete(self, city: CityModel) -> None:
-        count = self.city.countbycode(code=code)
-        if count > 0:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="City not found",
-            )
-
-        del city["is_deleted"]
-        city["is_deleted"] = 1
-
-        self.city.update(city)
-        return HTTPException(
-            status_code=status.HTTP_200_OK,
-            detail="City deleted",
-        )
+        current_data = jsonable_encoder(self.city.update(code=code, data=data))
+        logs = [build_log(f"/cities/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return HTTPException(status_code=status.HTTP_200_OK, detail=message)

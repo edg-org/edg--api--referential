@@ -77,7 +77,7 @@ class TrackingTypeRepo:
 
     # update tracking type function
     def update(self, data: CreateTrackingType) -> TrackingTypeModel:
-        self.db.add(data)
+        self.db.merge(data)
         self.db.commit()
         self.db.refresh(data)
         return data

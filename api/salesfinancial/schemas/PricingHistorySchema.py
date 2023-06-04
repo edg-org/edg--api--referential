@@ -1,19 +1,19 @@
 from typing import List, Optional
 from datetime import datetime, date
-from api.configs.BaseModel import SchemaModel
+from api.configs.BaseModel import BaseSchema
 
-class PricingSlices(SchemaModel):
+class PricingSlices(BaseSchema):
     name: str
     unit_price: float
     lower_index: float
     upper_index: Optional[float] | None
 
-class PricingInfos(SchemaModel):
+class PricingInfos(BaseSchema):
     subscription_fee: float
     slices: List[PricingSlices]
     
 
-class PricingHistorySchema(SchemaModel):
+class PricingHistorySchema(BaseSchema):
     id: int
     code: int
     name: str

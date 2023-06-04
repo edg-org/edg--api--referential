@@ -1,8 +1,8 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
+from sqlalchemy import insert, update, func
 from api.electrical.models.ConnectionPoleModel import ConnectionPoleModel
 from api.electrical.schemas.ConnectionPoleSchema import CreateConnectionPole
 
@@ -29,9 +29,8 @@ class ConnectionPoleRepo:
     ) -> int:
         codemax = (
             self.db.query(func.max(ConnectionPoleModel.connection_pole_number))
-            .where(
-                ConnectionPoleModel.infos["area_code"] == area_code
-            ).one()[0]
+            .where(ConnectionPoleModel.infos["area_code"] == area_code)
+            .one()[0]
         )
         return 0 if codemax is None else codemax
 
@@ -93,11 +92,14 @@ class ConnectionPoleRepo:
         return data
 
     # update connection pole function
-    def update(self, data: CreateConnectionPole) -> ConnectionPoleModel:
-        self.db.add(data)
+    def update(self, number: int, data: dict) -> ConnectionPoleModel:
+        self.db.execute(
+            update(ConnectionPoleModel)
+            .where(ConnectionPoleModel.pole_number == number)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbynumber(number=number)
 
     # delete connection pole function
     def delete(self, meter: ConnectionPoleModel) -> None:

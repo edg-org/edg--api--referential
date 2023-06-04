@@ -1,8 +1,8 @@
 from datetime import datetime, date
-from api.configs.BaseModel import SchemaModel
+from api.configs.BaseModel import BaseSchema
 
 #
-class MeterHistorySchema(SchemaModel):
+class MeterHistorySchema(BaseSchema):
     id: int
     meter_number: str
     delivery_point_number: str

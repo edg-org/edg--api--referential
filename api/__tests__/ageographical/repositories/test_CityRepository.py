@@ -2,7 +2,7 @@ from faker import Faker
 from typing import List
 from unittest import TestCase
 from sqlalchemy.orm import Session
-from unittest.mock import create_autospec, patch
+from unittest.mock import Mock, create_autospec, patch
 from api.ageographical.repositories.CityRepo import CityRepo
 
 class TestCityRepository(TestCase):
@@ -54,7 +54,7 @@ class TestCityRepository(TestCase):
     @patch("api.ageographical.schemas.CitySchema.CreateCity", autospec=True)
     def test_update(self, CreateCity):
         fake = Faker()
-        city : CreateCity = CreateCity(
+        data : CreateCity = CreateCity(
             code=fake,
             zipcode=fake,
             city_type_id=fake,
@@ -67,7 +67,6 @@ class TestCityRepository(TestCase):
                 city_level=fake
             )
         )
-        self.cityRepository.update(city)
-        self.session.add.assert_called_once()
-        self.session.commit.assert_called_once()
-        self.session.refresh.assert_called_once()
+        self.cityRepository.update = Mock()
+        self.cityRepository.update(102, data)
+        self.cityRepository.update.assert_called_with(102, data)

@@ -96,7 +96,7 @@ class AgencyRepo:
 
     # update agency function
     def update(self, data: CreateAgency) -> AgencyModel:
-        self.db.add(data)
+        self.db.merge(data)
         self.db.commit()
         self.db.refresh(data)
         return data

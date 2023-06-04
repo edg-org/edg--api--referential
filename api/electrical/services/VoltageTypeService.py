@@ -1,5 +1,8 @@
 from typing import List
+from api.tools.Helper import build_log
+from fastapi.encoders import jsonable_encoder
 from fastapi import Depends, HTTPException, status
+from api.logs.services.LogService import LogService
 from api.electrical.models.VoltageTypeModel import VoltageTypeModel
 from api.electrical.repositories.VoltageTypeRepo import VoltageTypeRepo
 from api.electrical.schemas.VoltageTypeSchema import (
@@ -10,10 +13,14 @@ from api.electrical.schemas.VoltageTypeSchema import (
 #
 class VoltageTypeService:
     voltagetype: VoltageTypeRepo
+    log: LogService
 
     def __init__(
-        self, voltagetype: VoltageTypeRepo = Depends()
+        self, 
+        log: LogService = Depends(),
+        voltagetype: VoltageTypeRepo = Depends()
     ) -> None:
+        self.log = log
         self.voltagetype = voltagetype
 
     # get all voltage types function
@@ -41,48 +48,48 @@ class VoltageTypeService:
             if voltagetype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Voltage Type already registered with code " + str(item.code),
+                    detail=f"Voltage Type already registered with code {item.code}"
                 )
 
             voltagetype = self.voltagetype.getbyname(name=item.name)
             if voltagetype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Voltage Type already registered with name " + item.name,
+                    detail=f"Voltage Type already registered with name {item.name}"
                 )
             
             voltagetype = self.voltagetype.getbyshortname(shortname=item.shortname)
             if voltagetype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Voltage Type already registered with shortname " + item.name,
+                    detail=f"Voltage Type already registered with shortname {item.name}"
                 )
         return self.voltagetype.create(data=data)
 
     # update voltage type function
     async def update(self, code: int, data: VoltageTypeUpdate) -> VoltageTypeUpdate:
-        voltagetype = self.voltagetype.getbycode(code=code)
-        if voltagetype is None:
+        old_data = self.voltagetype.getbycode(code=code)
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Voltage Type not found",
+                detail="Voltage Type not found"
             )
-
-        voltagetypedict = data.dict(exclude_unset=True)
-        for key, val in voltagetypedict.items():
-            setattr(voltagetype, key, val)
-        return self.voltagetype.update(voltagetype)
-
+        
+        current_data = jsonable_encoder(self.voltagetype.update(code=code, data=data.dict()))
+        logs = [build_log(f"/voltagetypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return current_data
+    
     # delete voltage type function
-    async def delete(self, type: VoltageTypeModel) -> None:
-        voltagetype = self.voltagetype.get(id=id)
-        if voltagetype is None:
+    async def delete(self, code: int) -> None:
+        data = self.voltagetype.getbycode(code=code)
+        if data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Voltage Type not found",
             )
 
-        self.voltagetype.update(type)
+        self.voltagetype.delete(data)
         return HTTPException(
             status_code=status.HTTP_200_OK,
             detail="Voltage Type deleted",

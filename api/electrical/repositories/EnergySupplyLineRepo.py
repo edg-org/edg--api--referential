@@ -2,7 +2,7 @@ from typing import List
 from sqlalchemy.orm import Session
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from sqlalchemy import insert, func, and_
+from sqlalchemy import insert, func, and_, update
 from api.electrical.models.EnergySupplyLineModel import EnergySupplyLineModel
 from api.electrical.schemas.EnergySupplyLineSchema import CreateEnergySupplyLine
 
@@ -75,11 +75,7 @@ class EnergySupplyLineRepo:
     def getbyname(self, name: str) -> EnergySupplyLineModel:
         return (
             self.db.query(EnergySupplyLineModel)
-            .where(
-                func.lower(
-                    EnergySupplyLineModel.infos["name"]
-                ) == name.lower()
-            )
+            .where(func.lower(EnergySupplyLineModel.infos["name"]) == name.lower())
             .first()
         )
 
@@ -105,11 +101,14 @@ class EnergySupplyLineRepo:
         return data
 
     # update energy supply line function
-    def update(self, data: CreateEnergySupplyLine) -> EnergySupplyLineModel:
-        self.db.add(data)
+    def update(self, code: int, data: dict) -> EnergySupplyLineModel:
+        self.db.execute(
+            update(EnergySupplyLineModel)
+            .where(EnergySupplyLineModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete energy supply line function
     def delete(self, meter: EnergySupplyLineModel) -> None:

@@ -69,7 +69,7 @@ class ContactTypeRepo:
 
     # update contact type function
     def update(self, data: CreateContactType) -> ContactTypeModel:
-        self.db.add(data)
+        self.db.merge(data)
         self.db.commit()
         self.db.refresh(data)
         return data

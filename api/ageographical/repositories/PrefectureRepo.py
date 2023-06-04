@@ -1,6 +1,6 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
+from sqlalchemy import insert, func, update
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
 from api.ageographical.models.PrefectureModel import PrefectureModel
@@ -113,11 +113,14 @@ class PrefectureRepo:
         return data
 
     # update prefecture function
-    def update(self, data: CreatePrefecture) -> PrefectureModel:
-        self.db.add(data)
+    def update(self, code: int, data: dict) -> PrefectureModel:
+        self.db.execute(
+            update(PrefectureModel)
+            .where(PrefectureModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete prefecture function
     def delete(self, prefecture: PrefectureModel) -> None:

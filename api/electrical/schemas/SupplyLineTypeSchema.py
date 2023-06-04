@@ -1,9 +1,9 @@
 from typing import Optional
 from datetime import datetime
-from api.configs.BaseModel import SchemaModel
+from api.configs.BaseModel import BaseSchema
 
 #
-class SupplyLineTypeSchema(SchemaModel):
+class SupplyLineTypeSchema(BaseSchema):
     id: int
     code: int
     name: str

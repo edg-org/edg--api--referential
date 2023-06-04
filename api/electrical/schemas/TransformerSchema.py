@@ -1,23 +1,23 @@
 from typing import Optional, List
 from datetime import date, datetime
-from api.configs.BaseModel import SchemaModel
+from api.configs.BaseModel import BaseSchema
 from api.electrical.schemas.ConnectionPoleSchema import ConnectionPoleSchema
 
 #
-class TransformerCoordinates(SchemaModel):
+class TransformerCoordinates(BaseSchema):
     altitude: float
     latitude: float
     longitude: float
 
 #
-class EnergySupplyLines(SchemaModel):
+class EnergySupplyLines(BaseSchema):
     electrical_code: int
-    is_actived: bool
+    is_activated: bool
     activation_dated: date
     desactivation_date: Optional[date]=None
 
 #
-class TransformerInfos(SchemaModel):
+class TransformerInfos(BaseSchema):
     name: str
     brand: Optional[str]
     power: float
@@ -32,7 +32,7 @@ class TransformerInfos(SchemaModel):
     coordinates: Optional[TransformerCoordinates] = None
 
 #
-class TransformerSchema(SchemaModel):
+class TransformerSchema(BaseSchema):
     id: int
     transformer_code: str
     area_id: int
@@ -51,6 +51,7 @@ class CreateTransformer(TransformerSchema):
     class Config:
         fields_to_hide = {
             "id",
+            "is_activated",
             "created_at",
             "updated_at",
             "deleted_at"
@@ -60,8 +61,8 @@ class CreateTransformer(TransformerSchema):
 class TransformerInput(CreateTransformer):
     class Config:
         fields_to_hide = {
-            "transformer_code",
             "area_id",
+            "transformer_code",
             "fixation_type_id"
         }
 

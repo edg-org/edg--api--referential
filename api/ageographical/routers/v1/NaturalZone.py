@@ -19,7 +19,7 @@ env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 zoneRouter = APIRouter(
-    prefix=router_path + "/naturalzones",
+    prefix=router_path + "/naturalregions",
     tags=["Natural Regions"],
 )
 

@@ -1,23 +1,29 @@
 from typing import List
 from datetime import datetime
+from fastapi.encoders import jsonable_encoder
 from fastapi import Depends, HTTPException, status
-from api.tools.Helper import region_basecode, generate_code
+from api.logs.services.LogService import LogService
 from api.ageographical.models.RegionModel import RegionModel
 from api.ageographical.repositories.RegionRepo import RegionRepo
 from api.ageographical.repositories.NaturalZoneRepo import ZoneRepo
+from api.tools.Helper import region_basecode, generate_code, build_log
 from api.ageographical.schemas.RegionSchema import (
     RegionInput,
     RegionUpdate,
-    CreateRegion,
+    CreateRegion
 )
 
 #
 class RegionService:
     region: RegionRepo
+    log: LogService
 
     def __init__(
-        self, region: RegionRepo = Depends()
+        self, 
+        log : LogService = Depends(),
+        region: RegionRepo = Depends()
     ) -> None:
+        self.log = log
         self.region = region
 
     # get all regions function
@@ -47,7 +53,7 @@ class RegionService:
             if region:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Administrative Region already registered with name " + str(item.name),
+                    detail=f"Administrative Region already registered with name {item.name}",
                 )
 
             if (zone_name is not None) and  (zone_name != item.infos.natural_zone):
@@ -69,7 +75,7 @@ class RegionService:
             if region:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Administrative Region already registered with code " + str(region_code),
+                    detail=f"Administrative Region already registered with code {region_code}",
                 )
 
             region = CreateRegion(
@@ -85,41 +91,38 @@ class RegionService:
 
     # update region function
     async def update(self, code: int, data: RegionUpdate) -> RegionModel:
-        region = self.region.getbycode(code=code)
-        if region is None:
+        old_data = jsonable_encoder(self.region.getbycode(code=code))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Administrative Region not found",
             )
 
-        region = CreateRegion(
-            code = code,
-            name = data.name,
-            zone_id = ZoneRepo.getidbycode(self.region, data.infos.zone_code),
-            infos = data.infos
-        )
-
-        regiondict = region.dict(exclude_unset=True)
-        for key, val in regiondict.items():
-            setattr(region, key, val)
-        return self.region.update(region)
+        current_data = jsonable_encoder(self.region.update(code, data=data.dict()))
+        logs = [build_log(f"/regions/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return current_data
 
     # activate or desactivate region function
     async def activate_desactivate(self, code: int, flag: bool) -> None:
-        region = self.region.getbycode(code=code)
-        if region is None:
+        old_data = self.region.getbycode(code=code)
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Administrative Region not found",
             )
-        region.is_activated = flag
         message = "Administrative Region desactivated"
-        region.deleted_at = datetime.utcnow().isoformat()
+        deleted_at = datetime.utcnow().isoformat()
+        
         if flag == True:
-            region.deleted_at = None
+            deleted_at = None
             message = "Administrative Region activated"
-
-        self.region.update(region)
-        return HTTPException(
-            status_code=status.HTTP_200_OK, detail=message
+        
+        data = dict(
+            is_activated=flag,
+            deleted_at = deleted_at
         )
+        current_data = jsonable_encoder(self.region.update(code=code, data=data))
+        logs = [build_log(f"/regions/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return HTTPException(status_code=status.HTTP_200_OK, detail=message)

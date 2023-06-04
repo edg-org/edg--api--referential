@@ -2,7 +2,7 @@ from typing import List
 from sqlalchemy.orm import Session
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from sqlalchemy import insert, func, and_, or_, Unicode
+from sqlalchemy import insert, func, and_, or_, Unicode, update
 from api.ageographical.models.CityModel import CityModel
 from api.ageographical.schemas.CitySchema import CreateCity, CityUpdate, CitySearchParams
 
@@ -27,7 +27,7 @@ class CityRepo:
     # get max zipcode of city by prefecture
     def maxzipcodebypref(self, prefecture_id: int) -> int:
         codemax = (
-            self.db.query(func.max(CityModel.zipcode))
+            self.db.query(func.max(int(CityModel.zipcode)))
             .where(CityModel.prefecture_id == prefecture_id)
             .one()[0]
         )
@@ -36,7 +36,7 @@ class CityRepo:
     # get max zipcode of city by prefecture and city level
     def maxzipcodebyprefandlevel(self, prefecture_id: int, city_level_id: int) -> int:
         codemax = (
-            self.db.query(func.max(CityModel.zipcode))
+            self.db.query(func.max(int(CityModel.zipcode)))
             .where(
                 and_(
                     CityModel.city_level_id == city_level_id,
@@ -157,11 +157,14 @@ class CityRepo:
         return data
 
     # update city function
-    def update(self, data: CreateCity) -> CityModel:
-        self.db.add(data)
+    def update(self, code: int,  data: dict) -> CityModel:
+        self.db.execute(
+            update(CityModel)
+            .where(CityModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete city function
     def delete(self, city: CityModel) -> None:

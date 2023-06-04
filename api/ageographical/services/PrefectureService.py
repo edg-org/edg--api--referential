@@ -1,7 +1,9 @@
 from typing import List
 from datetime import datetime
-from api.tools.Helper import prefecture_basecode
+from fastapi.encoders import jsonable_encoder
 from fastapi import Depends, HTTPException, status
+from api.logs.services.LogService import LogService
+from api.tools.Helper import prefecture_basecode, build_log
 from api.ageographical.repositories.RegionRepo import RegionRepo
 from api.ageographical.models.PrefectureModel import PrefectureModel
 from api.ageographical.repositories.PrefectureRepo import PrefectureRepo
@@ -13,11 +15,15 @@ from api.ageographical.schemas.PrefectureSchema import (
 
 #
 class PrefectureService:
+    log: LogService
     prefecture: PrefectureRepo
 
     def __init__(
-        self, prefecture: PrefectureRepo = Depends()
+        self, 
+        log: LogService = Depends(),
+        prefecture: PrefectureRepo = Depends()
     ) -> None:
+        self.log = log
         self.prefecture = prefecture
 
     # get all prefectures function
@@ -48,7 +54,7 @@ class PrefectureService:
             if count > 0:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Prefecture already registered with name " + item.infos.name,
+                    detail=f"Prefecture already registered with name {item.infos.name}",
                 )
             
             step += 1
@@ -59,7 +65,7 @@ class PrefectureService:
             if count > 0:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Prefecture already registered with code " + str(prefecture_code),
+                    detail=f"Prefecture already registered with code {prefecture_code}",
                 )
             
             prefecture = CreatePrefecture(
@@ -76,43 +82,39 @@ class PrefectureService:
 
     # update prefecture function
     async def update(self, code: int, data: PrefectureUpdate) -> PrefectureModel:
-        count = self.prefecture.countbycode(code=code)
-        if count == 0:
+        old_data = jsonable_encoder(self.prefecture.getbycode(code=code))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Prefecture not found",
             )
-
-        prefecture = CreatePrefecture(
-            code = code,
-            name = data.name,
-            is_capital = data.is_capital,
-            prefecture_number = str((prefecture_code % 100)).zfill(2),
-            region_id = RegionRepo.getidbycode(self.prefecture, data.infos.region_code),
-            infos = data.infos
-        )
-
-        prefecturedict = prefecture.dict(exclude_unset=True)
-        for key, val in prefecturedict.items():
-            setattr(prefecture, key, val)
-        return self.prefecture.update(prefecture)
+        
+        data.region_id = RegionRepo.getidbyname(self.prefecture, data.infos.region)
+        current_data = jsonable_encoder(self.prefecture.update(code=code, data=data.dict()))
+        logs = [build_log(f"/prefectures/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return current_data
 
     # activate or desactivate region function
     async def activate_desactivate(self, code: int, flag: bool) -> None:
-        count = self.prefecture.countbycode(code=code)
-        if count == 0:
+        old_data = jsonable_encoder(self.prefecture.getbycode(code=code))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Prefecture not found",
             )
-        region.is_activated = flag
         message = "Prefecture desactivated"
-        region.deleted_at = datetime.utcnow().isoformat()
+        deleted_at = datetime.utcnow().isoformat()
+        
         if flag == True:
-            region.deleted_at = None
+            deleted_at = None
             message = "Prefecture activated"
-
-        self.prefecture.update(region)
-        return HTTPException(
-            status_code=status.HTTP_200_OK, detail=message
+        
+        data = dict(
+            is_activated=flag,
+            deleted_at = deleted_at
         )
+        current_data = jsonable_encoder(self.prefecture.update(code=code, data=data))
+        logs = [build_log(f"/prefectures/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return HTTPException(status_code=status.HTTP_200_OK, detail=message)

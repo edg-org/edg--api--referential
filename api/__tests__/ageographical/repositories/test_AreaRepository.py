@@ -64,6 +64,6 @@ class TestAreaRepository(TestCase):
             )
         )
         self.areaRepository.update(area)
-        self.session.add.assert_called_once()
+        self.session.merge.assert_called_once()
         self.session.commit.assert_called_once()
         self.session.refresh.assert_called_once()

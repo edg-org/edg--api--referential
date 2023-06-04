@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from functools import lru_cache
 from api.configs.Database import Engine, EntityMeta
 
-class SchemaModel(BaseModel):
+class BaseSchema(BaseModel):
     class Config:
         fields_to_hide: Set[str] = set()
 

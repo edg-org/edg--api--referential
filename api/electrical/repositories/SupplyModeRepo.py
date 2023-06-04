@@ -1,8 +1,8 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
+from sqlalchemy import insert, func, update
 from api.electrical.models.SupplyModeModel import SupplyModeModel
 from api.electrical.schemas.SupplyModeSchema import CreateSupplyMode
 
@@ -71,11 +71,14 @@ class SupplyModeRepo:
         return data
 
     # update supply mode function
-    def update(self, data: CreateSupplyMode) -> SupplyModeModel:
-        self.db.add(data)
+    def update(self, code: int, data: dict) -> SupplyModeModel:
+        self.db.execute(
+            update(SupplyModeModel)
+            .where(SupplyModeModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete supply mode function
     def delete(self, meter: SupplyModeModel) -> None:

@@ -1,4 +1,6 @@
 from typing import List
+from fastapi.encoders import jsonable_encoder
+from api.logs.repositories.LogRepo import LogRepo
 from fastapi import Depends, HTTPException, status
 from api.electrical.models.MeterTypeModel import MeterTypeModel
 from api.electrical.repositories.MeterTypeRepo import MeterTypeRepo
@@ -6,15 +8,20 @@ from api.electrical.schemas.MeterTypeSchema import (
     MeterTypeUpdate,
     CreateMeterType
 )
+from api.tools.Helper import build_log
 
 
 #
 class MeterTypeService:
+    log: LogRepo
     metertype: MeterTypeRepo
 
     def __init__(
-        self, metertype: MeterTypeRepo = Depends()
+        self, 
+        log: LogRepo = Depends(),
+        metertype: MeterTypeRepo = Depends()
     ) -> None:
+        self.log = log
         self.metertype = metertype
 
     # get all meter types function
@@ -58,17 +65,17 @@ class MeterTypeService:
 
     # update meter type function
     async def update(self, code: int, data: MeterTypeUpdate) -> MeterTypeUpdate:
-        metertype = self.metertype.getbycode(code=code)
-        if metertype is None:
+        old_data = jsonable_encoder(self.metertype.getbycode(code=code))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Meter Type not found",
             )
 
-        typedict = data.dict(exclude_unset=True)
-        for key, val in typedict.items():
-            setattr(metertype, key, val)
-        return self.metertype.update(metertype)
+        current_data = jsonable_encoder(self.metertype.update(code=code, data=data.dict()))
+        logs = [build_log(f"/metertypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return current_data
 
     # delete meter type function
     async def delete(self, type: MeterTypeModel) -> None:

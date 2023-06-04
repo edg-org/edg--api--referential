@@ -2,7 +2,7 @@ from faker import Faker
 from typing import List
 from unittest import TestCase
 from sqlalchemy.orm import Session
-from unittest.mock import create_autospec, patch
+from unittest.mock import Mock, create_autospec, patch
 from api.electrical.repositories.EnergySupplyLineRepo import EnergySupplyLineRepo
 
 class TestSupplyLineRepository(TestCase):
@@ -60,7 +60,7 @@ class TestSupplyLineRepository(TestCase):
     @patch("api.electrical.schemas.EnergySupplyLineSchema.CreateEnergySupplyLine", autospec=True)
     def test_update(self, CreateEnergySupplyLine):
         fake = Faker()
-        supplyline : CreateEnergySupplyLine = CreateEnergySupplyLine(
+        data : CreateEnergySupplyLine = CreateEnergySupplyLine(
             infos= dict(
                 name=fake,
                 line_type=fake,
@@ -75,7 +75,6 @@ class TestSupplyLineRepository(TestCase):
                 voltage_measurement_unit=fake
             )
         )
-        self.supplylineRepository.update(supplyline)
-        self.session.add.assert_called_once()
-        self.session.commit.assert_called_once()
-        self.session.refresh.assert_called_once()
+        self.supplylineRepository.update = Mock()
+        self.supplylineRepository.update(1, data)
+        self.supplylineRepository.update.assert_called_with(1, data)

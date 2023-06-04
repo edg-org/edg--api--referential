@@ -16,7 +16,7 @@ class AreaRepo:
         self.db = db
 
     # get max code of area by city and area type
-    def maxcodebycityandareatype(self, city_code: int, area_type_id: int) -> int:
+    def maxcodebycityandtype(self, city_code: int, area_type_id: int) -> int:
         codemax = (
             self.db.query(func.max(AreaModel.code))
             .where(
@@ -25,6 +25,15 @@ class AreaRepo:
                     AreaModel.infos["city_code"] == city_code
                 )
             )
+            .one()[0]
+        )
+        return 0 if codemax is None else codemax
+    
+    # get max zipcode of area by city
+    def maxzipcodebycity(self, city_id: int) -> int:
+        codemax = (
+            self.db.query(func.max(int(AreaModel.zipcode)))
+            .where(AreaModel.city_id == city_id)
             .one()[0]
         )
         return 0 if codemax is None else codemax
@@ -45,7 +54,7 @@ class AreaRepo:
         ).count()
     
     # check area name by city function
-    def checknamebycitycode(self, city_code: int, name: str) -> int:
+    def checkname_by_citycode(self, city_code: int, name: str) -> int:
         return (
             self.db.query(func.count(AreaModel.id))
             .where(
@@ -57,7 +66,7 @@ class AreaRepo:
         )
     
     # check area name by hierarchical area function
-    def checknamebyhierarchicalareacode(self, hierarchical_area_code: int, name: str) -> int:
+    def checkname_by_hierarchy(self, hierarchical_area_code: int, name: str) -> int:
         return (
             self.db.query(func.count(AreaModel.id))
             .where(
@@ -131,7 +140,7 @@ class AreaRepo:
         )
 
     # get area code function
-    def getbycode(self, code: str) -> AreaModel:
+    def getbycode(self, code: int) -> AreaModel:
         return (
             self.db.query(AreaModel)
             .where(
@@ -161,7 +170,7 @@ class AreaRepo:
 
     # update area function
     def update(self, data: CreateArea) -> AreaModel:
-        self.db.add(data)
+        self.db.merge(data)
         self.db.commit()
         self.db.refresh(data)
         return data

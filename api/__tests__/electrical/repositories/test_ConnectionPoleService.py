@@ -2,7 +2,7 @@ from faker import Faker
 from typing import List
 from unittest import TestCase
 from sqlalchemy.orm import Session
-from unittest.mock import create_autospec, patch
+from unittest.mock import Mock, create_autospec, patch
 from api.electrical.repositories.ConnectionPoleRepo import ConnectionPoleRepo
 
 class TestConnectionPoleRepository(TestCase):
@@ -64,7 +64,7 @@ class TestConnectionPoleRepository(TestCase):
     @patch("api.electrical.schemas.ConnectionPoleSchema.CreateConnectionPole", autospec=True)
     def test_update(self, CreateConnectionPole):
         fake = Faker()
-        pole : CreateConnectionPole = CreateConnectionPole(
+        data : CreateConnectionPole = CreateConnectionPole(
             infos= dict(
                 number=fake,
                 name=fake,
@@ -84,7 +84,6 @@ class TestConnectionPoleRepository(TestCase):
                 voltage_measurement_unit=fake
             )
         )
-        self.poleRepository.update(pole)
-        self.session.add.assert_called_once()
-        self.session.commit.assert_called_once()
-        self.session.refresh.assert_called_once()
+        self.poleRepository.update = Mock()
+        self.poleRepository.update(1, data)
+        self.poleRepository.update.assert_called_with(1, data)

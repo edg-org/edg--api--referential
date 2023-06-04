@@ -1,6 +1,6 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
+from sqlalchemy import insert, func, update
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
 from api.ageographical.models.DeliveryPointModel import DeliveryPointModel
@@ -77,11 +77,14 @@ class DeliveryPointRepo:
         return data
 
     # update delivery point function
-    def update(self, data: CreateDeliveryPoint) -> DeliveryPointModel:
-        self.db.add(data)
+    def update(self, number: int, data: dict) -> DeliveryPointModel:
+        self.db.execute(
+            update(DeliveryPointModel)
+            .where(DeliveryPointModel.delivery_point_number == number)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbynumber(number=number)
 
     # delete delivery point function
     def delete(self, meter: DeliveryPointModel) -> None:

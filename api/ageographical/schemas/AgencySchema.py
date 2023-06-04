@@ -1,18 +1,18 @@
 from typing import Optional
 from datetime import datetime
 from pydantic import EmailStr, Field, constr
-from api.configs.BaseModel import SchemaModel
+from api.configs.BaseModel import BaseSchema
 
-class AgencySearchParams(SchemaModel):
+class AgencySearchParams(BaseSchema):
     code: int | None = Field(description="Field of the agency name")
     name: str | None = Field(description="Field of the agency name")
 
-class AgencyCoordinates(SchemaModel):
+class AgencyCoordinates(BaseSchema):
     altitude: str
     latitude: str
     longitude: str
 
-class AgencyInfos(SchemaModel):
+class AgencyInfos(BaseSchema):
     name: str
     email: EmailStr
     telephone: constr(regex=r'^\+224-\d{3}-\d{2}-\d{2}-\d{2}$')
@@ -20,8 +20,15 @@ class AgencyInfos(SchemaModel):
     city_code: int
     coordinates: Optional[AgencyCoordinates]
 
+class AgencyUpdateInfos(AgencyInfos):
+    class Config:
+        fields_to_hide = {
+            "city_code",
+            "coordinates"
+        }
+    
 #
-class AgencySchema(SchemaModel):
+class AgencySchema(BaseSchema):
     id: int
     code: int
     city_id: int
@@ -54,5 +61,5 @@ class AgencyInput(CreateAgency):
         }
 
 #
-class AgencyUpdate(AgencyInput):
-    pass
+class AgencyUpdate(BaseSchema):
+    infos: AgencyUpdateInfos

@@ -70,7 +70,7 @@ class SubscriptionStatusRepo:
 
     # update subscription status function
     def update(self, data: CreateSubscriptionStatus) -> SubscriptionStatusModel:
-        self.db.add(data)
+        self.db.merge(data)
         self.db.commit()
         self.db.refresh(data)
         return data

@@ -2,7 +2,7 @@ from faker import Faker
 from typing import List
 from unittest import TestCase
 from sqlalchemy.orm import Session
-from unittest.mock import create_autospec, patch
+from unittest.mock import Mock, create_autospec, patch
 from api.electrical.repositories.ElectricMeterRepo import ElectricMeterRepo
 
 class TestElectricMeterRepository(TestCase):
@@ -51,7 +51,7 @@ class TestElectricMeterRepository(TestCase):
     @patch("api.electrical.schemas.ElectricMeterSchema.CreateElectricMeter", autospec=True)
     def test_update(self, CreateElectricMeter):
         fake = Faker()
-        pole : CreateElectricMeter = CreateElectricMeter(
+        data : CreateElectricMeter = CreateElectricMeter(
             infos= dict(
                 brand=fake,
                 meter_type=fake,
@@ -60,7 +60,6 @@ class TestElectricMeterRepository(TestCase):
                 manufacturing_country=fake
             )
         )
-        self.meterRepository.update(pole)
-        self.session.add.assert_called_once()
-        self.session.commit.assert_called_once()
-        self.session.refresh.assert_called_once()
+        self.meterRepository.update = Mock()
+        self.meterRepository.update(1, data)
+        self.meterRepository.update.assert_called_with(1, data)

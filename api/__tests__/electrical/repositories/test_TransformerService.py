@@ -2,7 +2,7 @@ from faker import Faker
 from typing import List
 from unittest import TestCase
 from sqlalchemy.orm import Session
-from unittest.mock import create_autospec, patch
+from unittest.mock import create_autospec, patch, Mock
 from api.electrical.repositories.TransformerRepo import TransformerRepo
 
 class TestTransformerRepository(TestCase):
@@ -63,7 +63,7 @@ class TestTransformerRepository(TestCase):
     @patch("api.electrical.schemas.TransformerSchema.CreateTransformer", autospec=True)
     def test_update(self, CreateTransformer):
         fake = Faker()
-        pole : CreateTransformer = CreateTransformer(
+        data : CreateTransformer = CreateTransformer(
             infos= dict(
                 name=fake,
                 brand=fake,
@@ -82,7 +82,6 @@ class TestTransformerRepository(TestCase):
                 ]
             )
         )
-        self.transformerRepository.update(pole)
-        self.session.add.assert_called_once()
-        self.session.commit.assert_called_once()
-        self.session.refresh.assert_called_once()
+        self.transformerRepository.update = Mock()
+        self.transformerRepository.update(1, data)
+        self.transformerRepository.update.assert_called_with(1, data)

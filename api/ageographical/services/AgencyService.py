@@ -1,4 +1,5 @@
 from typing import List
+from api.logs.repositories.LogRepo import LogRepo
 from fastapi import Depends, HTTPException, status
 from api.tools.Helper import agency_basecode, generate_code
 from api.ageographical.repositories.CityRepo import CityRepo
@@ -10,13 +11,17 @@ from api.ageographical.schemas.AgencySchema import (
     CreateAgency
 )
 
-
+#
 class AgencyService:
+    log: LogRepo
     agency: AgencyRepo
 
     def __init__(
-        self, agency: AgencyRepo = Depends()
+        self, 
+        log: LogRepo = Depends(),
+        agency: AgencyRepo = Depends()
     ) -> None:
+        self.log = log
         self.agency = agency
 
     # get all agencys function
@@ -43,11 +48,10 @@ class AgencyService:
             if count > 0:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Agency already registered with name "
-                    + item.infos.name,
+                    detail=f"Agency already registered with name {item.infos.name}",
                 )
             
-            if (city_code is not None) and  (city_code != item.infos.city_code):
+            if (city_code is not None) and (city_code != item.infos.city_code):
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="You should only have the list of agencies for one city or at a time"
@@ -66,7 +70,7 @@ class AgencyService:
             if count > 0:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Agency already registered with code " + str(agency_code),
+                    detail=f"Agency already registered with code {agency_code}",
                 )
             agency = CreateAgency(
                 code = agency_code,
@@ -98,16 +102,16 @@ class AgencyService:
         return self.agency.update(agency)
 
     # delete agency function
-    async def delete(self, agency: AgencyModel) -> None:
-        count = self.agency.countbycode(code=code)
-        if count > 0:
+    async def delete(self, code: int) -> None:
+        data = self.agency.getbycode(code=code)
+        if data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Agency not found",
             )
 
-        self.agency.update(agency)
+        self.agency.delete(data)
         return HTTPException(
             status_code=status.HTTP_200_OK,
-            detail="Agency deleted",
+            detail="Agency deleted"
         )

@@ -1,27 +1,27 @@
 from pydantic import Field
 from typing import Optional
 from datetime import datetime
-from api.configs.BaseModel import SchemaModel
+from api.configs.BaseModel import BaseSchema
 from api.ageographical.schemas.PrefectureSchema import PrefectureSchema
 
 #
-class RegionSearchParams(SchemaModel):
+class RegionSearchParams(BaseSchema):
     code: int = Field(description="Field of the region code")
     name: str | None = Field(description="Field of the region name")
 
 #
-class RegionCoordinates(SchemaModel):
+class RegionCoordinates(BaseSchema):
     altitude: float
     latitude: float
     longitude: float
 
 #
-class RegionInfos(SchemaModel):
+class RegionInfos(BaseSchema):
     natural_zone: str
     coordinates: Optional[RegionCoordinates]
 
 #  
-class RegionSchema(SchemaModel):
+class RegionSchema(BaseSchema):
     id: int
     name: str
     code: int

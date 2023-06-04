@@ -1,16 +1,23 @@
 from typing import List
+from api.tools.Helper import build_log
+from fastapi.encoders import jsonable_encoder
 from fastapi import Depends, HTTPException, status
+from api.logs.services.LogService import LogService
 from api.ageographical.models.CityTypeModel import CityTypeModel
 from api.ageographical.repositories.CityTypeRepo import CityTypeRepo
 from api.ageographical.schemas.CityTypeSchema import CreateCityType
 
 #
 class CityTypeService:
+    log: LogService
     citytype: CityTypeRepo
 
     def __init__(
-        self, citytype: CityTypeRepo = Depends()
+        self, 
+        log: LogService = Depends(),
+        citytype: CityTypeRepo = Depends()
     ) -> None:
+        self.log = log
         self.citytype = citytype
 
     # get all city types function
@@ -36,44 +43,42 @@ class CityTypeService:
             if citytype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="City Type already registered with code "
-                    + str(item.code),
+                    detail=f"City Type already registered with code {item.code}",
                 )
 
             citytype = self.citytype.getbyname(name=item.name)
             if citytype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="City Type already registered with name "
-                    + item.name,
+                    detail=f"City Type already registered with name {item.name}",
                 )
 
         return self.citytype.create(data=data)
 
     # update city type function
     async def update(self, code: int, data: CreateCityType) -> CityTypeModel:
-        citytype = self.citytype.getbycode(code=code)
-        if citytype is None:
+        old_data = jsonable_encoder(self.citytype.getbycode(code=code))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="City Type not found",
             )
 
-        citydict = data.dict(exclude_unset=True)
-        for key, val in citydict.items():
-            setattr(citytype, key, val)
-        return self.citytype.update(citytype)
+        current_data = jsonable_encoder(self.citytype.update(code, data=data.dict()))
+        logs = [build_log(f"/citytypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return current_data
 
     # delete city type function
-    async def delete(self, city: CityTypeModel) -> None:
-        citytype = self.citytype.getbycode(code=code)
-        if citytype is None:
+    async def delete(self, code: int) -> None:
+        data = self.citytype.getbycode(code=code)
+        if data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="City Type not found",
             )
 
-        self.citytype.update(city)
+        self.citytype.delete(data)
         return HTTPException(
             status_code=status.HTTP_200_OK,
             detail="City Type deleted",

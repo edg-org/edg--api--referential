@@ -1,23 +1,30 @@
 from typing import List
+from datetime import datetime
+from fastapi.encoders import jsonable_encoder
+from api.logs.repositories.LogRepo import LogRepo
 from fastapi import Depends, HTTPException, status
 from api.ageographical.repositories.AreaRepo import AreaRepo
 from api.ageographical.repositories.CityRepo import CityRepo
 from api.electrical.models.TransformerModel import TransformerModel
 from api.electrical.repositories.TransformerRepo import TransformerRepo
-from api.tools.Helper import transformer_basecode, generate_code, add_log
+from api.tools.Helper import transformer_basecode, generate_code, build_log
 from api.electrical.repositories.EnergySupplyLineRepo import EnergySupplyLineRepo
 from api.electrical.schemas.TransformerSchema import (
     TransformerUpdate,
-    CreateTransformer,
+    CreateTransformer
 )
 
 #
 class TransformerService:
+    log: LogRepo
     transformer: TransformerRepo
 
     def __init__(
-        self, transformer: TransformerRepo = Depends()
+        self,
+        logo: LogRepo = Depends(),
+        transformer: TransformerRepo = Depends()
     ) -> None:
+        self.logo = logo
         self.transformer = transformer
 
     # get all transformers function
@@ -39,7 +46,6 @@ class TransformerService:
     # create transformer function
     async def create(self, data: List[CreateTransformer]) -> List[CreateTransformer]:
         step = 0
-        place_code = None
         transformerlist = []
         for item in data:
             multiple = 100
@@ -48,10 +54,10 @@ class TransformerService:
             if count > 0:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Transformer already registered with name " + item.infos.name + " in the city whose code is " + str(item.infos.city_code),
+                    detail=f"Transformer already registered with name {item.infos.name} in the city whose code is {item.infos.city_code}",
                 )
             
-            area_id = None
+            #area_id = None
             if (hasattr(item.infos, "area_code") and item.infos.area_code is not None):
                 multiple = 10
                 area_id = AreaRepo.getidbycode(self.transformer, item.infos.area_code)
@@ -60,7 +66,7 @@ class TransformerService:
                 if count > 0:
                     raise HTTPException(
                         status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="Transformer already registered with name " + item.infos.name + " in the area whose code is " + str(item.infos.area_code),
+                        detail=f"Transformer already registered with name {item.infos.name} in the area whose code is {item.infos.area_code}",
                     )
             
             if (hasattr(item.infos, "tranformer_serie_number") and item.infos.tranformer_serie_number is not None):
@@ -69,7 +75,7 @@ class TransformerService:
                 if count > 0:
                     raise HTTPException(
                         status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="Transformer already registered with number "+ str(item.transformer_code),
+                        detail=f"Transformer already registered with number {item.transformer_code}",
                     )
             else:
                 step += 1
@@ -84,7 +90,7 @@ class TransformerService:
                 if count > 0:
                     raise HTTPException(
                         status_code=status.HTTP_400_BAD_REQUEST,
-                        detail="Transformer already registered with code " + str(transformer_code),
+                        detail=f"Transformer already registered with code {transformer_code}",
                     )
 
                 transformer = CreateTransformer(
@@ -95,48 +101,52 @@ class TransformerService:
                     energy_supply_lines = item.energy_supply_lines
                 )
                 transformerlist.append(transformer)
-                place_code = input_code
 
         return self.transformer.create(data=transformerlist)
 
     # update transformer function
     async def update(self, code: int, data: TransformerUpdate) -> TransformerModel:
-        count = self.transformer.countbycode(code=code)
-        if count  == 0:
+        old_data = jsonable_encoder(self.supply.getbycode(code=code))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Transformer not found",
             )
 
-        olddata = self.supply.getbycode(code=code)
-        area_id = olddata.area_id
-        if (hasattr(data.infos, "area_code") and data.infos.area_code is not None):
-            area_id = AreaRepo.getidbycode(self.supply, data.infos.area_code)
-
-        transformer = CreateTransformer(
-            transformer_code = code,
-            city_id = CityRepo.getidbycode(self.transformer, data.infos.city_code),
-            area_id = area_id,
-            supply_line_id = EnergySupplyLineRepo.getbycode(self.transformer, data.infos.supply_line_code).id,
-            infos = data.infos
-        )
-
-        transformerdict = transformer.dict(exclude_unset=True)
-        for key, val in transformerdict.items():
-            setattr(transformer, key, val)
-        return self.transformer.update(transformer)
-
-    # delete transformer function
-    async def delete(self, transformer: TransformerModel) -> None:
-        transformer = self.transformer.get(id=id)
-        if transformer is None:
+        #area_id = old_data["area_id"]
+        #if (hasattr(data.infos, "area_code") and data.infos.area_code is not None):
+        #    area_id = AreaRepo.getidbycode(self.supply, data.infos.area_code)
+            
+        #data.area_id = area_id
+        #data.city_id = CityRepo.getidbycode(self.transformer, data.infos.city_code)
+        #data.supply_line_id = EnergySupplyLineRepo.getbycode(self.transformer, data.infos.supply_line_code).id
+    
+        current_data = jsonable_encoder(self.transformer.update(code=code, data=data.dict()))
+        logs = [build_log(f"/transformers/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+            
+        await self.log.create(logs)
+        return current_data
+    
+    # activate or desactivate region function
+    async def activate_desactivate(self, code: int, flag: bool) -> None:
+        old_data = jsonable_encoder(self.transformer.getbycode(code=code))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Transformer not found",
             )
-
-        self.transformer.update(transformer)
-        return HTTPException(
-            status_code=status.HTTP_200_OK,
-            detail="Transformer deleted",
+        message = "Transformer desactivated"
+        deleted_at = datetime.utcnow().isoformat()
+        
+        if flag == True:
+            deleted_at = None
+            message = "Transformer activated"
+        
+        data = dict(
+            is_activated=flag,
+            deleted_at = deleted_at
         )
+        current_data = jsonable_encoder(self.transformer.update(code=code, data=data))
+        logs = [build_log(f"/transformers/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return HTTPException(status_code=status.HTTP_200_OK, detail=message)

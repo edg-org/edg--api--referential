@@ -2,7 +2,7 @@ from typing import List
 from sqlalchemy.orm import Session
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from sqlalchemy import insert, func, or_, and_, null
+from sqlalchemy import insert, update, func, or_, and_, null
 from api.electrical.models.TransformerModel import TransformerModel
 from api.electrical.schemas.TransformerSchema import CreateTransformer
 
@@ -108,11 +108,14 @@ class TransformerRepo:
         return data
 
     # update transformer function
-    def update(self, data: CreateTransformer) -> TransformerModel:
-        self.db.add(data)
+    def update(self, code: int, data: CreateTransformer) -> TransformerModel:
+        self.db.execute(
+            update(TransformerModel)
+            .where(TransformerModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete transformer function
     def delete(self, meter: TransformerModel) -> None:

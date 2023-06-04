@@ -1,8 +1,8 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
+from sqlalchemy import insert, func, update
 from api.electrical.models.VoltageTypeModel import VoltageTypeModel
 from api.electrical.schemas.VoltageTypeSchema import CreateVoltageType
 
@@ -67,11 +67,14 @@ class VoltageTypeRepo:
         return data
 
     # update voltage type function
-    def update(self, data: CreateVoltageType) -> VoltageTypeModel:
-        self.db.add(data)
+    def update(self, code: int, data: CreateVoltageType) -> VoltageTypeModel:
+        self.db.execute(
+            update(VoltageTypeModel)
+            .where(VoltageTypeModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete voltage type function
     def delete(self, supplyline: VoltageTypeModel) -> None:

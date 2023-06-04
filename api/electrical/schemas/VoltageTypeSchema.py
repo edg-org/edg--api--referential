@@ -1,15 +1,15 @@
 from typing import Optional
 from datetime import datetime
-from api.configs.BaseModel import SchemaModel
+from api.configs.BaseModel import BaseSchema
 
 #
-class VoltageTypeInfos(SchemaModel):
+class VoltageTypeInfos(BaseSchema):
     minimum_voltage: float
     maximum_voltage: float
     measurement_unit: str
     
 #
-class VoltageTypeSchema(SchemaModel):
+class VoltageTypeSchema(BaseSchema):
     id: int
     code: int
     name: str

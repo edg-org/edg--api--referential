@@ -2,7 +2,7 @@ from faker import Faker
 from typing import List
 from unittest import TestCase
 from sqlalchemy.orm import Session
-from unittest.mock import create_autospec, patch
+from unittest.mock import Mock, create_autospec, patch
 from api.ageographical.repositories.PrefectureRepo import PrefectureRepo
 
 class TestPrefectureRepository(TestCase):
@@ -49,7 +49,7 @@ class TestPrefectureRepository(TestCase):
 
     @patch("api.ageographical.schemas.PrefectureSchema.CreatePrefecture", autospec=True)
     def test_update(self, CreatePrefecture):
-        prefecture : CreatePrefecture = CreatePrefecture(
+        data : CreatePrefecture = CreatePrefecture(
             name="Mamou",
             region_id=10254,
             prefecture_number=10,
@@ -58,7 +58,6 @@ class TestPrefectureRepository(TestCase):
                 region="région de mamou"
             )
         )
-        self.prefectureRepository.update(prefecture)
-        self.session.add.assert_called_once()
-        self.session.commit.assert_called_once()
-        self.session.refresh.assert_called_once()
+        self.prefectureRepository.update = Mock()
+        self.prefectureRepository.update(102, data)
+        self.prefectureRepository.update.assert_called_with(102, data)

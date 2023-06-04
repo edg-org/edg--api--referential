@@ -1,4 +1,7 @@
 from typing import List
+from api.tools.Helper import build_log
+from fastapi.encoders import jsonable_encoder
+from api.logs.repositories.LogRepo import LogRepo
 from fastapi import Depends, HTTPException, status
 from api.electrical.models.SupplyLineTypeModel import SupplyLineTypeModel
 from api.electrical.repositories.SupplyLineTypeRepo import SupplyLineTypeRepo
@@ -9,17 +12,19 @@ from api.electrical.schemas.SupplyLineTypeSchema import (
 
 #
 class SupplyLineTypeService:
+    log: LogRepo
     supplytype: SupplyLineTypeRepo
 
     def __init__(
-        self, supplytype: SupplyLineTypeRepo = Depends()
+        self, 
+        log: LogRepo = Depends(),
+        supplytype: SupplyLineTypeRepo = Depends()
     ) -> None:
+        self.log = log
         self.supplytype = supplytype
 
     # get all supply line types function
-    async def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[SupplyLineTypeModel]:
+    async def list(self, skip: int = 0, limit: int = 100) -> List[SupplyLineTypeModel]:
         return self.supplytype.list(skip=skip, limit=limit)
 
     # get supply line type by id function
@@ -54,28 +59,28 @@ class SupplyLineTypeService:
 
     # update supply line type function
     async def update(self, code: int, data: SupplyLineTypeUpdate) -> SupplyLineTypeUpdate:
-        supplytype = self.supplytype.getbycode(code=code)
-        if supplytype is None:
+        old_data = jsonable_encoder(self.supplytype.getbycode(code=code))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Supply Line Type not found",
             )
 
-        typedict = data.dict(exclude_unset=True)
-        for key, val in typedict.items():
-            setattr(supplytype, key, val)
-        return self.supplytype.update(supplytype)
+        current_data = jsonable_encoder(self.supplytype.update(code=code, data=data.dict()))
+        logs = [build_log(f"/supplytypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return current_data
 
     # delete supply line type function
-    async def delete(self, type: SupplyLineTypeModel) -> None:
-        supplytype = self.supplytype.get(id=id)
-        if supplytype is None:
+    async def delete(self, code: int) -> None:
+        data = self.supplytype.getbycode(code=code)
+        if data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Supply Line Type not found",
             )
 
-        self.supplytype.update(type)
+        self.supplytype.delete(type)
         return HTTPException(
             status_code=status.HTTP_200_OK,
             detail="Supply Line Type deleted",

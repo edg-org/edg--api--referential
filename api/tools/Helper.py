@@ -1,6 +1,7 @@
-import requests
-from typing import Optional
-from fastapi.encoders import jsonable_encoder
+from typing import List, Any
+from httpx import AsyncClient
+from fastapi import HTTPException
+from api.logs.schemas.LogSchema import CreateLog
 from api.configs.Environment import get_env_var
 
 env = get_env_var()
@@ -59,7 +60,9 @@ def generate_zipcode(zipcode_base: int, step: int) -> str:
 
 # function to generate code
 def generate_code(
-    init_codebase: int, maxcode: int, step: int
+    init_codebase: int, 
+    maxcode: int, 
+    step: int
 ) -> int:
     if maxcode > 0:
         basecode = maxcode
@@ -69,25 +72,31 @@ def generate_code(
     return dict(step=step, code=(basecode + step))
 
 # add logs function
-def add_log(
-    microservice_name: str,
-    endpoint: str = "/",
-    verb: str = "PUT",
-    user_email: str = "",
-    previous_metadata: Optional[dict] = {},
-    current_metadata: Optional[dict] = {}
-):
+async def get_request(params : Any, url: str) -> Any:
+    client = AsyncClient()
+    result = await client.get(url)
+    if result.status_code != 200:
+        raise HTTPException(
+                status_code=result.status_code,
+                detail=result.text
+            )
+        
+#
+async def build_log(
+    endpoint: str,
+    verb:str,
+    user_email:str,
+    previous_metadata:Any,
+    current_metadata:Any
+) -> CreateLog:
     baseUrl = env.domaine_name + env.api_routers_prefix + env.api_version
-    input_data = [{
-        "infos": {
-            "microservice_name": microservice_name,
-            "endpoint": baseUrl+endpoint,
-            "verb": verb,
-            "user_email": user_email,
-            "previous_medata": jsonable_encoder(previous_metadata),
-            "current_metadata": jsonable_encoder(current_metadata),
-        }
-    }]
-    print(baseUrl+"/logs")
-    result = requests.post(baseUrl+"/logs", json=input_data)
-    return result.status_code  # 201
+    return CreateLog(
+        infos=dict(
+            microservice_name="Referential",
+            endpoint=baseUrl+endpoint,
+            verb=verb,
+            user_email=user_email,
+            previous_metadata=previous_metadata,
+            current_metadata=current_metadata
+        )
+    )

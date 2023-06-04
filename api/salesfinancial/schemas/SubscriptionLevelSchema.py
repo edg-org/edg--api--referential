@@ -1,14 +1,14 @@
 from datetime import datetime
 from typing import Optional, List
-from api.configs.BaseModel import SchemaModel
+from api.configs.BaseModel import BaseSchema
 
 #
-class PaymentMode(SchemaModel):
+class PaymentMode(BaseSchema):
     code: int
     name: str  
 
 #
-class SubscriptionLevelSchema(SchemaModel):
+class SubscriptionLevelSchema(BaseSchema):
     id: int
     code: int
     name: str

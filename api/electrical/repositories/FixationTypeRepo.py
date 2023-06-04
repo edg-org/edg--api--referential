@@ -1,8 +1,8 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
+from sqlalchemy import insert, func, update
 from api.electrical.models.FixationTypeModel import FixationTypeModel
 from api.electrical.schemas.FixationTypeSchema import CreateFixationType
 
@@ -43,9 +43,8 @@ class FixationTypeRepo:
     def getbyname(self, name: str) -> FixationTypeModel:
         return (
             self.db.query(FixationTypeModel)
-            .where(
-                func.lower(FixationTypeModel.name) == name.lower()
-            ).first()
+            .where(func.lower(FixationTypeModel.name) == name.lower())
+            .first()
         )
 
     # create fixation type function
@@ -58,11 +57,14 @@ class FixationTypeRepo:
         return data
 
     # update fixation type function
-    def update(self, data: CreateFixationType) -> FixationTypeModel:
-        self.db.add(data)
+    def update(self, code: int, data: dict) -> FixationTypeModel:
+        self.db.execute(
+            update(FixationTypeModel)
+            .where(FixationTypeModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete fixation type function
     def delete(self, supplyline: FixationTypeModel) -> None:

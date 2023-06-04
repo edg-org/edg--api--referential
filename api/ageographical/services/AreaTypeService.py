@@ -1,16 +1,23 @@
 from typing import List
+from api.tools.Helper import build_log
+from fastapi.encoders import jsonable_encoder
+from api.logs.repositories.LogRepo import LogRepo
 from fastapi import Depends, HTTPException, status
 from api.ageographical.models.AreaTypeModel import AreaTypeModel
-from api.ageographical.repositories.AreaTypeRepo import AreaTypeRepo
 from api.ageographical.schemas.AreaTypeSchema import CreateAreaType
+from api.ageographical.repositories.AreaTypeRepo import AreaTypeRepo
 
 #
 class AreaTypeService:
+    log: LogRepo
     areatype: AreaTypeRepo
 
     def __init__(
-        self, areatype: AreaTypeRepo = Depends()
+        self, 
+        log: LogRepo = Depends(),
+        areatype: AreaTypeRepo = Depends()
     ) -> None:
+        self.log = log
         self.areatype = areatype
 
     # get all area types function
@@ -38,44 +45,42 @@ class AreaTypeService:
             if areatype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Area Type already registered with code "
-                    + str(item.code),
+                    detail=f"Area Type already registered with code {item.code}",
                 )
 
             areatype = self.areatype.getbyname(name=item.name)
             if areatype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Area Type already registered with name "
-                    + item.name,
+                    detail=f"Area Type already registered with name {item.name}",
                 )
 
         return self.areatype.create(data=data)
 
     # update area type function
     async def update(self, code: int, data: CreateAreaType) -> AreaTypeModel:
-        areatype = self.areatype.getbycode(code=code)
-        if areatype is None:
+        old_data = jsonable_encoder(self.areatype.getbycode(code=code))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Area Type not found",
             )
 
-        typedict = data.dict(exclude_unset=True)
-        for key, val in typedict.items():
-            setattr(areatype, key, val)
-        return self.areatype.update(areatype)
+        current_data = jsonable_encoder(self.areatype.update(code=code, data=data.dict()))
+        logs = [build_log(f"/areatypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return current_data
 
     # delete area type %function
-    async def delete(self, area: AreaTypeModel) -> None:
-        areatype = self.areatype.getbycode(code=code)
-        if areatype is None:
+    async def delete(self, code: int) -> None:
+        data = self.areatype.getbycode(code=code)
+        if data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Area Type not found",
             )
 
-        self.areatype.update(area)
+        self.areatype.delete(data)
         return HTTPException(
             status_code=status.HTTP_200_OK,
             detail="Area Type deleted",

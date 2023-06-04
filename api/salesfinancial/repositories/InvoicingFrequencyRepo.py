@@ -82,7 +82,7 @@ class InvoicingFrequencyRepo:
 
     # update invoicing frequency function
     def update(self, data: CreateInvoicingFrequency) -> InvoicingFrequencyModel:
-        self.db.add(data)
+        self.db.merge(data)
         self.db.commit()
         self.db.refresh(data)
         return data

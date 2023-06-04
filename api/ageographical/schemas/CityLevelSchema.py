@@ -1,10 +1,10 @@
 from typing import Optional
 from datetime import datetime
 
-from api.configs.BaseModel import SchemaModel
+from api.configs.BaseModel import BaseSchema
 
 #
-class CityLevelSchema(SchemaModel):
+class CityLevelSchema(BaseSchema):
     id: int
     code: int
     name: str

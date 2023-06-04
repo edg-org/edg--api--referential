@@ -1,9 +1,9 @@
 from typing import Optional
 from datetime import datetime
-from api.configs.BaseModel import SchemaModel
+from api.configs.BaseModel import BaseSchema
 
 #
-class ElectricMeterInfos(SchemaModel):
+class ElectricMeterInfos(BaseSchema):
     brand: str
     meter_type: str
     supply_mode: str
@@ -11,7 +11,7 @@ class ElectricMeterInfos(SchemaModel):
     manufacturing_country: str
 
 #
-class ElectricMeterSchema(SchemaModel):
+class ElectricMeterSchema(BaseSchema):
     id: int
     meter_number: str
     infos: ElectricMeterInfos

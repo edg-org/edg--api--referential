@@ -1,8 +1,8 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
+from sqlalchemy import insert, func, update
 from api.ageographical.models.NaturalZoneModel import ZoneModel
 from api.ageographical.schemas.NaturalZoneSchema import CreateZone, ZoneUpdate
 
@@ -76,6 +76,14 @@ class ZoneRepo:
             )
             .first()
         )
+        
+    # count total rows of transformer by code
+    def countbycode(self, code: str) -> int:
+        return (
+            self.db.query(ZoneModel)
+            .where(ZoneModel.code == code)
+            .count()
+        )
 
     # create region function
     def create(self, data: List[CreateZone]) -> List[CreateZone]:
@@ -87,11 +95,14 @@ class ZoneRepo:
         return data
 
     # update region function
-    def update(self, data: CreateZone) -> ZoneModel:
-        self.db.add(data)
+    def update(self,code: int, data: dict) -> ZoneModel:
+        self.db.execute(
+            update(ZoneModel)
+            .where(ZoneModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete region function
     def delete(self, region: ZoneModel) -> None:

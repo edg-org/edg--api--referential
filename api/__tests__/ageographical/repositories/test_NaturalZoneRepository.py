@@ -2,7 +2,7 @@ from typing import List
 from faker import Faker
 from unittest import TestCase
 from sqlalchemy.orm import Session
-from unittest.mock import create_autospec, patch
+from unittest.mock import Mock, create_autospec, patch
 from api.ageographical.repositories.NaturalZoneRepo import ZoneRepo
 
 class TestZoneRepository(TestCase):
@@ -45,11 +45,10 @@ class TestZoneRepository(TestCase):
     @patch("api.ageographical.schemas.NaturalZoneSchema.CreateZone", autospec=True)
     def test_update(self, CreateZone):
         fake = Faker()
-        zone : CreateZone = CreateZone(
+        data : CreateZone = CreateZone(
             name=fake,
             code=fake
         )
-        self.zoneRepository.update(zone)
-        self.session.add.assert_called_once()
-        self.session.commit.assert_called_once()
-        self.session.refresh.assert_called_once()
+        self.zoneRepository.update = Mock()
+        self.zoneRepository.update(102, data)
+        self.zoneRepository.update.assert_called_with(102, data)

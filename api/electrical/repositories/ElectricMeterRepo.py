@@ -1,7 +1,7 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
 from fastapi import Depends, encoders
+from sqlalchemy import insert, update
 from api.configs.Database import get_db
 from api.electrical.models.ElectricMeterModel import ElectricMeterModel
 from api.electrical.schemas.ElectricMeterSchema import CreateElectricMeter
@@ -41,9 +41,7 @@ class ElectricMeterRepo:
     def getbynumber(self, number: str) -> ElectricMeterModel:
         return (
             self.db.query(ElectricMeterModel)
-            .where(
-                ElectricMeterModel.meter_number == number
-            )
+            .where(ElectricMeterModel.meter_number == number)
             .first()
         )
 
@@ -57,11 +55,14 @@ class ElectricMeterRepo:
         return data
 
     # update electric meter function
-    def update(self, data: CreateElectricMeter) -> ElectricMeterModel:
-        self.db.add(data)
+    def update(self, code: int, data: dict) -> ElectricMeterModel:
+        self.db.execute(
+            update(ElectricMeterModel)
+            .where(ElectricMeterModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete electric meter function
     def delete(self, meter: ElectricMeterModel) -> None:

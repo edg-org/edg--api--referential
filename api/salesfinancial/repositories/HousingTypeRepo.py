@@ -70,13 +70,12 @@ class HousingTypeRepo:
             insert(HousingTypeModel),
             encoders.jsonable_encoder(data),
         )
-        #self.db.add_all(data)
         self.db.commit()
         return data
 
     # update housing type function
-    def update(self, data: CreateHousingType) -> HousingTypeModel:
-        self.db.add(data)
+    def update(self, data: HousingTypeModel) -> HousingTypeModel:
+        self.db.merge(data)
         self.db.commit()
         self.db.refresh(data)
         return data

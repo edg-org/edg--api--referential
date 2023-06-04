@@ -1,20 +1,20 @@
 from typing import Optional, List
 from datetime import datetime, date
-from api.configs.BaseModel import SchemaModel
+from api.configs.BaseModel import BaseSchema
 from api.ageographical.schemas.DeliveryPointSchema import DeliveryPointSchema
 
-class PoleCoordinates(SchemaModel):
+class PoleCoordinates(BaseSchema):
     altitude: float
     latitude: float
     longitude: float
 
-class Transformers(SchemaModel):
+class Transformers(BaseSchema):
     electrical_code: int
     activation_dated: date
     desactivation_date: Optional[date]=None
     is_actived: bool
     
-class PoleInfos(SchemaModel):
+class PoleInfos(BaseSchema):
     number: int
     name: Optional[str]=None
     area_code: int
@@ -25,7 +25,7 @@ class PoleInfos(SchemaModel):
     coordinates: Optional[PoleCoordinates]=None
     
 
-class ConnectionPoleSchema(SchemaModel):
+class ConnectionPoleSchema(BaseSchema):
     id: int
     pole_number: str
     transformer_id: int

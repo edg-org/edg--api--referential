@@ -1,10 +1,11 @@
 from typing import List
+from fastapi import Depends
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
-from fastapi import Depends, encoders
 from api.configs.Database import get_db
+from sqlalchemy import insert, update, func
+from fastapi.encoders import jsonable_encoder
 from api.ageographical.models.RegionModel import RegionModel
-from api.ageographical.schemas.RegionSchema import CreateRegion, RegionUpdate
+from api.ageographical.schemas.RegionSchema import CreateRegion
 
 #
 class RegionRepo:
@@ -50,7 +51,9 @@ class RegionRepo:
 
     # get all regions function
     def list(
-        self, skip: int = 0, limit: int = 100
+        self, 
+        skip: int = 0, 
+        limit: int = 100
     ) -> List[RegionModel]:
         return (
             self.db.query(RegionModel)
@@ -62,11 +65,13 @@ class RegionRepo:
     # get administative region by id function
     def get(self, id: int) -> RegionModel:
         return (
-            self.db.query(RegionModel).where(RegionModel.id == id).first()
+            self.db.query(RegionModel)
+            .where(RegionModel.id == id)
+            .first()
         )
 
     # get administative region code function
-    def getbycode(self, code: str) -> RegionModel:
+    def getbycode(self, code: int) -> RegionModel:
         return (
             self.db.query(RegionModel)
             .where(RegionModel.code == code)
@@ -80,22 +85,33 @@ class RegionRepo:
             .where(func.lower(RegionModel.name) == name.lower())
             .first()
         )
+        
+    # count total rows of region by code
+    def countbycode(self, code: int) -> int:
+        return (
+            self.db.query(RegionModel)
+            .where(RegionModel.code == code)
+            .count()
+        )
 
     # create administative region function
     def create(self, data: List[CreateRegion]) -> List[CreateRegion]:
         self.db.execute(
             insert(RegionModel),
-            encoders.jsonable_encoder(data),
+            jsonable_encoder(data),
         )
         self.db.commit()
         return data
 
     # update administative region function
-    def update(self, data: CreateRegion) -> RegionModel:
-        self.db.add(data)
+    def update(self, code: int,  data: dict) -> RegionModel:
+        self.db.execute(
+            update(RegionModel)
+            .where(RegionModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete administative region function
     def delete(self, region: RegionModel) -> None:

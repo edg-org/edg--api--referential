@@ -1,8 +1,8 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
+from sqlalchemy import insert, func, update
 from api.electrical.models.SupplyLineTypeModel import SupplyLineTypeModel
 from api.electrical.schemas.SupplyLineTypeSchema import CreateSupplyLineType
 
@@ -58,11 +58,14 @@ class SupplyLineTypeRepo:
         return data
 
     # update supply line type function
-    def update(self, data: CreateSupplyLineType) -> SupplyLineTypeModel:
-        self.db.add(data)
+    def update(self, code: int, data: dict) -> SupplyLineTypeModel:
+        self.db.execute(
+            update(SupplyLineTypeModel)
+            .where(SupplyLineTypeModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete supply line type function
     def delete(self, supplyline: SupplyLineTypeModel) -> None:

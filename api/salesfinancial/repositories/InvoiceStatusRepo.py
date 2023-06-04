@@ -69,7 +69,7 @@ class InvoiceStatusRepo:
 
     # update subscription status function
     def update(self, data: CreateInvoiceStatus) -> InvoiceStatusModel:
-        self.db.add(data)
+        self.db.merge(data)
         self.db.commit()
         self.db.refresh(data)
         return data

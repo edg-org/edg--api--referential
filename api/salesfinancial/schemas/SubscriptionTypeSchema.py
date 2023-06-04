@@ -1,10 +1,10 @@
 from typing import List, Optional
 from datetime import datetime, date
-from api.configs.BaseModel import SchemaModel
+from api.configs.BaseModel import BaseSchema
 from api.salesfinancial.schemas.PricingHistorySchema import PricingHistorySchema
 
 #
-class Dunning(SchemaModel):
+class Dunning(BaseSchema):
     code: str
     rank: int
     name: str
@@ -13,14 +13,14 @@ class Dunning(SchemaModel):
     delay_penality_rate: float
 
 #
-class PricingSlices(SchemaModel):
+class PricingSlices(BaseSchema):
     name: str
     unit_price: float
     lower_index: float
     upper_index: Optional[float] | None
 
 #
-class Pricing(SchemaModel):
+class Pricing(BaseSchema):
     code: str
     name: str
     start_date: date
@@ -28,7 +28,7 @@ class Pricing(SchemaModel):
     slices: List[PricingSlices]
 
 #
-class PowerToSubscribe(SchemaModel):
+class PowerToSubscribe(BaseSchema):
     housing_type: str
     lower_power: float
     upper_power: float
@@ -36,7 +36,7 @@ class PowerToSubscribe(SchemaModel):
     estimated_consumption: float
 
 #
-class TypeInfosBase(SchemaModel):
+class TypeInfosBase(BaseSchema):
     tracking_type: str
     supply_mode: str
     payment_deadline: int
@@ -49,7 +49,7 @@ class TypeInfosBase(SchemaModel):
     power_to_subscribe: List[PowerToSubscribe]
     
 #
-class SubscriptionTypeSchema(SchemaModel):
+class SubscriptionTypeSchema(BaseSchema):
     id: int
     code: str
     name: str

@@ -1,13 +1,13 @@
 from datetime import date, datetime
 from typing import Optional, List, Dict
-from api.configs.BaseModel import SchemaModel
+from api.configs.BaseModel import BaseSchema
 
-class DeliveryCoordinates(SchemaModel):
+class DeliveryCoordinates(BaseSchema):
     altitude: float
     latitude: float
     longitude: float
 
-class DeliveryInfos(SchemaModel):
+class DeliveryInfos(BaseSchema):
     number: int
     area_code: int
     electrical_code: int
@@ -15,13 +15,13 @@ class DeliveryInfos(SchemaModel):
     address: str
     coordinates: Optional[DeliveryCoordinates]
 
-class ConnectionPole(SchemaModel):
+class ConnectionPole(BaseSchema):
     electrical_code: int
     activation_date: date
     desactivation_date: Optional[date]=None
     is_actived: bool
     
-class DeliveryPointSchema(SchemaModel):
+class DeliveryPointSchema(BaseSchema):
     id: int
     delivery_point_number: int
     infos: DeliveryInfos

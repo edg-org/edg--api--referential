@@ -1,8 +1,8 @@
 from typing import Any, Dict
 from datetime import datetime
-from api.configs.BaseModel import SchemaModel
+from api.configs.BaseModel import BaseSchema
 
-class InfosSchema(SchemaModel):
+class InfosSchema(BaseSchema):
     microservice_name: str
     endpoint: str
     verb: str
@@ -10,7 +10,7 @@ class InfosSchema(SchemaModel):
     previous_metadata: Dict[str, Any]
     current_metadata: Dict[str, Any]
     
-class LogSchema(SchemaModel):
+class LogSchema(BaseSchema):
     id: int
     created_at: datetime
     infos: InfosSchema

@@ -64,7 +64,7 @@ class CityTypeRepo:
 
     # update city type function
     def update(self, data: CreateCityType) -> CityTypeModel:
-        self.db.add(data)
+        self.db.merge(data)
         self.db.commit()
         self.db.refresh(data)
         return data

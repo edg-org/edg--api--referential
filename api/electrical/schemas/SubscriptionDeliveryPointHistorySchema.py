@@ -1,7 +1,7 @@
 from datetime import datetime, date
-from api.configs.BaseModel import SchemaModel
+from api.configs.BaseModel import BaseSchema
 
-class SubscriptionHistorySchema(SchemaModel):
+class SubscriptionHistorySchema(BaseSchema):
     id: int
     contract_number: str
     delivery_point_number: str
