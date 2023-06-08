@@ -1,9 +1,9 @@
 from typing import List
 from datetime import datetime
+from api.tools.Helper import Helper
 from fastapi.encoders import jsonable_encoder
 from fastapi import Depends, HTTPException, status
 from api.logs.services.LogService import LogService
-from api.tools.Helper import build_log, generate_zone_code
 from api.ageographical.models.NaturalZoneModel import ZoneModel
 from api.ageographical.repositories.NaturalZoneRepo import ZoneRepo
 from api.ageographical.schemas.NaturalZoneSchema import (
@@ -50,16 +50,16 @@ class ZoneService:
             if zone:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Natural Region already registered with code {maxcode}",
+                    detail=f"Natural Region already registered with code {maxcode}"
                 )
 
             zone = self.zone.getbyname(name=item.name)
             if zone:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Natural Region already registered with name {item.name}",
+                    detail=f"Natural Region already registered with name {item.name}"
                 )
-            maxcode = generate_zone_code(maxcode)
+            maxcode = Helper.generate_zone_code(maxcode)
             zone = CreateZone(
                 name = item.name,
                 code = maxcode
@@ -78,7 +78,7 @@ class ZoneService:
             )
 
         current_data = jsonable_encoder(self.zone.update(code, data=data.dict()))
-        logs = [build_log(f"/naturalregions/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [Helper.build_log(f"/naturalregions/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return current_data
 
@@ -88,7 +88,7 @@ class ZoneService:
         if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Natural Region not found",
+                detail="Natural Region not found"
             )
         message = "Natural Region desactivated"
         deleted_at = datetime.utcnow().isoformat()
@@ -102,6 +102,6 @@ class ZoneService:
             deleted_at = deleted_at
         )
         current_data = jsonable_encoder(self.zone.update(code=code, data=data))
-        logs = [build_log(f"/naturalregions/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [Helper.build_log(f"/naturalregions/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return HTTPException(status_code=status.HTTP_200_OK, detail=message)

@@ -1,10 +1,10 @@
 from typing import List
 from datetime import datetime
+from api.tools.Helper import Helper
 from fastapi.encoders import jsonable_encoder
 from api.logs.repositories.LogRepo import LogRepo
 from fastapi import Depends, HTTPException, status
 from api.ageographical.repositories.AreaRepo import AreaRepo
-from api.tools.Helper import build_log, pole_basecode, generate_code
 from api.electrical.repositories.TransformerRepo import TransformerRepo
 from api.electrical.models.ConnectionPoleModel import ConnectionPoleModel
 from api.electrical.repositories.ConnectionPoleRepo import ConnectionPoleRepo
@@ -58,8 +58,8 @@ class ConnectionPoleService:
                     detail="You should only have the list of connection poles for one area at a time"
                 )
                 
-            result = generate_code(
-                init_codebase=pole_basecode(item.infos.area_code),
+            result = Helper.generate_code(
+                init_codebase=Helper.pole_basecode(item.infos.area_code),
                 maxcode=self.pole.maxnumberbyarea(item.infos.area_code),
                 step=item.infos.number
             )
@@ -69,7 +69,7 @@ class ConnectionPoleService:
             if count > 0:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Connection Pole already registered with code " + str(pole_number),
+                    detail=f"Connection Pole already registered with code {pole_number}",
                 )
                 
             pole = CreateConnectionPole(
@@ -99,7 +99,7 @@ class ConnectionPoleService:
             data.transformer_id = TransformerRepo.getidbycode(self.pole, data.infos.transformer_code)
             
         current_data = jsonable_encoder(self.pole.update(number=number, data=data.dict()))
-        logs = [build_log(f"/connectionpoles/{number}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [Helper.build_log(f"/connectionpoles/{number}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return current_data
 
@@ -123,21 +123,30 @@ class ConnectionPoleService:
             deleted_at = deleted_at
         )
         current_data = jsonable_encoder(self.pole.update(number=number, data=data))
-        logs = [build_log(f"/connectionpoles/{number}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [Helper.build_log(f"/connectionpoles/{number}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return HTTPException(status_code=status.HTTP_200_OK, detail=message)
     
-    # delete connection pole function
-    async def delete(self, number: int) -> None:
-        data = self.pole.getbynumber(number=number)
-        if data is None:
+    # activate or desactivate connection pole function
+    async def activate_desactivate(self, code: int, flag: bool) -> None:
+        old_data = jsonable_encoder(self.region.getbycode(code=code))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Connection Pole not found",
+                detail="Administrative Region not found",
             )
-
-        self.pole.delete(data)
-        return HTTPException(
-            status_code=status.HTTP_200_OK,
-            detail="Connection Pole deleted",
+        message = "Administrative Region desactivated"
+        deleted_at = datetime.utcnow().isoformat()
+        
+        if flag == True:
+            deleted_at = None
+            message = "Administrative Region activated"
+        
+        data = dict(
+            is_activated = flag,
+            deleted_at = deleted_at
         )
+        current_data = jsonable_encoder(self.region.update(code=code, data=data))
+        logs = [Helper.build_log(f"/regions/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return HTTPException(status_code=status.HTTP_200_OK, detail=message)

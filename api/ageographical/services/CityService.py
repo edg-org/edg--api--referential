@@ -1,5 +1,6 @@
 from typing import List
 from datetime import datetime
+from api.tools.Helper import Helper
 from fastapi.encoders import jsonable_encoder
 from fastapi import Depends, HTTPException, status
 from api.logs.services.LogService import LogService
@@ -8,7 +9,6 @@ from api.ageographical.repositories.CityRepo import CityRepo
 from api.ageographical.repositories.CityTypeRepo import CityTypeRepo
 from api.ageographical.repositories.CityLevelRepo import CityLevelRepo
 from api.ageographical.repositories.PrefectureRepo import PrefectureRepo
-from api.tools.Helper import build_log, city_basecode, generate_zipcode, generate_code
 from api.ageographical.schemas.CitySchema import (
     CityInput,
     CityUpdate,
@@ -77,8 +77,8 @@ class CityService:
 
             step += 1
             maxzipcode = self.city.maxzipcodebypref(prefecture.id)
-            result = generate_code(
-                init_codebase=city_basecode(prefecture.code),
+            result = Helper.generate_code(
+                init_codebase=Helper.city_basecode(prefecture.code),
                 maxcode=self.city.maxcodebypref(prefecture.id),
                 step=step
             )
@@ -108,7 +108,7 @@ class CityService:
                     detail=f"City already registered with code {city_code}",
                 )
             
-            zipcode = generate_zipcode(zipcode_base, zipcode_step)
+            zipcode = Helper.generate_zipcode(zipcode_base, zipcode_step)
             count = self.city.countbyzipcode(zipcode=zipcode)
             if count > 0:
                 raise HTTPException(
@@ -138,10 +138,14 @@ class CityService:
                 detail="City not found",
             )
 
-        data.city_type_id = CityTypeRepo.getbyname(self.city, data.infos.city_type).id
-        data.city_level_id = CityLevelRepo.getbyname(self.city, data.infos.city_level).id
+        if (hasattr(data.infos, "city_type") and data.infos.city_type is None):
+            data.city_type_id = CityTypeRepo.getbyname(self.city, data.infos.city_type).id
+        
+        if (hasattr(data.infos, "city_level") and data.infos.city_level is None):
+            data.city_level_id = CityLevelRepo.getbyname(self.city, data.infos.city_level).id
+            
         current_data = jsonable_encoder(self.city.update(code=code, data=data.dict()))
-        logs = [build_log(f"/cities/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [Helper.build_log(f"/cities/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return current_data
 
@@ -165,6 +169,6 @@ class CityService:
             deleted_at = deleted_at
         )
         current_data = jsonable_encoder(self.city.update(code=code, data=data))
-        logs = [build_log(f"/cities/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [Helper.build_log(f"/cities/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return HTTPException(status_code=status.HTTP_200_OK, detail=message)

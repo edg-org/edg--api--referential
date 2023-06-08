@@ -1,8 +1,8 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
+from sqlalchemy import insert, update, func
 from api.ageographical.models.CityTypeModel import CityTypeModel
 from api.ageographical.schemas.CityTypeSchema import CreateCityType, CityTypeUpdate
 
@@ -36,19 +36,25 @@ class CityTypeRepo:
     # get city type by id function
     def get(self, id: int) -> CityTypeModel:
         return (
-            self.db.query(CityTypeModel).where(CityTypeModel.id == id).first()
+            self.db.query(CityTypeModel)
+            .where(CityTypeModel.id == id)
+            .first()
         )
 
     # get city type code function
     def getbycode(self, code: str) -> CityTypeModel:
         return (
-            self.db.query(CityTypeModel).where(CityTypeModel.code == code).first()
+            self.db.query(CityTypeModel)
+            .where(CityTypeModel.code == code)
+            .first()
         )
 
     # get city type name function
     def getbyname(self, name: str) -> CityTypeModel:
         return (
-            self.db.query(CityTypeModel).where(func.lower(CityTypeModel.name) == name.lower()).first()
+            self.db.query(CityTypeModel)
+            .where(func.lower(CityTypeModel.name) == name.lower())
+            .first()
         )
 
     # create city type function
@@ -63,11 +69,14 @@ class CityTypeRepo:
         return data
 
     # update city type function
-    def update(self, data: CreateCityType) -> CityTypeModel:
-        self.db.merge(data)
+    def update(self, code: int, data: dict) -> CityTypeModel:
+        self.db.execute(
+            update(CityTypeModel)
+            .where(CityTypeModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete city type function
     def delete(self, city: CityTypeModel) -> None:

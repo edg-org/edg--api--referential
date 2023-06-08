@@ -7,7 +7,7 @@ from api.ageographical.schemas.CitySchema import CitySchema
 #
 class PrefectureSearchParams(BaseSchema):
     code: int = Field(description="Field of the prefecture code")
-    name: str | None = Field(description="Field of the prefecture name")
+    name: Optional[str] = Field(description="Field of the prefecture name")
 
 #
 class PrefectureCoordinates(BaseSchema):

@@ -1,5 +1,6 @@
 from typing import List
 from datetime import datetime
+from api.tools.Helper import Helper
 from fastapi.encoders import jsonable_encoder
 from api.logs.repositories.LogRepo import LogRepo
 from fastapi import Depends, HTTPException, status
@@ -7,8 +8,7 @@ from api.ageographical.repositories.AreaRepo import AreaRepo
 from api.ageographical.repositories.CityRepo import CityRepo
 from api.electrical.models.TransformerModel import TransformerModel
 from api.electrical.repositories.TransformerRepo import TransformerRepo
-from api.tools.Helper import transformer_basecode, generate_code, build_log
-from api.electrical.repositories.EnergySupplyLineRepo import EnergySupplyLineRepo
+from api.electrical.repositories.FixationTypeRepo import FixationTypeRepo
 from api.electrical.schemas.TransformerSchema import (
     TransformerUpdate,
     CreateTransformer
@@ -79,8 +79,8 @@ class TransformerService:
                     )
             else:
                 step += 1
-                result = generate_code(
-                    init_codebase=transformer_basecode(input_code, multiple),
+                result = Helper.generate_code(
+                    init_codebase=Helper.transformer_basecode(input_code, multiple),
                     maxcode=self.transformer.maxcodebycity(item.infos.city_code),
                     step=step
                 )
@@ -113,16 +113,14 @@ class TransformerService:
                 detail="Transformer not found",
             )
 
-        #area_id = old_data["area_id"]
-        #if (hasattr(data.infos, "area_code") and data.infos.area_code is not None):
-        #    area_id = AreaRepo.getidbycode(self.supply, data.infos.area_code)
+        if (hasattr(data.infos, "area_code") and data.infos.area_code is not None):
+            data.area_id = AreaRepo.getidbycode(self.transformer, data.infos.area_code)
             
-        #data.area_id = area_id
-        #data.city_id = CityRepo.getidbycode(self.transformer, data.infos.city_code)
-        #data.supply_line_id = EnergySupplyLineRepo.getbycode(self.transformer, data.infos.supply_line_code).id
+        if (hasattr(data.infos, "fixation_type") and data.infos.fixation_type is not None):
+            data.fixation_type_id = FixationTypeRepo.getbyname(self.transformer, data.infos.fixation_type)
     
         current_data = jsonable_encoder(self.transformer.update(code=code, data=data.dict()))
-        logs = [build_log(f"/transformers/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [Helper.build_log(f"/transformers/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
             
         await self.log.create(logs)
         return current_data
@@ -147,6 +145,6 @@ class TransformerService:
             deleted_at = deleted_at
         )
         current_data = jsonable_encoder(self.transformer.update(code=code, data=data))
-        logs = [build_log(f"/transformers/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [Helper.build_log(f"/transformers/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return HTTPException(status_code=status.HTTP_200_OK, detail=message)

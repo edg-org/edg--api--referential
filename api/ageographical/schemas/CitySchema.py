@@ -6,8 +6,8 @@ from api.ageographical.schemas.AreaSchema import AreaSchema
 
 #
 class CitySearchParams(BaseSchema):
-    code: int | None = Field(description="Field of the city code")
-    zipcode: str | None = Field(description="Field of the city zipcode")
+    code: Optional[int] = Field(description="Field of the city code")
+    zipcode: Optional[str] = Field(description="Field of the city zipcode")
 
 #
 class CityCoordinates(BaseSchema):

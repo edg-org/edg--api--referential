@@ -4,8 +4,8 @@ from pydantic import EmailStr, Field, constr
 from api.configs.BaseModel import BaseSchema
 
 class AgencySearchParams(BaseSchema):
-    code: int | None = Field(description="Field of the agency name")
-    name: str | None = Field(description="Field of the agency name")
+    code: Optional[int] = Field(description="Field of the agency name")
+    name: Optional[str] = Field(description="Field of the agency name")
 
 class AgencyCoordinates(BaseSchema):
     altitude: str

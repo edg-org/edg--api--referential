@@ -1,8 +1,8 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
+from sqlalchemy import insert, update, func
 from api.ageographical.models.AreaTypeModel import AreaTypeModel
 from api.ageographical.schemas.AreaTypeSchema import CreateAreaType, AreaTypeUpdate
 
@@ -10,9 +10,7 @@ from api.ageographical.schemas.AreaTypeSchema import CreateAreaType, AreaTypeUpd
 class AreaTypeRepo:
     db: Session
 
-    def __init__(
-        self, db: Session = Depends(get_db)
-    ) -> None:
+    def __init__(self, db: Session = Depends(get_db)) -> None:
         self.db = db
 
     # get max code
@@ -53,10 +51,7 @@ class AreaTypeRepo:
     def getbyname(self, name: str) -> AreaTypeModel:
         return (
             self.db.query(AreaTypeModel)
-            .where(
-                func.lower(AreaTypeModel.name)
-                == name.lower()
-            )
+            .where(func.lower(AreaTypeModel.name) == name.lower())
             .first()
         )
 
@@ -70,11 +65,14 @@ class AreaTypeRepo:
         return data
 
     # update area type function
-    def update(self, data: AreaTypeUpdate) -> AreaTypeModel:
-        self.db.merge(data)
+    def update(self, code: int, data: AreaTypeUpdate) -> AreaTypeModel:
+        self.db.execute(
+            update(AreaTypeModel)
+            .where(AreaTypeModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete area type function
     def delete(self, area: AreaTypeModel) -> None:

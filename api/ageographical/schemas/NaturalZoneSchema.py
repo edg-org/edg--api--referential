@@ -7,7 +7,7 @@ from api.ageographical.schemas.RegionSchema import RegionSchema
 #
 class ZoneSearchParams(BaseSchema):
     code: int = Field(description="Field of the natural region code")
-    name: str | None = Field(description="Field of the natural region name")
+    name: Optional[str] = Field(description="Field of the natural region name")
 
 #
 class ZoneCoordinates(BaseSchema):

@@ -2,7 +2,7 @@ from typing import List
 from sqlalchemy.orm import Session
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from sqlalchemy import insert, func, and_
+from sqlalchemy import insert, update, func, and_, or_
 from api.ageographical.models.AreaModel import AreaModel
 from api.ageographical.schemas.AreaSchema import CreateArea
 
@@ -10,9 +10,7 @@ from api.ageographical.schemas.AreaSchema import CreateArea
 class AreaRepo:
     db: Session
 
-    def __init__(
-        self, db: Session = Depends(get_db)
-    ) -> None:
+    def __init__(self, db: Session = Depends(get_db)) -> None:
         self.db = db
 
     # get max code of area by city and area type
@@ -143,20 +141,16 @@ class AreaRepo:
     def getbycode(self, code: int) -> AreaModel:
         return (
             self.db.query(AreaModel)
-            .where(
-                AreaModel.code == code
-            ).first()
+            .where(AreaModel.code == code)
+            .first()
         )
 
     # get area name function
     def getbyname(self, name: str) -> AreaModel:
         return (
             self.db.query(AreaModel)
-            .where(
-                func.lower(
-                    func.json_unquote(AreaModel.infos["name"])
-                ) == name.lower()
-            ).first()
+            .where(func.lower(func.json_unquote(AreaModel.infos["name"])) == name.lower())
+            .first()
         )
 
     # create area function
@@ -169,11 +163,14 @@ class AreaRepo:
         return data
 
     # update area function
-    def update(self, data: CreateArea) -> AreaModel:
-        self.db.merge(data)
+    def update(self, code: int, data: dict) -> AreaModel:
+        self.db.execute(
+            update(AreaModel)
+            .where(AreaModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete area function
     def delete(self, area: AreaModel) -> None:

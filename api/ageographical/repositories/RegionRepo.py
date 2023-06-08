@@ -28,7 +28,7 @@ class RegionRepo:
     def maxcodebyzone(self, natural_zone: str) -> int:
         codemax = (
             self.db.query(func.max(RegionModel.code))
-            .where(func.lower(RegionModel.infos["natural_zone"]) == natural_zone.lower())
+            .where(func.lower(func.json_unquote(RegionModel.infos["natural_zone"])) == natural_zone.lower())
             .one()[0]
         )
         return 0 if codemax is None else codemax

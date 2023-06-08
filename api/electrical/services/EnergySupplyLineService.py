@@ -1,10 +1,10 @@
 from typing import List
 from datetime import datetime
+from api.tools.Helper import Helper
 from fastapi.encoders import jsonable_encoder
 from api.logs.repositories.LogRepo import LogRepo
 from fastapi import Depends, HTTPException, status
 from api.ageographical.repositories.CityRepo import CityRepo
-from api.tools.Helper import generate_code, energy_supply_basecode, build_log
 from api.electrical.repositories.SupplyLineTypeRepo import SupplyLineTypeRepo
 from api.electrical.models.EnergySupplyLineModel import EnergySupplyLineModel
 from api.electrical.repositories.EnergySupplyLineRepo import EnergySupplyLineRepo
@@ -67,8 +67,8 @@ class EnergySupplyLineService:
             line_type_id = SupplyLineTypeRepo.getbyname(self.energysupply, item.infos.line_type).id
             departure_city_code = item.infos.departure_city_code
             suffix = (departure_city_code*10)+line_type_id
-            result = generate_code(
-                init_codebase=energy_supply_basecode(suffix),
+            result = Helper.generate_code(
+                init_codebase=Helper.energy_supply_basecode(suffix),
                 maxcode=self.energysupply.maxcodebycitylinetype(departure_city_code, line_type_id),
                 step=step
             )
@@ -108,7 +108,7 @@ class EnergySupplyLineService:
             data.departure_city_id = CityRepo.getidbycode(self.energysupply, data.infos.departure_city_code)
             
         current_data = jsonable_encoder(self.energysupply.update(code=code, data=data.dict()))
-        logs = [build_log(f"/supplylines/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [Helper.build_log(f"/supplylines/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return current_data
 
@@ -132,21 +132,6 @@ class EnergySupplyLineService:
             deleted_at = deleted_at
         )
         current_data = jsonable_encoder(self.transformer.update(code=code, data=data))
-        logs = [build_log(f"/supplylines/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [Helper.build_log(f"/supplylines/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return HTTPException(status_code=status.HTTP_200_OK, detail=message)
-    
-    # delete energy supply line function
-    async def delete(self, code: int) -> None:
-        data = self.energysupply.getbycode(code=code)
-        if data is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Energy Departure not found",
-            )
-
-        self.energysupply.delete(data)
-        return HTTPException(
-            status_code=status.HTTP_200_OK,
-            detail="Energy Departure deleted",
-        )

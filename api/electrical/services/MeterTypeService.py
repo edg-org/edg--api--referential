@@ -1,4 +1,5 @@
 from typing import List
+from api.tools.Helper import Helper
 from fastapi.encoders import jsonable_encoder
 from api.logs.repositories.LogRepo import LogRepo
 from fastapi import Depends, HTTPException, status
@@ -8,7 +9,6 @@ from api.electrical.schemas.MeterTypeSchema import (
     MeterTypeUpdate,
     CreateMeterType
 )
-from api.tools.Helper import build_log
 
 
 #
@@ -49,16 +49,14 @@ class MeterTypeService:
             if metertype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Meter Type already registered with code "
-                    + str(item.code),
+                    detail=f"Meter Type already registered with code {item.code}",
                 )
 
             metertype = self.metertype.getbyname(name=item.name)
             if metertype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Meter Type already registered with name "
-                    + item.name,
+                    detail=f"Meter Type already registered with name {item.name}",
                 )
 
         return self.metertype.create(data=data)
@@ -73,7 +71,7 @@ class MeterTypeService:
             )
 
         current_data = jsonable_encoder(self.metertype.update(code=code, data=data.dict()))
-        logs = [build_log(f"/metertypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [Helper.build_log(f"/metertypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return current_data
 

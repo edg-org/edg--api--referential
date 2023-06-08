@@ -21,9 +21,10 @@ class ZoneRepo:
 
     # get max code of natural region
     def maxcode(self) -> int:
-        codemax = self.db.query(
-            func.max(ZoneModel.code)
-        ).one()[0]
+        codemax = (
+            self.db.query(func.max(ZoneModel.code))
+            .one()[0]
+        )
         return 0 if codemax is None else codemax
 
     # get all regions function
@@ -71,9 +72,7 @@ class ZoneRepo:
     def getbyname(self, name: str) -> ZoneModel:
         return (
             self.db.query(ZoneModel)
-            .where(
-                func.lower(ZoneModel.name) == name.lower()
-            )
+            .where(func.lower(ZoneModel.name) == name.lower())
             .first()
         )
         

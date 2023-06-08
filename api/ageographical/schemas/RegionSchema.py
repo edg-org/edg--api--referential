@@ -7,7 +7,7 @@ from api.ageographical.schemas.PrefectureSchema import PrefectureSchema
 #
 class RegionSearchParams(BaseSchema):
     code: int = Field(description="Field of the region code")
-    name: str | None = Field(description="Field of the region name")
+    name: Optional[str] = Field(description="Field of the region name")
 
 #
 class RegionCoordinates(BaseSchema):

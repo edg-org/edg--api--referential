@@ -3,7 +3,7 @@ from api.configs.Environment import get_env_var
 from sqlalchemy.orm import (
     scoped_session,
     sessionmaker,
-    declarative_base,
+    declarative_base
 )
 
 Engine = create_engine(

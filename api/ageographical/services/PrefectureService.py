@@ -1,9 +1,9 @@
 from typing import List
 from datetime import datetime
+from api.tools.Helper import Helper
 from fastapi.encoders import jsonable_encoder
 from fastapi import Depends, HTTPException, status
 from api.logs.services.LogService import LogService
-from api.tools.Helper import prefecture_basecode, build_log
 from api.ageographical.repositories.RegionRepo import RegionRepo
 from api.ageographical.models.PrefectureModel import PrefectureModel
 from api.ageographical.repositories.PrefectureRepo import PrefectureRepo
@@ -59,7 +59,7 @@ class PrefectureService:
             
             step += 1
             region = RegionRepo.getbyname(self.prefecture, item.infos.region)
-            basecode = prefecture_basecode(region.code)
+            basecode = Helper.prefecture_basecode(region.code)
             prefecture_code = basecode + step
             count = self.prefecture.countbycode(code=prefecture_code)
             if count > 0:
@@ -91,7 +91,7 @@ class PrefectureService:
         
         data.region_id = RegionRepo.getidbyname(self.prefecture, data.infos.region)
         current_data = jsonable_encoder(self.prefecture.update(code=code, data=data.dict()))
-        logs = [build_log(f"/prefectures/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [Helper.build_log(f"/prefectures/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return current_data
 
@@ -111,10 +111,10 @@ class PrefectureService:
             message = "Prefecture activated"
         
         data = dict(
-            is_activated=flag,
+            is_activated = flag,
             deleted_at = deleted_at
         )
         current_data = jsonable_encoder(self.prefecture.update(code=code, data=data))
-        logs = [build_log(f"/prefectures/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [Helper.build_log(f"/prefectures/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return HTTPException(status_code=status.HTTP_200_OK, detail=message)

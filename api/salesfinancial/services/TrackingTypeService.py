@@ -1,4 +1,6 @@
 from typing import List
+from api.tools.Helper import Helper
+from fastapi.encoders import jsonable_encoder
 from fastapi import Depends, HTTPException, status
 from api.salesfinancial.models.TrackingTypeModel import TrackingTypeModel
 from api.salesfinancial.schemas.TrackingTypeSchema import CreateTrackingType
@@ -7,9 +9,7 @@ from api.salesfinancial.repositories.TrackingTypeRepo import TrackingTypeRepo
 class TrackingTypeService:
     trackingtype: TrackingTypeRepo
 
-    def __init__(
-        self, trackingtype: TrackingTypeRepo = Depends()
-    ) -> None:
+    def __init__(self, trackingtype: TrackingTypeRepo = Depends()) -> None:
         self.trackingtype = trackingtype
 
     # get all tracking types function
@@ -37,44 +37,42 @@ class TrackingTypeService:
             if trackingtype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Tracking Type already registered with code "
-                    + str(item.code),
+                    detail=f"Tracking Type already registered with code {item.code}"
                 )
 
             trackingtype = self.trackingtype.getbyname(name=item.name)
             if trackingtype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Tracking Type already registered with name "
-                    + item.name,
+                    detail=f"Tracking Type already registered with name {item.name}"
                 )
 
         return self.trackingtype.create(data=data)
 
     # update tracking type function
     async def update(self, code: int, data: CreateTrackingType) -> TrackingTypeModel:
-        trackingtype = self.trackingtype.getbycode(code=code)
-        if trackingtype is None:
+        old_data = jsonable_encoder(self.trackingtype.getbycode(code=code))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Tracking Type not found",
             )
 
-        typedict = data.dict(exclude_unset=True)
-        for key, val in typedict.items():
-            setattr(trackingtype, key, val)
-        return self.trackingtype.update(trackingtype)
+        current_data = jsonable_encoder(self.trackingtype.update(code, data=data.dict()))
+        logs = [Helper.build_log(f"/trackingtypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return current_data
 
     # delete tracking type %function
-    async def delete(self, tracking: TrackingTypeModel) -> None:
-        trackingtype = self.trackingtype.getbycode(code=code)
-        if trackingtype is None:
+    async def delete(self, code: int) -> None:
+        data = self.trackingtype.getbycode(code=code)
+        if data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Tracking Type not found",
             )
 
-        self.trackingtype.update(tracking)
+        self.trackingtype.delete(data)
         return HTTPException(
             status_code=status.HTTP_200_OK,
             detail="Tracking Type deleted",

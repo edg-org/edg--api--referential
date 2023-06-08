@@ -84,23 +84,24 @@ class PrefectureRepo:
     def get(self, number: str) -> PrefectureModel:
         return (
             self.db.query(PrefectureModel)
-            .where(
-                PrefectureModel.prefecture_number == number
-            ).first()
+            .where(PrefectureModel.prefecture_number == number)
+            .first()
         )
 
     # get prefecture code function
     def getbycode(self, code: int) -> PrefectureModel:
         return (
-            self.db.query(PrefectureModel).where(PrefectureModel.code == code).first()
+            self.db.query(PrefectureModel)
+            .where(PrefectureModel.code == code)
+            .first()
         )
 
     # get prefecture name function
     def getbyname(self, name: str) -> PrefectureModel:
         return (
-            self.db.query(PrefectureModel).where(
-                func.lower(func.json_unquote(PrefectureModel.name))== name.lower()
-            ).first()
+            self.db.query(PrefectureModel)
+            .where(func.lower(func.json_unquote(PrefectureModel.name))== name.lower())
+            .first()
         )
 
     # create prefecture function

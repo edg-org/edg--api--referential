@@ -1,5 +1,5 @@
 from typing import List
-from api.tools.Helper import build_log
+from api.tools.Helper import Helper
 from fastapi.encoders import jsonable_encoder
 from api.logs.repositories.LogRepo import LogRepo
 from fastapi import Depends, HTTPException, status
@@ -65,7 +65,7 @@ class CityLevelService:
             )
 
         current_data = jsonable_encoder(self.citytype.update(code=code, data=data.dict()))
-        logs = [build_log(f"/citylevels/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [Helper.build_log(f"/citylevels/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return current_data
 

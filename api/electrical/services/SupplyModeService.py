@@ -1,5 +1,5 @@
 from typing import List
-from api.tools.Helper import build_log
+from api.tools.Helper import Helper
 from fastapi.encoders import jsonable_encoder
 from api.logs.repositories.LogRepo import LogRepo
 from fastapi import Depends, HTTPException, status
@@ -46,14 +46,14 @@ class SupplyModeService:
             if supplymode:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Supply Mode already registered with code {item.code}",
+                    detail=f"Supply Mode already registered with code {item.code}"
                 )
 
             supplymode = self.supplymode.getbyname(name=item.name)
             if supplymode:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Supply Mode already registered with name {item.name}",
+                    detail=f"Supply Mode already registered with name {item.name}"
                 )
 
         return self.supplymode.create(data=data)
@@ -68,7 +68,7 @@ class SupplyModeService:
             )
     
         current_data = jsonable_encoder(self.supplymode.update(code=code, data=data.dict()))
-        logs = [build_log(f"/supplymodes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [Helper.build_log(f"/supplymodes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return current_data
 

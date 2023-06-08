@@ -52,8 +52,7 @@ class MeterDeliveryPointService:
             if meterdelivery:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Meter Delivery Point already registered with code "
-                    + str(item.code),
+                    detail=f"Meter Delivery Point already registered with code {item.code}"
                 )
 
             meterdelivery = self.meterdelivery.getbyname(
@@ -62,17 +61,13 @@ class MeterDeliveryPointService:
             if meterdelivery:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Meter Delivery Point already registered with name "
-                    + item.name,
+                    detail=f"Meter Delivery Point already registered with name {item.name}"
                 )
 
         return self.meterdelivery.create(data=data)
 
     # delete meter delivery point function
-    async def delete(
-        self, 
-        id: int
-    ) -> None:
+    async def delete(self, id: int) -> None:
         data = self.meterdelivery.get(id=id)
         if data is None:
             raise HTTPException(
