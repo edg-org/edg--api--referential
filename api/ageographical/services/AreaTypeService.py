@@ -39,9 +39,7 @@ class AreaTypeService:
     # create area type function
     async def create(self, data: List[CreateAreaType]) -> List[CreateAreaType]:
         for item in data:
-            areatype = self.areatype.getbycode(
-                code=item.code
-            )
+            areatype = self.areatype.getbycode(code=item.code)
             if areatype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,

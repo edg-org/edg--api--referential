@@ -10,9 +10,7 @@ from api.ageographical.schemas.PrefectureSchema import CreatePrefecture, Prefect
 class PrefectureRepo:
     db: Session
 
-    def __init__(
-        self, db: Session = Depends(get_db)
-    ) -> None:
+    def __init__(self, db: Session = Depends(get_db)) -> None:
         self.db = db
 
     # count total rows of prefecture
@@ -62,9 +60,7 @@ class PrefectureRepo:
         )
 
     # get all prefectures function
-    def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[PrefectureModel]:
+    def list(self, skip: int = 0, limit: int = 100) -> List[PrefectureModel]:
         return (
             self.db.query(PrefectureModel)
             .offset(skip)

@@ -18,7 +18,8 @@ env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 citytypeRouter = APIRouter(
-    prefix=router_path + "/citytypes", tags=["City Types"]
+    prefix=router_path + "/citytypes", 
+    tags=["City Types"]
 )
 
 # get all city types route

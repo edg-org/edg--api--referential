@@ -15,7 +15,7 @@ from api.ageographical.schemas.AreaSchema import (
     CreateArea,
 )
 
-
+#
 class AreaService:
     log: LogRepo
     area: AreaRepo
@@ -55,6 +55,8 @@ class AreaService:
         area_type = None
         place_code = None
         step_zipcode = 0
+        no_hirearchical_type = AreaTypeRepo.no_hierarchical_type(self.area)
+    
         for item in data:
             maxcode = 0
             city_id = 0
@@ -62,22 +64,21 @@ class AreaService:
             input_code = 0
             area_type_id = 0
             hierarchical_area_id = None
-            no_hirearchical_areas = ['district', 'secteur', 'village']
             
             if (
                 hasattr(item.infos, "hierarchical_area_code") 
                 and item.infos.hierarchical_area_code is not None
-                and str(item.infos.area_type).lower() not in no_hirearchical_areas
+                and str(item.infos.area_type).lower() not in no_hirearchical_type
             ):
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"The area type must be in {no_hirearchical_areas}"
+                    detail=f"The area type must be in {no_hirearchical_type}"
                 )
                 
             if (
                 hasattr(item.infos, "hierarchical_area_code") 
                 and item.infos.hierarchical_area_code is not None
-                and str(item.infos.area_type).lower() in no_hirearchical_areas
+                and str(item.infos.area_type).lower() in no_hirearchical_type
             ):
                 count = self.area.checkname_by_hierarchy(
                     hierarchical_area_code=item.infos.hierarchical_area_code, 
@@ -93,13 +94,11 @@ class AreaService:
                 zipcode = area.zipcode
                 hierarchical_area_id =  area.id
                 input_code = item.infos.hierarchical_area_code
-                maxcode = self.area.maxcodebyareaandtype(input_code, area_type_id)
+                maxcode = self.area.maxcode_by_areaandtype(input_code, area_type_id)
                 item.infos.city_code = CityRepo.get(self.area, area.city_id).code
                 area_type_id = AreaTypeRepo.getbyname(self.area, item.infos.area_type).id
-            elif (
-                hasattr(item.infos, "city_code") 
-                and item.infos.city_code is not None
-            ):
+            
+            elif (hasattr(item.infos, "city_code") and item.infos.city_code is not None):
                 count = self.area.checkname_by_citycode(
                     city_code=item.infos.city_code, 
                     name=item.infos.name
@@ -178,7 +177,7 @@ class AreaService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Area not found",
             )
-        no_hirearchical_areas = ['district', 'secteur', 'village']
+        no_hirearchical_type = AreaTypeRepo.no_hierarchical_type(self.area)
         
         if (hasattr(data.infos, "agency_code") and data.infos.agency_code is not None):
             data.agency_id = AgencyRepo.getidbycode(self.area, data.infos.agency_code)
@@ -193,16 +192,16 @@ class AreaService:
             
         if (hasattr(data.infos, "hierarchical_area_code") 
             and data.infos.hierarchical_area_code is not None
-            and str(area_type).lower() not in no_hirearchical_areas
+            and str(area_type).lower() not in no_hirearchical_type
         ):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"The area type must be in {no_hirearchical_areas}"
+                detail=f"The area type must be in {no_hirearchical_type}"
             )
         
         if (hasattr(data.infos, "hierarchical_area_code") 
             and data.infos.hierarchical_area_code is not None
-            and str(area_type).lower() in no_hirearchical_areas
+            and str(area_type).lower() in no_hirearchical_type
         ):
             hierachical_area = self.area.getbycode(code=data.infos.hierarchical_area_code)
             hierarchical_area_id = hierachical_area.id

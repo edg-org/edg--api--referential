@@ -1,11 +1,13 @@
 [
     {
         "code": 1,
-        "name": "Quartier"
+        "name": "Quartier",
+        "is_hierarchical": true
     },
     {
         "code": 2,
-        "name": "District"
+        "name": "District",
+        "is_hierarchical": true
     },
     {
         "code": 3,

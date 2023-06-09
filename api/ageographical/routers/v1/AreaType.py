@@ -18,7 +18,8 @@ env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 areatypeRouter = APIRouter(
-    prefix=router_path + "/areatypes", tags=["Area Types"]
+    prefix=router_path + "/areatypes", 
+    tags=["Area Types"]
 )
 
 # get all area types route
@@ -31,7 +32,7 @@ areatypeRouter = APIRouter(
 async def list(
     skip: int = 0,
     limit: int = 100,
-    typeService: AreaTypeService = Depends(),
+    typeService: AreaTypeService = Depends()
 ):
     return await typeService.list(skip, limit)
 

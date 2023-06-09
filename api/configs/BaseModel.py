@@ -1,8 +1,10 @@
 from typing import Set
-from pydantic import BaseModel
 from functools import lru_cache
+from pydantic.schema import datetime
+from pydantic import BaseModel, validator
 from api.configs.Database import Engine, EntityMeta
 
+#
 class BaseSchema(BaseModel):
     class Config:
         fields_to_hide: Set[str] = set()
@@ -18,6 +20,16 @@ class BaseSchema(BaseModel):
         cls.__fields__ = new_fields
         super().__init_subclass__(**kwargs)
 
+#
+class DateTimeModelMixin(BaseModel):
+    created_at: datetime | None = None
+    updated_at: datetime | None = None
+    deleted_at: datetime | None = None
+
+    @validator("created_at", "updated_at", pre=True)
+    def default_datetime(cls, value: datetime) -> datetime:
+        return value or datetime.now()
+    
 # create database function
 @lru_cache()
 def init():

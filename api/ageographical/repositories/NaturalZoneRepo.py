@@ -10,9 +10,7 @@ from api.ageographical.schemas.NaturalZoneSchema import CreateZone, ZoneUpdate
 class ZoneRepo:
     db: Session
 
-    def __init__(
-        self, db: Session = Depends(get_db)
-    ) -> None:
+    def __init__(self, db: Session = Depends(get_db)) -> None:
         self.db = db
 
     # count total rows of natural region

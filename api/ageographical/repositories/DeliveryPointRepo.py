@@ -9,9 +9,7 @@ from api.ageographical.schemas.DeliveryPointSchema import CreateDeliveryPoint, D
 class DeliveryPointRepo:
     db: Session
 
-    def __init__(
-        self, db: Session = Depends(get_db)
-    ) -> None:
+    def __init__(self, db: Session = Depends(get_db)) -> None:
         self.db = db
 
     # get max code
@@ -23,11 +21,7 @@ class DeliveryPointRepo:
         return 0 if codemax is None else codemax
 
     # get all delivery points function
-    def list(
-        self, 
-        skip: int = 0, 
-        limit: int = 100
-    ) -> List[DeliveryPointModel]:
+    def list(self, skip: int = 0, limit: int = 100) -> List[DeliveryPointModel]:
         return (
             self.db.query(DeliveryPointModel)
             .offset(skip)

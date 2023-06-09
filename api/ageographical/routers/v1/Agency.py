@@ -18,7 +18,8 @@ env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 agencyRouter = APIRouter(
-    prefix=router_path + "/agencies", tags=["Agencies"]
+    prefix=router_path + "/agencies", 
+    tags=["Agencies"]
 )
 
 # get all agencies route
@@ -43,7 +44,8 @@ async def list(
     response_model=AgencySchema,
 )
 async def get(
-    code: int, agencyService: AgencyService = Depends()
+    code: int, 
+    agencyService: AgencyService = Depends()
 ):
     agency = await agencyService.getbycode(code=code)
     if agency is None:

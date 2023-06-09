@@ -1,5 +1,6 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.JWTBearer import JWTBearer, env
+#from api.configs.Environment import get_env_var
 from api.salesfinancial.services.HousingTypeService import HousingTypeService
 from fastapi import (
     Depends,
@@ -13,12 +14,13 @@ from api.salesfinancial.schemas.HousingTypeSchema import (
     HousingTypeSchema,
 )
 
-env = get_env_var()
+#env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 housingRouter = APIRouter(
     prefix=router_path + "/housingtypes",
     tags=["Housing Types"],
+    #dependencies=[Depends(JWTBearer())]
 )
 
 # get all housing type route

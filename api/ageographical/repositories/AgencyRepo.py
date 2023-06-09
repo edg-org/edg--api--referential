@@ -47,9 +47,7 @@ class AgencyRepo:
         )
 
     # get all agencys function
-    def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[AgencyModel]:
+    def list(self, skip: int = 0, limit: int = 100) -> List[AgencyModel]:
         return (
             self.db.query(AgencyModel)
             .offset(skip)

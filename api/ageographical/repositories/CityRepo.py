@@ -10,9 +10,7 @@ from api.ageographical.schemas.CitySchema import CreateCity, CityUpdate, CitySea
 class CityRepo:
     db: Session
 
-    def __init__(
-        self, db: Session = Depends(get_db)
-    ) -> None:
+    def __init__(self, db: Session = Depends(get_db)) -> None:
         self.db = db
 
     # get max code of city by prefecture
@@ -78,9 +76,7 @@ class CityRepo:
         )
 
     # get all cities function
-    def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[CityModel]:
+    def list(self, skip: int = 0, limit: int = 100) -> List[CityModel]:
         return (
             self.db.query(CityModel)
             .offset(skip)

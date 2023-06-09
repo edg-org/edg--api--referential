@@ -2,7 +2,7 @@ from typing import List
 from sqlalchemy.orm import Session
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from sqlalchemy import insert, update, func
+from sqlalchemy import select, insert, update, func
 from api.ageographical.models.AreaTypeModel import AreaTypeModel
 from api.ageographical.schemas.AreaTypeSchema import CreateAreaType, AreaTypeUpdate
 
@@ -21,9 +21,7 @@ class AreaTypeRepo:
         return 0 if codemax is None else codemax
 
     # get all area types function
-    def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[AreaTypeModel]:
+    def list(self, skip: int = 0, limit: int = 100) -> List[AreaTypeModel]:
         return (
             self.db.query(AreaTypeModel)
             .offset(skip)
@@ -39,6 +37,17 @@ class AreaTypeRepo:
             .first()
         )
 
+    # get area type no hierarchical function
+    def no_hierarchical_type(self) -> AreaTypeModel:
+        return (
+            self.db.execute(
+                select(func.lower(AreaTypeModel.name))
+                .where(AreaTypeModel.is_hierarchical == False)
+            )
+            .scalars()
+            .all()
+        )
+        
     # get area type code function
     def getbycode(self, code: str) -> AreaTypeModel:
         return (

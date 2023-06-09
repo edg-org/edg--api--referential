@@ -37,19 +37,26 @@ class AreaRepo:
         return 0 if codemax is None else codemax
     
     # get max code of area by hierarchical area and type
-    def maxcodebyareaandtype(self, hierarchical_area_code: int, area_type_id: int) -> int:
+    def maxcode_by_areaandtype(self, hierarchical_area_code: int, area_type_id: int) -> int:
         codemax = (
             self.db.query(func.max(AreaModel.code))
-            .where(AreaModel.infos["hierarchical_area_code"] == hierarchical_area_code)
+            .where(
+                and_(
+                    AreaModel.area_type_id == area_type_id,
+                    AreaModel.infos["hierarchical_area_code"] == hierarchical_area_code
+                )
+            )
             .one()[0]
         )
         return 0 if codemax is None else codemax
 
     # count total rows of area by name
     def countbyname(self, name: str) -> int:
-        return self.db.query(AreaModel).where(
-            func.lower(func.json_unquote(AreaModel.infos["name"])) == name.lower()
-        ).count()
+        return (
+            self.db.query(AreaModel)
+            .where(func.lower(func.json_unquote(AreaModel.infos["name"])) == name.lower())
+            .count()
+        )
     
     # check area name by city function
     def checkname_by_citycode(self, city_code: int, name: str) -> int:
@@ -107,11 +114,7 @@ class AreaRepo:
         )
 
     # get all areas function
-    def list(
-        self, 
-        skip: int = 0, 
-        limit: int = 100
-    ) -> List[AreaModel]:
+    def list(self, skip: int = 0, limit: int = 100) -> List[AreaModel]:
         return (
             self.db.query(AreaModel)
             .offset(skip)

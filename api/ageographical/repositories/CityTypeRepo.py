@@ -10,9 +10,7 @@ from api.ageographical.schemas.CityTypeSchema import CreateCityType, CityTypeUpd
 class CityTypeRepo:
     db: Session
 
-    def __init__(
-        self, db: Session = Depends(get_db)
-    ) -> None:
+    def __init__(self, db: Session = Depends(get_db)) -> None:
         self.db = db
 
     # get max code of city type
@@ -23,9 +21,7 @@ class CityTypeRepo:
         return 0 if codemax is None else codemax
 
     # get all city types function
-    def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[CityTypeModel]:
+    def list(self, skip: int = 0, limit: int = 100) -> List[CityTypeModel]:
         return (
             self.db.query(CityTypeModel)
             .offset(skip)
@@ -58,9 +54,7 @@ class CityTypeRepo:
         )
 
     # create city type function
-    def create(
-        self, data: List[CreateCityType]
-    ) -> List[CreateCityType]:
+    def create(self, data: List[CreateCityType]) -> List[CreateCityType]:
         self.db.execute(
             insert(CityTypeModel),
             encoders.jsonable_encoder(data),

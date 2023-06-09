@@ -18,7 +18,8 @@ env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 citylevelRouter = APIRouter(
-    prefix=router_path + "/citylevels", tags=["City Levels"]
+    prefix=router_path + "/citylevels", 
+    tags=["City Levels"]
 )
 
 # get all city levels route

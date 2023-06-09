@@ -10,9 +10,7 @@ from api.ageographical.schemas.CityLevelSchema import CreateCityLevel, CityLevel
 class CityLevelRepo:
     db: Session
 
-    def __init__(
-        self, db: Session = Depends(get_db)
-    ) -> None:
+    def __init__(self, db: Session = Depends(get_db)) -> None:
         self.db = db
 
     # get max code
@@ -24,9 +22,7 @@ class CityLevelRepo:
         return 0 if codemax is None else codemax
 
     # get all city levels function
-    def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[CityLevelModel]:
+    def list(self, skip: int = 0, limit: int = 100) -> List[CityLevelModel]:
         return (
             self.db.query(CityLevelModel)
             .offset(skip)

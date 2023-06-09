@@ -19,7 +19,8 @@ env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 areaRouter = APIRouter(
-    prefix=router_path + "/areas", tags=["Areas"]
+    prefix=router_path + "/areas", 
+    tags=["Areas"]
 )
 
 # get all areas route
