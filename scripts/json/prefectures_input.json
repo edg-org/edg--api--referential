@@ -1,0 +1,240 @@
+[
+    {
+        "name": "Boffa",
+        "is_capital": false,
+        "infos": {
+            "region": "région de boké"
+        }
+    },
+    {
+        "name": "Boké",
+        "is_capital": true,
+        "infos": {
+            "region": "région de boké"
+        }
+    },
+    {
+        "name": "Gaoual",
+        "is_capital": false,
+        "infos": {
+            "region": "région de boké"
+        }
+    },
+    {
+        "name": "Koundara",
+        "is_capital": false,
+        "infos": {
+            "region": "région de boké"
+        }
+    },
+    {
+        "name": "Fria",
+        "is_capital": false,
+        "infos": {
+            "region": "région de boké"
+        }
+    },
+    {
+        "name": "Kindia",
+        "is_capital": true,
+        "infos": {
+            "region": "région de kindia"
+        }
+    },
+    {
+        "name": "Coyah",
+        "is_capital": false,
+        "infos": {
+            "region": "région de kindia"
+        }
+    },
+    {
+        "name": "Dubréka",
+        "is_capital": false,
+        "infos": {
+            "region": "région de kindia"
+        }
+    },
+    {
+        "name": "Forécariah",
+        "is_capital": false,
+        "infos": {
+            "region": "région de kindia"
+        }
+    },
+    {
+        "name": "Télimélé",
+        "is_capital": false,
+        "infos": {
+            "region": "région de kindia"
+        }
+    },
+    {
+        "name": "Koubia",
+        "is_capital": false,
+        "infos": {
+            "region": "région de labé"
+        }
+    },
+    {
+        "name": "Labé",
+        "is_capital": true,
+        "infos": {
+            "region": "région de labé"
+        }
+    },
+    {
+        "name": "Lélouma",
+        "is_capital": false,
+        "infos": {
+            "region": "région de labé"
+        }
+    },
+    {
+        "name": "Mali",
+        "is_capital": false,
+        "infos": {
+            "region": "région de labé"
+        }
+    },
+    {
+        "name": "Tougué",
+        "is_capital": false,
+        "infos": {
+            "region": "région de labé"
+        }
+    },
+    {
+        "name": "Dalaba",
+        "is_capital": false,
+        "infos": {
+            "region": "région de mamou"
+        }
+    },
+    {
+        "name": "Mamou",
+        "is_capital": true,
+        "infos": {
+            "region": "région de mamou"
+        }
+    },
+    {
+        "name": "Pita",
+        "is_capital": false,
+        "infos": {
+            "region": "région de mamou"
+        }
+    },
+    {
+        "name": "Kankan",
+        "is_capital": true,
+        "infos": {
+            "region": "région de kankan"
+        }
+    },
+    {
+        "name": "Kérouané",
+        "is_capital": false,
+        "infos": {
+            "region": "région de kankan"
+        }
+    },
+    {
+        "name": "Kouroussa",
+        "is_capital": false,
+        "infos": {
+            "region": "région de kankan"
+        }
+    },
+    {
+        "name": "Mandiana",
+        "is_capital": false,
+        "infos": {
+            "region": "région de kankan"
+        }
+    },
+    {
+        "name": "Siguiri",
+        "is_capital": false,
+        "infos": {
+            "region": "région de kankan"
+        }
+    },
+    {
+        "name": "Dabola",
+        "is_capital": false,
+        "infos": {
+            "region": "région de faranah"
+        }
+    },
+    {
+        "name": "Dinguiraye",
+        "is_capital": false,
+        "infos": {
+            "region": "région de faranah"
+        }
+    },
+    {
+        "name": "Faranah",
+        "is_capital": true,
+        "infos": {
+            "region": "région de faranah"
+        }
+    },
+    {
+        "name": "Kissidougou",
+        "is_capital": false,
+        "infos": {
+            "region": "région de faranah"
+        }
+    },
+    {
+        "name": "Beyla",
+        "is_capital": false,
+        "infos": {
+            "region": "région de n'zérékoré"
+        }
+    },
+    {
+        "name": "Guéckédou",
+        "is_capital": false,
+        "infos": {
+            "region": "région de n'zérékoré"
+        }
+    },
+    {
+        "name": "Lola",
+        "is_capital": false,
+        "infos": {
+            "region": "région de n'zérékoré"
+        }
+    },
+    {
+        "name": "Macenta",
+        "is_capital": false,
+        "infos": {
+            "region": "région de n'zérékoré"
+        }
+    },
+    {
+        "name": "N'zérékoré",
+        "is_capital": true,
+        "infos": {
+            "region": "région de n'zérékoré"
+        }
+    },
+    {
+        "name": "Yomou",
+        "is_capital": false,
+        "infos": {
+            "region": "région de n'zérékoré"
+        }
+    },
+    {
+        "name": "Conakry",
+        "is_capital": true,
+        "infos": {
+            "region": "région de conakry"
+        }
+    }
+]

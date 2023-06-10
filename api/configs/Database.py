@@ -1,25 +1,33 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
+from api.configs.Environment import get_env_var
+from sqlalchemy.orm import (
+    scoped_session,
+    sessionmaker,
+    declarative_base,
+)
 
-from api.configs.Environment import get_environment_variables
-
-# Runtime Environment Configuration
-env = get_environment_variables()
-
-# Generate Database URL
-DATABASE_URL = f"{env.DATABASE_DIALECT}://{env.DATABASE_USERNAME}:{env.DATABASE_PASSWORD}@{env.DATABASE_HOSTNAME}:{env.DATABASE_PORT}/{env.DATABASE_NAME}"
-
-# Create Database Engine
 Engine = create_engine(
-    DATABASE_URL, echo=env.DEBUG_MODE, future=True
+    "{0}://{1}:{2}@{3}:{4}/{5}".format(
+        get_env_var().database_dialect,
+        get_env_var().database_username,
+        get_env_var().database_password,
+        get_env_var().database_hostname,
+        get_env_var().database_port,
+        get_env_var().database_name,
+    ),
+    echo=get_env_var().debug_mode,
+    future=True
 )
 
+EntityMeta = declarative_base()
 SessionLocal = sessionmaker(
-    autocommit=False, autoflush=False, bind=Engine
+    autocommit=False, 
+    autoflush=False, 
+    bind=Engine
 )
 
-
-def get_db_connection():
+# Getting database function
+def get_db():
     db = scoped_session(SessionLocal)
     try:
         yield db

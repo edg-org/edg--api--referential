@@ -1,0 +1,14 @@
+[
+    {
+        "code": 1,
+        "name": "Prospect(e)"
+    },
+    {
+        "code": 2,
+        "name": "Client(e)"
+    },
+    {
+        "code": 3,
+        "name": "Abonné(e)"
+    }
+]

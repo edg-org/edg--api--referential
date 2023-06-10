@@ -1,0 +1,10 @@
+[
+    {
+        "code": 1,
+        "name": "Prépayé"
+    },
+    {
+        "code": 2,
+        "name": "Postpayé"
+    }
+]

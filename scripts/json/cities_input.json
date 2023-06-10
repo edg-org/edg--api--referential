@@ -1,0 +1,186 @@
+[
+    {
+        "infos": {
+            "prefecture": "boké",
+            "name": "Boké",
+            "city_type": "Commune Urbaine",
+            "city_level": "Préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture": "boké",
+            "name": "Bintimodiya",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture": "boké",
+            "name": "Dabiss",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture": "boké",
+            "name": "Kamsar",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture": "boké",
+            "name": "Kanfarande",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture": "boké",
+            "name": "Kolaboui",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture": "boké",
+            "name": "Malapouyah",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture": "boké",
+            "name": "Sangarédi",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture": "boké",
+            "name": "Sansalé",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture": "boké",
+            "name": "Tanéné",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture": "kankan",
+            "name": "Kankan",
+            "city_type": "Commune Urbaine",
+            "city_level": "Préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture": "kankan",
+            "name": "Balandou",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture": "kankan",
+            "name": "Batè-Nafaji",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture": "kankan",
+            "name": "Boula",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture": "kankan",
+            "name": "Gbérédou-Baranama",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture": "kankan",
+            "name": "Karifamoriyah",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture": "kankan",
+            "name": "Koumba",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture": "kankan",
+            "name": "Mamouroudou",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture": "kankan",
+            "name": "Missamana",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture": "kankan",
+            "name": "Moribayah",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture": "kankan",
+            "name": "Sabadou-Baranama",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture": "kankan",
+            "name": "Tinti-Oulen",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    },
+    {
+        "infos": {
+            "prefecture": "kankan",
+            "name": "Tokounou",
+            "city_type": "Commune Urbaine",
+            "city_level": "Sous-préfecture"
+        }
+    }
+]

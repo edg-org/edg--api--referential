@@ -1,0 +1,47 @@
+[
+    {
+        "code": 1,
+        "shortname": "1pc",
+        "name": "Studio"
+    },
+    {
+        "code": 2,
+        "shortname": "2pcs",
+        "name": "Une chambre salon"
+    },
+    {
+        "code": 3,
+        "shortname": "3pcs",
+        "name": "Deux chambres salon"
+    },
+    {
+        "code": 4,
+        "shortname": "4pcs",
+        "name": "Trois chambres salon"
+    },
+    {
+        "code": 5,
+        "shortname": "5pcs",
+        "name": "Quatre chambres salon"
+    },
+    {
+        "code": 6,
+        "shortname": "6pcs+",
+        "name": "Cinq chambres salon ou plus"
+    },
+    {
+        "code": 7,
+        "shortname": "dup",
+        "name": "Duplex"
+    },
+    {
+        "code": 8,
+        "shortname": "trip",
+        "name": "Triplex"
+    },
+    {
+        "code": 9,
+        "shortname": "vla",
+        "name": "Une villa"
+    }
+]

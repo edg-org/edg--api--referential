@@ -1,0 +1,58 @@
+[
+    {
+        "code": 1,
+        "name": "Tout mode de paiement",
+        "payment_mode": [
+            {
+                "code": 4421,
+                "name": "prélèvement automatique"
+            },
+            {
+                "code": 5115,
+                "name": "carte bancaire"
+            },
+            {
+                "code": 512,
+                "name": "paiement mobile web"
+            },
+            {
+                "code": 53,
+                "name": "espèce"
+            },
+            {
+                "code": 411,
+                "name": "virement bancaire"
+            },
+            {
+                "code": 5112,
+                "name": "chèque bancaire"
+            }
+        ]
+    },
+    {
+        "code": 2,
+        "name": "Tout mode excepté Chèque bancaire",
+        "payment_mode": [
+            {
+                "code": 4421,
+                "name": "prélèvement automatique"
+            },
+            {
+                "code": 5115,
+                "name": "carte bancaire"
+            },
+            {
+                "code": 512,
+                "name": "paiement mobile web"
+            },
+            {
+                "code": 53,
+                "name": "espèce"
+            },
+            {
+                "code": 411,
+                "name": "virement bancaire"
+            }
+        ]
+    }
+]

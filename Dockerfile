@@ -1,4 +1,4 @@
-ARG PYTHON_TAG=3.9
+ARG PYTHON_TAG=3.11
 ARG GH_USER=soulbah
 ARG GH_REPO=REPO
 
@@ -19,8 +19,8 @@ FROM tiangolo/uvicorn-gunicorn-fastapi:python${PYTHON_TAG}-slim
 LABEL org.opencontainers.image.source=https://github.com/${GH_USER}/${GH_REPO}
 
 RUN apt-get update && apt-get install -y default-libmysqlclient-dev \
- && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
+COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
 
 COPY api /app/api

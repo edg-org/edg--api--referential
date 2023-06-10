@@ -1,0 +1,27 @@
+[
+    {
+        "code": 1,
+        "name": "Mensuelle",
+        "shortname": "m"
+    },
+    {
+        "code": 2,
+        "name": "Bi-mensuelle",
+        "shortname": "b"
+    },
+    {
+        "code": 3,
+        "name": "Trimestrielle",
+        "shortname": "t"
+    },
+    {
+        "code": 6,
+        "name": "Semestrielle",
+        "shortname": "s"
+    },
+    {
+        "code": 12,
+        "name": "Annuelle",
+        "shortname": "a"
+    }
+]
