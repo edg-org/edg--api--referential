@@ -19,6 +19,7 @@ class __EnvironmentSettings(BaseSettings):
     api_routers_prefix: str = getenv("API_ROUTERS_PREFIX")
     debug_mode: bool = bool(getenv("DEBUG_MODE"))
     domaine_name: str = getenv("DOMAINE_NAME")
+    api_root_path: str = getenv("API_ROOT_PATH")
 
     class Config:
         runtime_env = getenv("ENV")
