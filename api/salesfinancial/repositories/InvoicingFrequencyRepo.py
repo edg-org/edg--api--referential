@@ -1,8 +1,8 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
+from sqlalchemy import insert, update, func
 from api.salesfinancial.models.InvoicingFrequencyModel import InvoicingFrequencyModel
 from api.salesfinancial.schemas.InvoicingFrequencySchema import CreateInvoicingFrequency
 
@@ -81,11 +81,14 @@ class InvoicingFrequencyRepo:
         return data
 
     # update invoicing frequency function
-    def update(self, data: CreateInvoicingFrequency) -> InvoicingFrequencyModel:
-        self.db.merge(data)
+    def update(self, code: int, data: dict) -> InvoicingFrequencyModel:
+        self.db.execute(
+            update(InvoicingFrequencyModel)
+            .where(InvoicingFrequencyModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete invoicing frequency function
     def delete(

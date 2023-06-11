@@ -19,7 +19,8 @@ router_path = env.api_routers_prefix + env.api_version
 
 prefectureRouter = APIRouter(
     tags=["Prefectures"],
-    prefix=router_path + "/prefectures"
+    prefix=router_path + "/prefectures",
+    dependencies=[Depends(JWTBearer())]
 )
 
 # get all prefectures route
@@ -60,9 +61,9 @@ async def get(
     "/{code}/items",
     summary="Getting router a prefecture with items",
     description="This router allows to get a prefecture with items",
-    response_model=PrefectureItemSchema,
+    response_model=PrefectureItemSchema
 )
-async def get_prefecture_item(
+async def get_prefecture_items(
     code: int,
     prefectureService: PrefectureService = Depends(),
 ):
@@ -93,12 +94,12 @@ async def create(
     "/{code}",
     summary="Update router a prefecture",
     description="This router allows to update a prefecture",
-    response_model=PrefectureSchema,
-    dependencies=[Depends(JWTBearer())]
+    response_model=PrefectureSchema
 )
 async def update(
     code: int,
     data: PrefectureUpdate,
     prefectureService: PrefectureService = Depends(),
+    tokendata: dict = Depends(JWTBearer())
 ):
-    return await prefectureService.update(code=code, data=data)
+    return await prefectureService.update(code=code, tokendata=tokendata, data=data)

@@ -130,7 +130,7 @@ class CityService:
         return self.city.create(data=citylist)
 
     # update city function
-    async def update(self, code: int, data: CityUpdate) -> CityModel:
+    async def update(self, code: int, tokendata: dict, data: CityUpdate) -> CityModel:
         old_data = jsonable_encoder(self.city.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
@@ -145,12 +145,12 @@ class CityService:
             data.city_level_id = CityLevelRepo.getbyname(self.city, data.infos.city_level).id
             
         current_data = jsonable_encoder(self.city.update(code=code, data=data.dict()))
-        logs = [Helper.build_log(f"/cities/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [await Helper.build_log(f"/cities/{code}", "PUT", tokendata["email"], old_data, current_data)]
         await self.log.create(logs)
         return current_data
 
     # activate or desactivate city function
-    async def activate_desactivate(self, code: int, flag: bool) -> None:
+    async def activate_desactivate(self, code: int, flag: bool, tokendata: dict) -> None:
         old_data = jsonable_encoder(self.city.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
@@ -169,6 +169,6 @@ class CityService:
             deleted_at = deleted_at
         )
         current_data = jsonable_encoder(self.city.update(code=code, data=data))
-        logs = [Helper.build_log(f"/cities/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [await Helper.build_log(f"/cities/{code}", "PUT", tokendata["email"], old_data, current_data)]
         await self.log.create(logs)
         return HTTPException(status_code=status.HTTP_200_OK, detail=message)

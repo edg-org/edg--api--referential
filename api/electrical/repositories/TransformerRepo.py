@@ -108,7 +108,7 @@ class TransformerRepo:
         return data
 
     # update transformer function
-    def update(self, code: int, data: CreateTransformer) -> TransformerModel:
+    def update(self, code: int, data: dict) -> TransformerModel:
         self.db.execute(
             update(TransformerModel)
             .where(TransformerModel.code == code)

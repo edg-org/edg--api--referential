@@ -50,10 +50,7 @@ class PricingHistoryRepo:
     def getbyname(self, name: str) -> PricingHistoryModel:
         return (
             self.db.query(PricingHistoryModel)
-            .where(
-                func.lower(PricingHistoryModel.name)
-                == name.lower()
-            )
+            .where(func.lower(PricingHistoryModel.name) == name.lower())
             .first()
         )
 

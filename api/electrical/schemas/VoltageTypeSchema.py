@@ -34,9 +34,9 @@ class CreateVoltageType(VoltageTypeSchema):
 
 #
 class VoltageTypeInput(CreateVoltageType):
-    class Config:
-        fields_to_hide = {"code"}
+    pass
 
 #
 class VoltageTypeUpdate(VoltageTypeInput):
-    pass
+    class Config:
+        fields_to_hide = {"code"}

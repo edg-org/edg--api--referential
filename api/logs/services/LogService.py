@@ -9,9 +9,7 @@ from api.logs.repositories.LogRepo import LogRepo
 class LogService:
     logs: LogRepo
     
-    def __init__(
-        self, logs: LogRepo = Depends()
-    ) -> None:
+    def __init__(self, logs: LogRepo = Depends()) -> None:
         self.logs = logs
 
     # get all logs

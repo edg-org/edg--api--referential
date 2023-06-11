@@ -8,15 +8,14 @@ class PricingHistoryService:
     pricinghistory: PricingHistoryRepo
 
     def __init__(
-        self, pricinghistory: PricingHistoryRepo = Depends()
+        self, 
+        pricinghistory: PricingHistoryRepo = Depends()
     ) -> None:
         self.pricinghistory = pricinghistory
 
     # get all pricing histories function
     async def list(self, skip: int = 0, limit: int = 100) -> List[PricingHistoryModel]:
-        return self.pricinghistory.list(
-            skip=skip, limit=limit
-        )
+        return self.pricinghistory.list(skip=skip, limit=limit)
 
     # get pricing history by id function
     async def get(self, id: int) -> PricingHistoryModel:
@@ -33,18 +32,14 @@ class PricingHistoryService:
     # create pricing history function
     async def create(self, data: List[CreatePricingHistory]) -> List[CreatePricingHistory]:
         for item in data:
-            pricinghistory = self.pricinghistory.getbycode(
-                code=item.code
-            )
+            pricinghistory = self.pricinghistory.getbycode(code=item.code)
             if pricinghistory:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail=f"Pricing History already registered with code {item.code}",
                 )
 
-            pricinghistory = self.pricinghistory.getbyname(
-                name=item.name
-            )
+            pricinghistory = self.pricinghistory.getbyname(name=item.name)
             if pricinghistory:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,

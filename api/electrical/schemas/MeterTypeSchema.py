@@ -24,9 +24,9 @@ class CreateMeterType(MeterTypeSchema):
 
 #
 class MeterTypeInput(CreateMeterType):
-    class Config:
-        fields_to_hide = {"code"}
+    pass
 
 #
 class MeterTypeUpdate(MeterTypeInput):
-    pass
+    class Config:
+        fields_to_hide = {"code"}

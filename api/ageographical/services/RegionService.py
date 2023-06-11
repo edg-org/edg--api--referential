@@ -69,6 +69,7 @@ class RegionService:
                 maxcode=self.region.maxcodebyzone(item.infos.natural_zone),
                 step=step
             )
+            
             step = result["step"]
             region_code = result["code"]       
             region = self.region.getbycode(region_code)
@@ -90,7 +91,7 @@ class RegionService:
         return self.region.create(data=regionlist)
 
     # update region function
-    async def update(self, code: int, data: RegionUpdate) -> RegionModel:
+    async def update(self, code: int, tokendata: dict, data: RegionUpdate) -> RegionModel:
         old_data = jsonable_encoder(self.region.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
@@ -99,12 +100,12 @@ class RegionService:
             )
 
         current_data = jsonable_encoder(self.region.update(code, data=data.dict()))
-        logs = [Helper.build_log(f"/regions/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [await Helper.build_log(f"/regions/{code}", "PUT", tokendata["email"], old_data, current_data)]
         await self.log.create(logs)
         return current_data
 
     # activate or desactivate region function
-    async def activate_desactivate(self, code: int, flag: bool) -> None:
+    async def activate_desactivate(self, code: int, flag: bool, tokendata: dict) -> None:
         old_data = jsonable_encoder(self.region.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
@@ -123,6 +124,6 @@ class RegionService:
             deleted_at = deleted_at
         )
         current_data = jsonable_encoder(self.region.update(code=code, data=data))
-        logs = [Helper.build_log(f"/regions/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [await Helper.build_log(f"/regions/{code}", "PUT", tokendata["email"], old_data, current_data)]
         await self.log.create(logs)
         return HTTPException(status_code=status.HTTP_200_OK, detail=message)

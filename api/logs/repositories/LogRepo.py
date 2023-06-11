@@ -24,6 +24,9 @@ class LogRepo:
     
     # create area type function
     def create(self, data: List[CreateLog]) -> List[CreateLog]:
-        self.db.execute(insert(LogModel), encoders.jsonable_encoder(data))
+        self.db.execute(
+            insert(LogModel),
+            encoders.jsonable_encoder(data)
+        )
         self.db.commit()
         return data

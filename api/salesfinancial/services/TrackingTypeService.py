@@ -2,21 +2,26 @@ from typing import List
 from api.tools.Helper import Helper
 from fastapi.encoders import jsonable_encoder
 from fastapi import Depends, HTTPException, status
+from api.logs.services.LogService import LogService
 from api.salesfinancial.models.TrackingTypeModel import TrackingTypeModel
 from api.salesfinancial.schemas.TrackingTypeSchema import CreateTrackingType
 from api.salesfinancial.repositories.TrackingTypeRepo import TrackingTypeRepo
 
 class TrackingTypeService:
+    log: LogService
     trackingtype: TrackingTypeRepo
 
-    def __init__(self, trackingtype: TrackingTypeRepo = Depends()) -> None:
+    def __init__(
+        self, 
+        log: LogService = Depends(),
+        trackingtype: TrackingTypeRepo = Depends()
+    ) -> None:
+        self.log = log
         self.trackingtype = trackingtype
 
     # get all tracking types function
     async def list(self, skip: int = 0, limit: int = 100) -> List[TrackingTypeModel]:
-        return self.trackingtype.list(
-            skip=skip, limit=limit
-        )
+        return self.trackingtype.list(skip=skip, limit=limit)
 
     # get tracking type by id function
     async def get(self, id: int) -> TrackingTypeModel:
@@ -50,7 +55,7 @@ class TrackingTypeService:
         return self.trackingtype.create(data=data)
 
     # update tracking type function
-    async def update(self, code: int, data: CreateTrackingType) -> TrackingTypeModel:
+    async def update(self, code: int, tokendata: dict, data: CreateTrackingType) -> TrackingTypeModel:
         old_data = jsonable_encoder(self.trackingtype.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
@@ -59,7 +64,7 @@ class TrackingTypeService:
             )
 
         current_data = jsonable_encoder(self.trackingtype.update(code, data=data.dict()))
-        logs = [Helper.build_log(f"/trackingtypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [await Helper.build_log(f"/trackingtypes/{code}", "PUT", tokendata["email"], old_data, current_data)]
         await self.log.create(logs)
         return current_data
 

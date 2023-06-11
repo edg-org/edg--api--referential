@@ -2,31 +2,28 @@ from typing import List
 from api.tools.Helper import Helper
 from fastapi.encoders import jsonable_encoder
 from fastapi import Depends, HTTPException, status
+from api.logs.services.LogService import LogService
+from api.electrical.repositories.SupplyModeRepo import SupplyModeRepo
+from api.salesfinancial.repositories.TrackingTypeRepo import TrackingTypeRepo
 from api.salesfinancial.models.SubscriptionTypeModel import SubscriptionTypeModel
 from api.salesfinancial.repositories.SubscriptionTypeRepo import SubscriptionTypeRepo
 from api.salesfinancial.schemas.SubscriptionTypeSchema import SubscriptionTypeInput, CreateSubscriptionType
 
-from api.salesfinancial.repositories.TrackingTypeRepo import (
-    TrackingTypeRepo,
-)
-from api.electrical.repositories.SupplyModeRepo import (
-    SupplyModeRepo,
-)
-
 class SubscriptionTypeService:
+    log: LogService
     subscriptiontype: SubscriptionTypeRepo
 
     def __init__(
         self,
-        subscriptiontype: SubscriptionTypeRepo = Depends(),
+        log: LogService = Depends(),
+        subscriptiontype: SubscriptionTypeRepo = Depends()
     ) -> None:
+        self.log = log
         self.subscriptiontype = subscriptiontype
 
     # get all subscription types function
     async def list(self, skip: int = 0, limit: int = 100) -> List[SubscriptionTypeModel]:
-        return self.subscriptiontype.list(
-            skip=skip, limit=limit
-        )
+        return self.subscriptiontype.list(skip=skip, limit=limit)
 
     # get subscription type by id function
     async def get(self, id: int) -> SubscriptionTypeModel:
@@ -73,7 +70,7 @@ class SubscriptionTypeService:
         return self.subscriptiontype.create(data=datalist)
 
     # update subscription type function
-    async def update(self, code: int, data: CreateSubscriptionType) -> SubscriptionTypeModel:
+    async def update(self, code: int, tokendata:dict, data: CreateSubscriptionType) -> SubscriptionTypeModel:
         old_data = jsonable_encoder(self.subscriptiontype.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
@@ -88,7 +85,7 @@ class SubscriptionTypeService:
             data.tracking_type_id = TrackingTypeRepo.getidbyname(self.subscriptiontype, data.infos.tracking_type)
 
         current_data = jsonable_encoder(self.subscriptiontype.update(code, data=data.dict()))
-        logs = [Helper.build_log(f"/subscriptiontypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [await Helper.build_log(f"/subscriptiontypes/{code}", "PUT", tokendata["email"], old_data, current_data)]
         await self.log.create(logs)
         return current_data
 

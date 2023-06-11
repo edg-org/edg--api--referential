@@ -18,7 +18,8 @@ router_path = env.api_routers_prefix + env.api_version
 
 fixationtypeRouter = APIRouter(
     tags=["Transformer Fixation Types"],
-    prefix=router_path + "/fixationtypes"
+    prefix=router_path + "/fixationtypes",
+    dependencies=[Depends(JWTBearer())]
 )
 
 # get all fixation types route
@@ -34,7 +35,6 @@ async def list(
     fixationtypeService: FixationTypeService = Depends(),
 ):
     return await fixationtypeService.list(skip, limit)
-
 
 # get fixation type route
 @fixationtypeRouter.get(
@@ -55,14 +55,12 @@ async def get(
         )
     return fixation
 
-
 # post fixation type route
 @fixationtypeRouter.post(
     "/",
     summary="Creation router a transformer fixation type",
     description="This router allows to create a tranformer fixation type",
     response_model=List[CreateFixationType],
-    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[FixationTypeInput],
@@ -76,12 +74,12 @@ async def create(
     "/{code}",
     summary="Update router a transfomer fixation type",
     description="This router allows to update a tranformer fixation type",
-    response_model=FixationTypeSchema,
-    dependencies=[Depends(JWTBearer())]
+    response_model=FixationTypeSchema
 )
 async def update(
     code: int,
     data: FixationTypeUpdate,
     fixationtypeService: FixationTypeService = Depends(),
+    tokendata: dict = Depends(JWTBearer())
 ):
-    return await fixationtypeService.update(code=code, data=data)
+    return await fixationtypeService.update(code=code, tokendata=tokendata, data=data)

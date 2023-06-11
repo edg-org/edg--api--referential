@@ -2,26 +2,26 @@ from typing import List
 from api.tools.Helper import Helper
 from fastapi.encoders import jsonable_encoder
 from fastapi import Depends, HTTPException, status
+from api.logs.services.LogService import LogService
 from api.salesfinancial.models.InvoicingFrequencyModel import InvoicingFrequencyModel
 from api.salesfinancial.repositories.InvoicingFrequencyRepo import InvoicingFrequencyRepo
 from api.salesfinancial.schemas.InvoicingFrequencySchema import CreateInvoicingFrequency
 
 class InvoicingFrequencyService:
+    log: LogService
     invoicingfrequency: InvoicingFrequencyRepo
 
     def __init__(
         self,
-        invoicingfrequency: InvoicingFrequencyRepo = Depends(),
+        log: LogService = Depends(),
+        invoicingfrequency: InvoicingFrequencyRepo = Depends()
     ) -> None:
+        self.log = log
         self.invoicingfrequency = invoicingfrequency
 
     # get all invoicing frequencies function
-    async def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[InvoicingFrequencyModel]:
-        return self.invoicingfrequency.list(
-            skip=skip, limit=limit
-        )
+    async def list(self, skip: int = 0, limit: int = 100) -> List[InvoicingFrequencyModel]:
+        return self.invoicingfrequency.list(skip=skip, limit=limit)
 
     # get invoicing frequency by id function
     async def get(self, id: int) -> InvoicingFrequencyModel:
@@ -59,7 +59,7 @@ class InvoicingFrequencyService:
         return self.invoicingfrequency.create(data=data)
 
     # update invoicing frequency function
-    async def update(self, code: int, data: CreateInvoicingFrequency) -> InvoicingFrequencyModel:
+    async def update(self, code: int, tokendata: dict, data: CreateInvoicingFrequency) -> InvoicingFrequencyModel:
         old_data = jsonable_encoder(self.invoicingfrequency.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
@@ -68,7 +68,7 @@ class InvoicingFrequencyService:
             )
 
         current_data = jsonable_encoder(self.invoicingfrequency.update(code, data=data.dict()))
-        logs = [Helper.build_log(f"/invoicingfrequencies/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [await Helper.build_log(f"/invoicingfrequencies/{code}", "PUT", tokendata["email"], old_data, current_data)]
         await self.log.create(logs)
         return current_data
 

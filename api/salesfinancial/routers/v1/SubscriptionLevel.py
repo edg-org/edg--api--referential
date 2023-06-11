@@ -17,9 +17,9 @@ router_path = env.api_routers_prefix + env.api_version
 
 subscriptionlevelRouter = APIRouter(
     tags=["Subscription Levels"],
-    prefix=router_path + "/subscriptionlevels"
+    prefix=router_path + "/subscriptionlevels",
+    dependencies=[Depends(JWTBearer())]
 )
-
 
 # get all subscription level route
 @subscriptionlevelRouter.get(
@@ -35,7 +35,6 @@ async def list(
 ):
     return await levelService.list(skip, limit)
 
-
 # get subscription level route
 @subscriptionlevelRouter.get(
     "/{code}",
@@ -47,9 +46,7 @@ async def get(
     code: int,
     levelService: SubscriptionLevelService = Depends(),
 ):
-    subscriptionlevel = await levelService.getbycode(
-        code=code
-    )
+    subscriptionlevel = await levelService.getbycode(code=code)
     if subscriptionlevel is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -57,14 +54,12 @@ async def get(
         )
     return subscriptionlevel
 
-
 # post subscription level route
 @subscriptionlevelRouter.post(
     "/",
     summary="Creation router a subscription level",
     description="This router allows to create a subscription level",
-    response_model=List[CreateSubscriptionLevel],
-    dependencies=[Depends(JWTBearer())]
+    response_model=List[CreateSubscriptionLevel]
 )
 async def create(
     data: List[CreateSubscriptionLevel],
@@ -72,18 +67,17 @@ async def create(
 ):
     return await levelService.create(data=data)
 
-
 # update subscription level route
 @subscriptionlevelRouter.put(
     "/{code}",
     summary="Update router a subscription level",
     description="This router allows to update a subscription level",
-    response_model=SubscriptionLevelSchema,
-    dependencies=[Depends(JWTBearer())]
+    response_model=SubscriptionLevelSchema
 )
 async def update(
     code: int,
     data: SubscriptionLevelUpdate,
     levelService: SubscriptionLevelService = Depends(),
+    tokendata: dict = Depends(JWTBearer())
 ):
-    return await levelService.update(code=code, data=data)
+    return await levelService.update(code=code, tokendata=tokendata, data=data)

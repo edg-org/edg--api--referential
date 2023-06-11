@@ -1,8 +1,8 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
+from sqlalchemy import insert, func, update
 from api.salesfinancial.models.TrackingTypeModel import TrackingTypeModel
 from api.salesfinancial.schemas.TrackingTypeSchema import CreateTrackingType
 
@@ -76,11 +76,14 @@ class TrackingTypeRepo:
         return data
 
     # update tracking type function
-    def update(self, data: CreateTrackingType) -> TrackingTypeModel:
-        self.db.merge(data)
+    def update(self, code: int, data: dict) -> TrackingTypeModel:
+        self.db.execute(
+            update(TrackingTypeModel)
+            .where(TrackingTypeModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete tracking type function
     def delete(self, tracking: TrackingTypeModel) -> None:

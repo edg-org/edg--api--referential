@@ -134,7 +134,7 @@ class DeliveryPointService:
         return self.deliverypoint.create(data=deliverypointlist)
 
     # update delivery point function
-    async def update(self, number: int, data: DeliveryPointUpdate) -> DeliveryPointModel:
+    async def update(self, number: int, tokendata: dict, data: DeliveryPointUpdate) -> DeliveryPointModel:
         old_data = jsonable_encoder(self.deliverypoint.getbynumber(number=number))
         if old_data is None:
             raise HTTPException(
@@ -149,13 +149,13 @@ class DeliveryPointService:
             data.pole_id = ConnectionPoleRepo.getbynumber(self.deliverypoint, data.infos.pole_number).id
              
         current_data = jsonable_encoder(self.deliverypoint.update(number, data=data.dict()))
-        logs = [Helper.build_log(f"/deliverypoints/{number}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [await Helper.build_log(f"/deliverypoints/{number}", "PUT", tokendata["email"], old_data, current_data)]
         await self.log.create(logs)
         return current_data
 
     # activate or desactivate agency function
-    async def activate_desactivate(self, code: int, flag: bool) -> None:
-        old_data = jsonable_encoder(self.area.getbycode(code=code))
+    async def activate_desactivate(self, number: int, flag: bool, tokendata: dict) -> None:
+        old_data = jsonable_encoder(self.deliverypoint.getbynumber(number==number))
         if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -172,7 +172,7 @@ class DeliveryPointService:
             is_activated = flag,
             deleted_at = deleted_at
         )
-        current_data = jsonable_encoder(self.area.update(code=code, data=data))
-        logs = [Helper.build_log(f"/deliverypoints/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        current_data = jsonable_encoder(self.deliverypoint(number=number, data=data))
+        logs = [await Helper.build_log(f"/deliverypoints/{number}", "PUT", tokendata["email"], old_data, current_data)]
         await self.log.create(logs)
         return HTTPException(status_code=status.HTTP_200_OK, detail=message)

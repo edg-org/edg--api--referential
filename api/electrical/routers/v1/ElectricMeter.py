@@ -18,9 +18,9 @@ router_path = env.api_routers_prefix + env.api_version
 
 meterRouter = APIRouter(
     tags=["Electric Meters"],
-    prefix=router_path + "/meters"
+    prefix=router_path + "/meters",
+    dependencies=[Depends(JWTBearer())]
 )
-
 
 # get all electric meter route
 @meterRouter.get(
@@ -48,9 +48,7 @@ async def get(
     number: int,
     meterService: ElectricMeterService = Depends(),
 ):
-    supply = await meterService.getbynumber(
-        number=number
-    )
+    supply = await meterService.getbynumber(number=number)
     if supply is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -58,14 +56,12 @@ async def get(
         )
     return supply
 
-
 # post transformer route
 @meterRouter.post(
     "/",
     summary="Creation router a electric meter",
     description="This router allows to create a electric meter",
-    response_model=List[CreateElectricMeter],
-    dependencies=[Depends(JWTBearer())]
+    response_model=List[CreateElectricMeter]
 )
 async def create(
     data: List[ElectricMeterInput],
@@ -73,20 +69,17 @@ async def create(
 ):
     return await meterService.create(data=data)
 
-
 # update transformer route
 @meterRouter.put(
     "/{number}",
     summary="Update router a electric meter",
     description="This router allows to update a electric meter",
-    response_model=ElectricMeterSchema,
-    dependencies=[Depends(JWTBearer())]
+    response_model=ElectricMeterSchema
 )
 async def update(
     number: int,
     data: ElectricMeterUpdate,
     meterService: ElectricMeterService = Depends(),
+    tokendata: dict = Depends(JWTBearer())
 ):
-    return await meterService.update(
-        number=number, data=data
-    )
+    return await meterService.update(number=number, tokendata=tokendata, data=data)

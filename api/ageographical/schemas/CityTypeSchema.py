@@ -30,4 +30,5 @@ class CityTypeInput(CreateCityType):
 
 #
 class CityTypeUpdate(CityTypeInput):
-    pass
+    class Config:
+        fields_to_hide = {"code"}

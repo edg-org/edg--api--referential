@@ -12,14 +12,15 @@ from api.ageographical.schemas.RegionSchema import (
     RegionSchema,
     RegionUpdate,
     CreateRegion,
-    RegionItemSchema,
+    RegionItemSchema
 )
 
 router_path = env.api_routers_prefix + env.api_version
 
 regionRouter = APIRouter(
     prefix=router_path + "/regions",
-    tags=["Administrative Regions"]
+    tags=["Administrative Regions"],
+    dependencies=[Depends(JWTBearer())]
 )
 
 # get all administrative regions route
@@ -62,7 +63,7 @@ async def get(
     description="This router allows to get a administrative region with items",
     response_model=RegionItemSchema,
 )
-async def get_region_item(
+async def get_region_items(
     code: int,
     regionService: RegionService = Depends()
 ):
@@ -79,8 +80,7 @@ async def get_region_item(
     "/",
     summary="Creation router a administrative region",
     description="This router allows to create a administrative region",
-    response_model=List[CreateRegion],
-    dependencies=[Depends(JWTBearer())]
+    response_model=List[CreateRegion]
 )
 async def create(
     data: List[RegionInput],
@@ -93,12 +93,12 @@ async def create(
     "/{code}",
     summary="Update router a administrative region",
     description="This router allows to update a administrative region",
-    response_model=RegionSchema,
-    dependencies=[Depends(JWTBearer())]
+    response_model=RegionSchema
 )
 async def update(
     code: int,
     data: RegionUpdate,
     regionService: RegionService = Depends(),
+    tokendata: dict = Depends(JWTBearer())
 ):
-    return await regionService.update(code=code, data=data)
+    return await regionService.update(code=code, tokendata=tokendata, data=data)

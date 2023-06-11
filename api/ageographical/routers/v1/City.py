@@ -20,7 +20,8 @@ router_path = env.api_routers_prefix + env.api_version
 
 cityRouter = APIRouter(
     tags=["Cities"],
-    prefix=router_path + "/cities"
+    prefix=router_path + "/cities",
+    dependencies=[Depends(JWTBearer())]
 )
 
 # get all cities route
@@ -61,7 +62,7 @@ async def search_by_paramas(
     "/{name}",
     summary="Getting router a city by name without items",
     description="This router allows to get a city by name without items",
-    response_model=List[CitySchema],
+    response_model=List[CitySchema]
 )
 async def get_by_name(
     name: str, 
@@ -99,8 +100,7 @@ async def get_city_items(
     "/",
     summary="Creation router a city",
     description="This router allows to create a city",
-    response_model=List[CreateCity],
-    dependencies=[Depends(JWTBearer())]
+    response_model=List[CreateCity]
 )
 async def create(
     data: List[CityInput],
@@ -113,12 +113,12 @@ async def create(
     "/{code}",
     summary="Update router a city",
     description="This router allows to update a city",
-    response_model=CitySchema,
-    dependencies=[Depends(JWTBearer())]
+    response_model=CitySchema
 )
 async def update(
-    id: int,
+    code: int,
     data: CityUpdate,
     cityService: CityService = Depends(),
+    tokendata: dict = Depends(JWTBearer())
 ):
-    return await cityService.update(id=id, data=data)
+    return await cityService.update(code=code, tokendata=tokendata, data=data)

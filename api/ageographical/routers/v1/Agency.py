@@ -19,6 +19,7 @@ router_path = env.api_routers_prefix + env.api_version
 agencyRouter = APIRouter(
     tags=["Agencies"],
     prefix=router_path + "/agencies",
+    dependencies=[Depends(JWTBearer())]
 )
 
 # get all agencies route
@@ -59,8 +60,7 @@ async def get(
     "/",
     summary="Creation router a agency",
     description="This router allows to create a agency",
-    response_model=List[CreateAgency],
-    dependencies=[Depends(JWTBearer())]
+    response_model=List[CreateAgency]
 )
 async def create(
     data: List[AgencyInput],
@@ -74,12 +74,12 @@ async def create(
     "/{code}",
     summary="Update router a agency",
     description="This router allows to update a agency",
-    response_model=AgencySchema,
-    dependencies=[Depends(JWTBearer())]
+    response_model=AgencySchema
 )
 async def update(
     code: int,
     data: AgencyUpdate,
     agencyService: AgencyService = Depends(),
+    tokendata: dict = Depends(JWTBearer())
 ):
-    return await agencyService.update(code=code, data=data)
+    return await agencyService.update(code=code, tokendata=tokendata, data=data)

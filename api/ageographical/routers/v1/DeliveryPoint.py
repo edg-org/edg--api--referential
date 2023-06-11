@@ -19,7 +19,8 @@ router_path = env.api_routers_prefix + env.api_version
 
 deliverypointRouter = APIRouter(
     tags=["Delivery Points"],
-    prefix=router_path + "/deliverypoints"
+    prefix=router_path + "/deliverypoints",
+    dependencies=[Depends(JWTBearer())]
 )
 
 # get all delivery points route
@@ -45,7 +46,7 @@ async def list(
 )
 async def get(
     number: int,
-    deliverypointService: DeliveryPointService = Depends(),
+    deliverypointService: DeliveryPointService = Depends()
 ):
     deliverypoint = await deliverypointService.getbynumber(number=number)
     if deliverypoint is None:
@@ -79,8 +80,7 @@ async def getdetails(
     "/",
     summary="Creation router a delivery point",
     description="This router allows to create a delivery point",
-    response_model=List[CreateDeliveryPoint],
-    dependencies=[Depends(JWTBearer())]
+    response_model=List[CreateDeliveryPoint]
 )
 async def create(
     data: List[DeliveryPointInput],
@@ -93,15 +93,12 @@ async def create(
     "/{number}",
     summary="Update router a delivery point",
     description="This router allows to update a delivery point",
-    response_model=DeliveryPointSchema,
-    dependencies=[Depends(JWTBearer())]
+    response_model=DeliveryPointSchema
 )
 async def update(
     number: int,
     data: DeliveryPointUpdate,
     deliverypointService: DeliveryPointService = Depends(),
+    tokendata: dict = Depends(JWTBearer())
 ):
-    return await deliverypointService.update(
-        number=number, 
-        data=data
-    )
+    return await deliverypointService.update(number=number, tokendata=tokendata, data=data)

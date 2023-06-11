@@ -1,8 +1,8 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
+from sqlalchemy import insert, update, func
 from api.salesfinancial.models.SubscriptionLevelModel import SubscriptionLevelModel
 from api.salesfinancial.schemas.SubscriptionLevelSchema import CreateSubscriptionLevel
 
@@ -68,11 +68,14 @@ class SubscriptionLevelRepo:
         return data
 
     # update subscription level function
-    def update(self, data: CreateSubscriptionLevel) -> SubscriptionLevelModel:
-        self.db.merge(data)
+    def update(self, code: int, data: dict) -> SubscriptionLevelModel:
+        self.db.execute(
+            update(SubscriptionLevelModel)
+            .where(SubscriptionLevelModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete subscription level function
     def delete(

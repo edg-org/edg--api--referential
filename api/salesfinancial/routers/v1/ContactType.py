@@ -16,16 +16,16 @@ from api.salesfinancial.schemas.ContactTypeSchema import (
 router_path = env.api_routers_prefix + env.api_version
 contacttypeRouter = APIRouter(
     tags=["Contact Types"],
-    prefix=router_path + "/contacttypes"
+    prefix=router_path + "/contacttypes",
+    dependencies=[Depends(JWTBearer())]
 )
-
 
 # get all contact types route
 @contacttypeRouter.get(
     "/",
     summary="Getting router for all contact types",
     description="This router allows to get all contact types",
-    response_model=List[ContactTypeSchema],
+    response_model=List[ContactTypeSchema]
 )
 async def list(
     skip: int = 0,
@@ -34,16 +34,16 @@ async def list(
 ):
     return await typeService.list(skip, limit)
 
-
 # get contact type route
 @contacttypeRouter.get(
     "/{code}",
     summary="Getting router a contact type without items",
     description="This router allows to get a contact type without items",
-    response_model=ContactTypeSchema,
+    response_model=ContactTypeSchema
 )
 async def get(
-    code: int, typeService: ContactTypeService = Depends()
+    code: int, 
+    typeService: ContactTypeService = Depends()
 ):
     contacttype = await typeService.getbycode(code=code)
     if contacttype is None:
@@ -53,14 +53,12 @@ async def get(
         )
     return contacttype
 
-
 # post contact type route
 @contacttypeRouter.post(
     "/",
     summary="Creation router a contact type",
     description="This router allows to create a contact type",
-    response_model=List[CreateContactType],
-    dependencies=[Depends(JWTBearer())]
+    response_model=List[CreateContactType]
 )
 async def create(
     data: List[CreateContactType],
@@ -68,18 +66,17 @@ async def create(
 ):
     return await typeService.create(data=data)
 
-
 # update contact type route
 @contacttypeRouter.put(
     "/{code}",
     summary="Update router a contact type",
     description="This router allows to update a contact type",
-    response_model=ContactTypeSchema,
-    dependencies=[Depends(JWTBearer())]
+    response_model=ContactTypeSchema
 )
 async def update(
     code: int,
     data: ContactTypeUpdate,
     typeService: ContactTypeService = Depends(),
+    tokendata: dict = Depends(JWTBearer())
 ):
-    return await typeService.update(code=code, data=data)
+    return await typeService.update(code=code, tokendata=tokendata, data=data)

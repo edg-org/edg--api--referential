@@ -17,9 +17,9 @@ router_path = env.api_routers_prefix + env.api_version
 
 meterdeliveryRouter = APIRouter(
     tags=["Meter Delivery Points"],
-    prefix=router_path + "/meterdeliverypoints"
+    prefix=router_path + "/meterdeliverypoints",
+    dependencies=[Depends(JWTBearer())]
 )
-
 
 # get all meter delivery points route
 @meterdeliveryRouter.get(
@@ -35,13 +35,12 @@ async def list(
 ):
     return await meterdeliveryService.list(skip, limit)
 
-
 # get transformer route
 @meterdeliveryRouter.get(
     "/{number}",
     summary="Getting router a transformer without items",
     description="This router allows to get a meter delivery point without items",
-    response_model=MeterDeliveryPointSchema,
+    response_model=MeterDeliveryPointSchema
 )
 async def get(
     id: int,
@@ -55,14 +54,12 @@ async def get(
         )
     return supply
 
-
 # post transformer route
 @meterdeliveryRouter.post(
     "/",
     summary="Creation router a meter delivery point",
     description="This router allows to create a meter delivery point",
-    response_model=List[CreateMeterDeliveryPoint],
-    dependencies=[Depends(JWTBearer())]
+    response_model=List[CreateMeterDeliveryPoint]
 )
 async def create(
     data: List[MeterDeliveryPointInput],

@@ -29,4 +29,5 @@ class AreaTypeInput(CreateAreaType):
 
 #
 class AreaTypeUpdate(AreaTypeInput):
-    pass
+    class Config:
+        fields_to_hide = {"code"}

@@ -2,22 +2,25 @@ from typing import List
 from api.tools.Helper import Helper
 from fastapi.encoders import jsonable_encoder
 from fastapi import Depends, HTTPException, status
+from api.logs.services.LogService import LogService
 from api.salesfinancial.models.ContactTypeModel import ContactTypeModel
 from api.salesfinancial.repositories.ContactTypeRepo import ContactTypeRepo
 from api.salesfinancial.schemas.ContactTypeSchema import CreateContactType
 
 class ContactTypeService:
+    log: LogService = Depends()
     contacttype: ContactTypeRepo
 
     def __init__(
-        self, contacttype: ContactTypeRepo = Depends()
+        self, 
+        log: LogService = Depends(),
+        contacttype: ContactTypeRepo = Depends()
     ) -> None:
+        self.log = log
         self.contacttype = contacttype
 
     # get all contact types function
-    async def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[ContactTypeModel]:
+    async def list(self, skip: int = 0, limit: int = 100) -> List[ContactTypeModel]:
         return self.contacttype.list(skip=skip, limit=limit)
 
     # get contact type by id function
@@ -52,7 +55,7 @@ class ContactTypeService:
         return self.contacttype.create(data=data)
 
     # update contact type function
-    async def update(self, code: int, data: CreateContactType) -> ContactTypeModel:
+    async def update(self, code: int, tokendata:dict, data: CreateContactType) -> ContactTypeModel:
         old_data = jsonable_encoder(self.contacttype.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
@@ -61,7 +64,7 @@ class ContactTypeService:
             )
 
         current_data = jsonable_encoder(self.contacttype.update(code, data=data.dict()))
-        logs = [Helper.build_log(f"/contacttypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [await Helper.build_log(f"/contacttypes/{code}", "PUT", tokendata["email"], old_data, current_data)]
         await self.log.create(logs)
         return current_data
 

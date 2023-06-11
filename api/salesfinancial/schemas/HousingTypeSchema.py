@@ -25,9 +25,9 @@ class CreateHousingType(HousingTypeSchema):
 
 #
 class HousingTypeInput(CreateHousingType):
-    class Config:
-        fields_to_hide = {"code"}
+    pass
 
 #
 class HousingTypeUpdate(HousingTypeInput):
-    pass
+    class Config:
+        fields_to_hide = {"code"}

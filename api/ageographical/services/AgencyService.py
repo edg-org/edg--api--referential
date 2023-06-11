@@ -85,7 +85,7 @@ class AgencyService:
         return self.agency.create(data=agencylist)
 
     # update agency function
-    async def update(self, code: int, data: AgencyUpdate) -> AgencyModel:
+    async def update(self, code: int, tokendata: dict, data: AgencyUpdate) -> AgencyModel:
         old_data = jsonable_encoder(self.agency.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
@@ -97,13 +97,13 @@ class AgencyService:
             data.city_id = CityRepo.getidbycode(self.agency, data.infos.city_code)
             
         current_data = jsonable_encoder(self.agency.update(code=code, data=data.dict()))
-        logs = [Helper.build_log(f"/agencies/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [await Helper.build_log(f"/agencies/{code}", "PUT", tokendata["email"], old_data, current_data)]
         await self.log.create(logs)
         return current_data
 
         
     # activate or desactivate agency function
-    async def activate_desactivate(self, code: int, flag: bool) -> None:
+    async def activate_desactivate(self, code: int, flag: bool, tokendata: dict) -> None:
         old_data = jsonable_encoder(self.agency.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
@@ -122,6 +122,6 @@ class AgencyService:
             deleted_at = deleted_at
         )
         current_data = jsonable_encoder(self.agency.update(code=code, data=data))
-        logs = [Helper.build_log(f"/agencies/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [await Helper.build_log(f"/agencies/{code}", "PUT", tokendata["email"], old_data, current_data)]
         await self.log.create(logs)
         return HTTPException(status_code=status.HTTP_200_OK, detail=message)

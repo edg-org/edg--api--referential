@@ -12,7 +12,7 @@ from api.ageographical.repositories.AreaTypeRepo import AreaTypeRepo
 from api.ageographical.schemas.AreaSchema import (
     AreaInput,
     AreaUpdate,
-    CreateArea,
+    CreateArea
 )
 
 #
@@ -170,7 +170,7 @@ class AreaService:
         return self.area.create(data=arealist)
 
     # update area function
-    async def update(self, code: int, data: AreaUpdate) -> AreaModel:
+    async def update(self, code: int, tokendata: dict, data: AreaUpdate) -> AreaModel:
         old_data = jsonable_encoder(self.area.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
@@ -221,12 +221,12 @@ class AreaService:
                     data.zipcode = Helper.generate_zipcode(maxzipcode, step_zipcode)
         
         current_data = jsonable_encoder(self.area.update(code=code, data=data.dict()))
-        logs = [Helper.build_log(f"/areas/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [await Helper.build_log(f"/areas/{code}", "PUT", tokendata["email"], old_data, current_data)]
         await self.log.create(logs)
         return current_data
 
     # activate or desactivate agency function
-    async def activate_desactivate(self, code: int, flag: bool) -> None:
+    async def activate_desactivate(self, code: int, flag: bool, tokendata: dict) -> None:
         old_data = jsonable_encoder(self.area.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
@@ -245,6 +245,6 @@ class AreaService:
             deleted_at = deleted_at
         )
         current_data = jsonable_encoder(self.area.update(code=code, data=data))
-        logs = [Helper.build_log(f"/areas/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [await Helper.build_log(f"/areas/{code}", "PUT", tokendata["email"], old_data, current_data)]
         await self.log.create(logs)
         return HTTPException(status_code=status.HTTP_200_OK, detail=message)

@@ -1,8 +1,8 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
+from sqlalchemy import insert, func, update
 from api.salesfinancial.models.HousingTypeModel import HousingTypeModel
 from api.salesfinancial.schemas.HousingTypeSchema import CreateHousingType
 
@@ -74,11 +74,14 @@ class HousingTypeRepo:
         return data
 
     # update housing type function
-    def update(self, data: HousingTypeModel) -> HousingTypeModel:
-        self.db.merge(data)
+    def update(self, code: int, data: dict) -> HousingTypeModel:
+        self.db.execute(
+            update(HousingTypeModel)
+            .where(HousingTypeModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete housing type function
     def delete(self, housing: HousingTypeModel) -> None:

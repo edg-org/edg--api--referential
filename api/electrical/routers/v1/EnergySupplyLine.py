@@ -18,7 +18,8 @@ router_path = env.api_routers_prefix + env.api_version
 
 energysupplyRouter = APIRouter(
     tags=["Energy Supply Lines"],
-    prefix=router_path + "/supplylines"
+    prefix=router_path + "/supplylines",
+    dependencies=[Depends(JWTBearer())]
 )
 
 # get all energy supply line lines route
@@ -60,8 +61,7 @@ async def get(
     "/",
     summary="Creation router a energy supply line",
     description="This router allows to create a energy supply line",
-    response_model=List[CreateEnergySupplyLine],
-    dependencies=[Depends(JWTBearer())]
+    response_model=List[CreateEnergySupplyLine]
 )
 async def create(
     data: List[EnergySupplyLineInput],
@@ -69,18 +69,17 @@ async def create(
 ):
     return await energysupplyService.create(data=data)
 
-
 # update energy supply line route
 @energysupplyRouter.put(
     "/{code}",
     summary="Update router a energy supply line",
     description="This router allows to update a energy supply line",
     response_model=EnergySupplyLineSchema,
-    dependencies=[Depends(JWTBearer())]
 )
 async def update(
     code: int,
     data: EnergySupplyLineUpdate,
     energysupplyService: EnergySupplyLineService = Depends(),
+    tokendata: dict = Depends(JWTBearer())
 ):
-    return await energysupplyService.update(code=code, data=data)
+    return await energysupplyService.update(code=code, tokendata=tokendata, data=data)

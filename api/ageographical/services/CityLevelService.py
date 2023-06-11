@@ -56,7 +56,7 @@ class CityLevelService:
         return self.citylevel.create(data=data)
 
     # update city level function
-    async def update(self, code: int, data: CreateCityLevel) -> CityLevelModel:
+    async def update(self, code: int, tokendata: dict, data: CreateCityLevel) -> CityLevelModel:
         old_data = jsonable_encoder(self.citylevel.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
@@ -65,7 +65,7 @@ class CityLevelService:
             )
 
         current_data = jsonable_encoder(self.citytype.update(code=code, data=data.dict()))
-        logs = [Helper.build_log(f"/citylevels/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [await Helper.build_log(f"/citylevels/{code}", "PUT", tokendata["email"], old_data, current_data)]
         await self.log.create(logs)
         return current_data
 

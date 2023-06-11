@@ -1,8 +1,8 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
+from sqlalchemy import insert, update, func
 from api.salesfinancial.models.InvoiceStatusModel import InvoiceStatusModel
 from api.salesfinancial.schemas.InvoiceStatusSchema import CreateInvoiceStatus
 
@@ -67,12 +67,15 @@ class InvoiceStatusRepo:
         self.db.commit()
         return data
 
-    # update subscription status function
-    def update(self, data: CreateInvoiceStatus) -> InvoiceStatusModel:
-        self.db.merge(data)
+    # update invoice status function
+    def update(self, code: int, data: dict) -> InvoiceStatusModel:
+        self.db.execute(
+            update(InvoiceStatusModel)
+            .where(InvoiceStatusModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete subscription status function
     def delete(

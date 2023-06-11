@@ -1,8 +1,8 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
+from sqlalchemy import insert, update, func
 from api.salesfinancial.models.ContactTypeModel import ContactTypeModel
 from api.salesfinancial.schemas.ContactTypeSchema import CreateContactType
 
@@ -68,11 +68,14 @@ class ContactTypeRepo:
         return data
 
     # update contact type function
-    def update(self, data: CreateContactType) -> ContactTypeModel:
-        self.db.merge(data)
+    def update(self, code: int, data: dict) -> ContactTypeModel:
+        self.db.execute(
+            update(ContactTypeModel)
+            .where(ContactTypeModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete contact type function
     def delete(self, contact: ContactTypeModel) -> None:

@@ -17,9 +17,9 @@ router_path = env.api_routers_prefix + env.api_version
 
 subscriptionstatusRouter = APIRouter(
     tags=["Subscription Status"],
-    prefix=router_path + "/subscriptionstatus"
+    prefix=router_path + "/subscriptionstatus",
+    dependencies=[Depends(JWTBearer())]
 )
-
 
 # get all subscription status route
 @subscriptionstatusRouter.get(
@@ -35,7 +35,6 @@ async def list(
 ):
     return await statusService.list(skip, limit)
 
-
 # get subscription status route
 @subscriptionstatusRouter.get(
     "/{code}",
@@ -47,9 +46,7 @@ async def get(
     code: int,
     statusService: SubscriptionStatusService = Depends(),
 ):
-    subscriptionstatus = await statusService.getbycode(
-        code=code
-    )
+    subscriptionstatus = await statusService.getbycode(code=code)
     if subscriptionstatus is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -57,14 +54,12 @@ async def get(
         )
     return subscriptionstatus
 
-
 # post subscription status route
 @subscriptionstatusRouter.post(
     "/",
     summary="Creation router a subscription status",
     description="This router allows to create a subscription status",
-    response_model=List[CreateSubscriptionStatus],
-    dependencies=[Depends(JWTBearer())]
+    response_model=List[CreateSubscriptionStatus]
 )
 async def create(
     data: List[CreateSubscriptionStatus],
@@ -72,18 +67,17 @@ async def create(
 ):
     return await statusService.create(data=data)
 
-
 # update subscription status route
 @subscriptionstatusRouter.put(
     "/{code}",
     summary="Update router a subscription status",
     description="This router allows to update a subscription status",
-    response_model=SubscriptionStatusSchema,
-    dependencies=[Depends(JWTBearer())]
+    response_model=SubscriptionStatusSchema
 )
 async def update(
     code: int,
     data: SubscriptionStatusUpdate,
     statusService: SubscriptionStatusService = Depends(),
+    tokendata: dict = Depends(JWTBearer())
 ):
-    return await statusService.update(code=code, data=data)
+    return await statusService.update(code=code, tokendata=tokendata, data=data)

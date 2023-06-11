@@ -24,9 +24,9 @@ class CreateFixationType(FixationTypeSchema):
 
 #
 class FixationTypeInput(CreateFixationType):
-    class Config:
-        fields_to_hide = {"code"}
+    pass
 
 #
 class FixationTypeUpdate(FixationTypeInput):
-    pass
+    class Config:
+        fields_to_hide = {"code"}

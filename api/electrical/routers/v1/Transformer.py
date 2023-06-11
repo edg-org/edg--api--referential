@@ -19,16 +19,16 @@ router_path = env.api_routers_prefix + env.api_version
 
 transformerRouter = APIRouter(
     tags=["Transformers"],
-    prefix=router_path + "/transformers"
+    prefix=router_path + "/transformers",
+    dependencies=[Depends(JWTBearer())]
 )
-
 
 # get all transformers route
 @transformerRouter.get(
     "/",
     summary="Getting router for all transformers",
     description="This router allows to get all transformers",
-    response_model=List[TransformerSchema],
+    response_model=List[TransformerSchema]
 )
 async def list(
     skip: int = 0,
@@ -57,7 +57,6 @@ async def get(
         )
     return transformer
 
-
 # route of get tranformer with item
 @transformerRouter.get(
     "/{code}/items",
@@ -83,8 +82,7 @@ async def get_tranformer_item(
     "/",
     summary="Creation router a transformer",
     description="This router allows to create a transformer",
-    response_model=List[CreateTransformer],
-    dependencies=[Depends(JWTBearer())]
+    response_model=List[CreateTransformer]
 )
 async def create(
     data: List[TransformerInput],
@@ -92,18 +90,17 @@ async def create(
 ):
     return await transformerService.create(data=data)
 
-
 # update transformer route
 @transformerRouter.put(
     "/{code}",
     summary="Update router a transformer",
     description="This router allows to update a transformer",
-    response_model=TransformerSchema,
-    dependencies=[Depends(JWTBearer())]
+    response_model=TransformerSchema
 )
 async def update(
     code: int,
     data: TransformerUpdate,
     transformerService: TransformerService = Depends(),
+    tokendata: dict = Depends(JWTBearer())
 ):
-    return await transformerService.update(code=code, data=data)
+    return await transformerService.update(code=code, tokendata=tokendata, data=data)

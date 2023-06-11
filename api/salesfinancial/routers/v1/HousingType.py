@@ -17,7 +17,8 @@ router_path = env.api_routers_prefix + env.api_version
 
 housingRouter = APIRouter(
     tags=["Housing Types"],
-    prefix=router_path + "/housingtypes"
+    prefix=router_path + "/housingtypes",
+    dependencies=[Depends(JWTBearer())]
 )
 
 # get all housing type route
@@ -57,8 +58,7 @@ async def get(
     "/",
     summary="Creation router a housing type",
     description="This router allows to create a housing type",
-    response_model=List[CreateHousingType],
-    dependencies=[Depends(JWTBearer())]
+    response_model=List[CreateHousingType]
 )
 async def create(
     data: List[CreateHousingType],
@@ -71,14 +71,12 @@ async def create(
     "/{code}",
     summary="Update router a housing type",
     description="This router allows to update a housing type",
-    response_model=HousingTypeSchema,
-    dependencies=[Depends(JWTBearer())]
-    
+    response_model=HousingTypeSchema
 )
 async def update(
     code: int,
     data: HousingTypeUpdate,
-    typeService: HousingTypeService = Depends()
-    
+    typeService: HousingTypeService = Depends(),
+    tokendata: dict = Depends(JWTBearer())
 ):
-    return await typeService.update(code=code, data=data)
+    return await typeService.update(code=code, tokendata=tokendata, data=data)

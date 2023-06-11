@@ -18,9 +18,9 @@ router_path = env.api_routers_prefix + env.api_version
 
 linetypeRouter = APIRouter(
     tags=["Supply Line Types"],
-    prefix=router_path + "/supplylinetypes"
+    prefix=router_path + "/supplylinetypes",
+    dependencies=[Depends(JWTBearer())]
 )
-
 
 # get all supplyline types route
 @linetypeRouter.get(
@@ -35,7 +35,6 @@ async def list(
     supplylinetypeService: SupplyLineTypeService = Depends(),
 ):
     return await supplylinetypeService.list(skip, limit)
-
 
 # get supplyline type route
 @linetypeRouter.get(
@@ -56,14 +55,12 @@ async def get(
         )
     return supplylinetype
 
-
 # post supplyline type route
 @linetypeRouter.post(
     "/",
     summary="Creation router a supply line type",
     description="This router allows to create a supply line type",
-    response_model=List[CreateSupplyLineType],
-    dependencies=[Depends(JWTBearer())]
+    response_model=List[CreateSupplyLineType]
 )
 async def create(
     data: List[SupplyLineTypeInput],
@@ -71,18 +68,17 @@ async def create(
 ):
     return await supplylinetypeService.create(data=data)
 
-
 # update supplyline type route
 @linetypeRouter.put(
     "/{code}",
     summary="Update router a supply line type",
     description="This router allows to update a supply line type",
-    response_model=SupplyLineTypeSchema,
-    dependencies=[Depends(JWTBearer())]
+    response_model=SupplyLineTypeSchema
 )
 async def update(
     code: int,
     data: SupplyLineTypeUpdate,
     supplylinetypeService: SupplyLineTypeService = Depends(),
+    tokendata: dict = Depends(JWTBearer())
 ):
-    return await supplylinetypeService.update(code=code, data=data)
+    return await supplylinetypeService.update(code=code, tokendata=tokendata, data=data)

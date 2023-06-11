@@ -67,7 +67,7 @@ class VoltageTypeRepo:
         return data
 
     # update voltage type function
-    def update(self, code: int, data: CreateVoltageType) -> VoltageTypeModel:
+    def update(self, code: int, data: dict) -> VoltageTypeModel:
         self.db.execute(
             update(VoltageTypeModel)
             .where(VoltageTypeModel.code == code)

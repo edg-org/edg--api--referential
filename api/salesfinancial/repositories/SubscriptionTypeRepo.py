@@ -1,8 +1,8 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
+from sqlalchemy import insert, update, func
 from api.salesfinancial.models.SubscriptionTypeModel import SubscriptionTypeModel
 from api.salesfinancial.schemas.SubscriptionTypeSchema import CreateSubscriptionType
 
@@ -67,11 +67,14 @@ class SubscriptionTypeRepo:
         return data
 
     # update subscription type function
-    def update(self, data: CreateSubscriptionType) -> SubscriptionTypeModel:
-        self.db.merge(data)
+    def update(self, code: int, data: dict) -> SubscriptionTypeModel:
+        self.db.execute(
+            update(SubscriptionTypeModel)
+            .where(SubscriptionTypeModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete subscription type function
     def delete(self, subscription: SubscriptionTypeModel) -> None:

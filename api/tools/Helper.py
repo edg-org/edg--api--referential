@@ -11,57 +11,57 @@ class Helper:
     
     # Function to generate geographical natural zone code
     @classmethod
-    def generate_zone_code(code: int):
+    def generate_zone_code(cls, code: int):
         return code + 10
 
     # Function to generate administrative region base code
     @classmethod
-    def region_basecode(code: int) -> int:
+    def region_basecode(cls, code: int) -> int:
         return code * 10
 
     # Function to generate prefecture base code
     @classmethod
-    def prefecture_basecode(code: int) -> int:
+    def prefecture_basecode(cls, code: int) -> int:
         return code * 100
 
     # Function to generate city base code
     @classmethod
-    def city_basecode(code: int):
+    def city_basecode(cls, code: int):
         return code * 100
 
     # Function to generate area base code
     @classmethod
-    def area_basecode(code: int) -> int:
+    def area_basecode(cls, code: int) -> int:
         return code * 100
 
     # Function to generate agency base code
     @classmethod
-    def agency_basecode(code: int) -> int:
+    def agency_basecode(cls, code: int) -> int:
         return code * 100
 
     # Function to generate street code
     @classmethod
-    def street_basecode(code: int) -> int:
+    def street_basecode(cls, code: int) -> int:
         return code * 100
 
     # Function to generate address code
     @classmethod
-    def address_basecode(code: int) -> int:
+    def address_basecode(cls, code: int) -> int:
         return code * 100
 
     # Function to generate delivery point code
     @classmethod
-    def deliverypoint_basecode(code: int) -> int:
+    def deliverypoint_basecode(cls, code: int) -> int:
         return code * 10000
 
     # Function to generate energy supply line base code
     @classmethod
-    def energy_supply_basecode(code: int) -> int:
+    def energy_supply_basecode(cls, code: int) -> int:
         return code * 100
 
     # Function to generate transformer base code
     @classmethod
-    def transformer_basecode(code: int, multiple: int) -> int:
+    def transformer_basecode(cls, code: int, multiple: int) -> int:
         return code * multiple
 
     # Function to generate connection point base code
@@ -99,7 +99,7 @@ class Helper:
         if status_code != 200:
             if status_code == 401:
                 detail=f"{response.text} : Please you have to authenticate, login please"
-            elif status_code == 401:
+            elif status_code == 403:
                 detail=f"{response.text} : The access to this resource is forbidden"
             else:
                 detail=response.text                
@@ -109,20 +109,22 @@ class Helper:
                     detail=detail
                 )
         return response.text            
+    
     #
     @classmethod
     async def build_log(
-        endpoint: str,
+        cls,
+        endpoint_name: str,
         verb: str,
         user_email: str,
         previous_metadata: Any,
         current_metadata: Any
     ) -> CreateLog:
-        baseUrl = env.domaine_name + env.api_routers_prefix + env.api_version
+        root_endpoint = env.api_routers_prefix + env.api_version
         return CreateLog(
             infos=dict(
                 microservice_name="Referential",
-                endpoint=baseUrl+endpoint,
+                endpoint=root_endpoint+endpoint_name,
                 verb=verb,
                 user_email=user_email,
                 previous_metadata=previous_metadata,
