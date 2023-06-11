@@ -1,9 +1,9 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.JWTBearer import JWTBearer, env
 from fastapi import (
     Depends,
-    APIRouter,
     status,
+    APIRouter,
     HTTPException,
 )
 from api.electrical.services.SupplyLineTypeService import SupplyLineTypeService
@@ -14,11 +14,11 @@ from api.electrical.schemas.SupplyLineTypeSchema import (
     SupplyLineTypeSchema
 )
 
-env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 linetypeRouter = APIRouter(
-    prefix=router_path + "/supplylinetypes", tags=["Supply Line Types"]
+    tags=["Supply Line Types"],
+    prefix=router_path + "/supplylinetypes"
 )
 
 
@@ -32,9 +32,9 @@ linetypeRouter = APIRouter(
 async def list(
     skip: int = 0,
     limit: int = 100,
-    supplylineService: SupplyLineTypeService = Depends(),
+    supplylinetypeService: SupplyLineTypeService = Depends(),
 ):
-    return await supplylineService.list(skip, limit)
+    return await supplylinetypeService.list(skip, limit)
 
 
 # get supplyline type route
@@ -45,15 +45,16 @@ async def list(
     response_model=SupplyLineTypeSchema,
 )
 async def get(
-    code: int, supplylineService: SupplyLineTypeService = Depends()
+    code: int, 
+    supplylinetypeService: SupplyLineTypeService = Depends()
 ):
-    supplyline = await supplylineService.getbycode(code=code)
+    supplylinetype = await supplylinetypeService.getbycode(code=code)
     if supplylinetype is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Supply Line Type not found",
         )
-    return supplyline
+    return supplylinetype
 
 
 # post supplyline type route
@@ -62,12 +63,13 @@ async def get(
     summary="Creation router a supply line type",
     description="This router allows to create a supply line type",
     response_model=List[CreateSupplyLineType],
+    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[SupplyLineTypeInput],
-    supplylineService: SupplyLineTypeService = Depends(),
+    supplylinetypeService: SupplyLineTypeService = Depends(),
 ):
-    return await supplylineService.create(data=data)
+    return await supplylinetypeService.create(data=data)
 
 
 # update supplyline type route
@@ -76,10 +78,11 @@ async def create(
     summary="Update router a supply line type",
     description="This router allows to update a supply line type",
     response_model=SupplyLineTypeSchema,
+    dependencies=[Depends(JWTBearer())]
 )
 async def update(
     code: int,
     data: SupplyLineTypeUpdate,
-    supplylineService: SupplyLineTypeService = Depends(),
+    supplylinetypeService: SupplyLineTypeService = Depends(),
 ):
-    return await supplylineService.update(code=code, data=data)
+    return await supplylinetypeService.update(code=code, data=data)

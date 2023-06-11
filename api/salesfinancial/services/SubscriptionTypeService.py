@@ -1,4 +1,6 @@
 from typing import List
+from api.tools.Helper import Helper
+from fastapi.encoders import jsonable_encoder
 from fastapi import Depends, HTTPException, status
 from api.salesfinancial.models.SubscriptionTypeModel import SubscriptionTypeModel
 from api.salesfinancial.repositories.SubscriptionTypeRepo import SubscriptionTypeRepo
@@ -46,8 +48,7 @@ class SubscriptionTypeService:
             if subscriptiontype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Subscription Type already registered with code "
-                    + str(item.code),
+                    detail=f"Subscription Type already registered with code {item.code}"
                 )
 
             subscriptiontype = self.subscriptiontype.getbyname(name=item.name)
@@ -55,8 +56,7 @@ class SubscriptionTypeService:
             if subscriptiontype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Subscription Type already registered with name "
-                    + item.name,
+                    detail=f"Subscription Type already registered with name {item.name}"
                 )
 
             subscription = CreateSubscriptionType(
@@ -74,37 +74,34 @@ class SubscriptionTypeService:
 
     # update subscription type function
     async def update(self, code: int, data: CreateSubscriptionType) -> SubscriptionTypeModel:
-        subscriptiontype = self.subscriptiontype.getbycode(code=code)
-        if subscriptiontype is None:
+        old_data = jsonable_encoder(self.subscriptiontype.getbycode(code=code))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Subscription Type not found",
             )
+
+        if (hasattr(data.infos, "supply_mode") and data.infos.supply_mode is not None):
+            data.supply_mode_id = SupplyModeRepo.getidbyname(self.subscriptiontype, data.infos.supply_mode)
             
-        subscription = CreateSubscriptionType(
-            code = data.code,
-            name = data.name,
-            infos = data.infos,
-            pricing = data.pricing,
-            dunning = data.dunning,
-            supply_mode_id = SupplyModeRepo.getidbyname(self.subscriptiontype, data.infos.supply_mode),
-            tracking_type_id = TrackingTypeRepo.getidbyname(self.subscriptiontype, data.infos.tracking_type)
-        )
-        typedict = subscription.dict(exclude_unset=True)
-        for key, val in typedict.items():
-            setattr(subscriptiontype, key, val)
-        return self.subscriptiontype.update(subscriptiontype)
+        if (hasattr(data.infos, "tracking_type") and data.infos.tracking_type is not None):
+            data.tracking_type_id = TrackingTypeRepo.getidbyname(self.subscriptiontype, data.infos.tracking_type)
+
+        current_data = jsonable_encoder(self.subscriptiontype.update(code, data=data.dict()))
+        logs = [Helper.build_log(f"/subscriptiontypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return current_data
 
     # delete subscription type %function
-    async def delete(self, subscription: SubscriptionTypeModel) -> None:
-        subscriptiontype = self.subscriptiontype.getbycode(code=code)
-        if subscriptiontype is None:
+    async def delete(self, code: int) -> None:
+        data = self.subscriptiontype.getbycode(code=code)
+        if data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Subscription Type not found",
             )
 
-        self.subscriptiontype.update(subscription)
+        self.subscriptiontype.delete(data)
         return HTTPException(
             status_code=status.HTTP_200_OK,
             detail="Subscription Type deleted",

@@ -1,5 +1,5 @@
 from typing import List
-from api.tools.Helper import build_log
+from api.tools.Helper import Helper
 from fastapi.encoders import jsonable_encoder
 from fastapi import Depends, HTTPException, status
 from api.logs.services.LogService import LogService
@@ -65,20 +65,20 @@ class CityTypeService:
             )
 
         current_data = jsonable_encoder(self.citytype.update(code, data=data.dict()))
-        logs = [build_log(f"/citytypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [Helper.build_log(f"/citytypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return current_data
 
-    # delete city type function
+   # delete city type function
     async def delete(self, code: int) -> None:
-        data = self.citytype.getbycode(code=code)
+        data = self.areatype.getbycode(code=code)
         if data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="City Type not found",
             )
 
-        self.citytype.delete(data)
+        self.areatype.delete(data)
         return HTTPException(
             status_code=status.HTTP_200_OK,
             detail="City Type deleted",

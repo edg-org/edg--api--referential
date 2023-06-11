@@ -1,9 +1,9 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.JWTBearer import JWTBearer, env
 from fastapi import (
     Depends,
-    APIRouter,
     status,
+    APIRouter,
     HTTPException,
 )
 from api.ageographical.services.PrefectureService import PrefectureService
@@ -12,15 +12,14 @@ from api.ageographical.schemas.PrefectureSchema import (
     PrefectureSchema,
     PrefectureUpdate,
     CreatePrefecture,
-    PrefectureItemSchema,
+    PrefectureItemSchema
 )
 
-env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 prefectureRouter = APIRouter(
-    prefix=router_path + "/prefectures",
     tags=["Prefectures"],
+    prefix=router_path + "/prefectures"
 )
 
 # get all prefectures route
@@ -81,6 +80,7 @@ async def get_prefecture_item(
     summary="Creation router a prefecture",
     description="This router allows to create a prefecture",
     response_model=List[CreatePrefecture],
+    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[PrefectureInput],
@@ -94,6 +94,7 @@ async def create(
     summary="Update router a prefecture",
     description="This router allows to update a prefecture",
     response_model=PrefectureSchema,
+    dependencies=[Depends(JWTBearer())]
 )
 async def update(
     code: int,

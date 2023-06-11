@@ -6,8 +6,8 @@ from api.ageographical.schemas.AgencySchema import AgencySchema
 
 #
 class AreaSearchParams(BaseSchema):
-    code: int | None = Field(description="Field of the area code")
-    zipcode: str | None = Field(description="Field of the area zipcode")
+    code: Optional[int] = Field(description="Field of the area code")
+    zipcode: Optional[str] = Field(description="Field of the area zipcode")
 
 #
 class AreaCoordinates(BaseSchema):
@@ -68,9 +68,10 @@ class AreaInput(CreateArea):
         fields_to_hide = {
             "code", 
             "zipcode",
-            "city_type_id",
-            "city_level_id",
-            "prefecture_id"
+            "city_id",
+            "agency_id",
+            "area_type_id",
+            "hierarchical_area_id"
         }
 
 #

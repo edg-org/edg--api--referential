@@ -1,9 +1,9 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.JWTBearer import JWTBearer, env
 from fastapi import (
     Depends,
-    APIRouter,
     status,
+    APIRouter,
     HTTPException,
 )
 from api.salesfinancial.services.TrackingTypeService import TrackingTypeService
@@ -13,12 +13,11 @@ from api.salesfinancial.schemas.TrackingTypeSchema import (
     TrackingTypeSchema,
 )
 
-env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 trackingRouter = APIRouter(
-    prefix=router_path + "/trackingtypes",
     tags=["Tracking Types"],
+    prefix=router_path + "/trackingtypes"
 )
 
 
@@ -27,7 +26,7 @@ trackingRouter = APIRouter(
     "/",
     summary="Getting router for all tracking types",
     description="This router allows to get all tracking types",
-    response_model=List[TrackingTypeSchema],
+    response_model=List[TrackingTypeSchema]
 )
 async def list(
     skip: int = 0,
@@ -62,6 +61,7 @@ async def get(
     summary="Creation router a tracking type",
     description="This router allows to create a tracking type",
     response_model=List[CreateTrackingType],
+    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[CreateTrackingType],
@@ -76,6 +76,7 @@ async def create(
     summary="Update router a tracking type",
     description="This router allows to update a tracking type",
     response_model=TrackingTypeSchema,
+    dependencies=[Depends(JWTBearer())]
 )
 async def update(
     code: int,

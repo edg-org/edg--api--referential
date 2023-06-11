@@ -1,9 +1,9 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.JWTBearer import JWTBearer, env
 from fastapi import (
     Depends,
-    APIRouter,
     status,
+    APIRouter,
     HTTPException,
 )
 from api.ageographical.services.DeliveryPointService import DeliveryPointService
@@ -15,12 +15,11 @@ from api.ageographical.schemas.DeliveryPointSchema import (
     DeliveryPointDetails
 )
 
-env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 deliverypointRouter = APIRouter(
-    prefix=router_path + "/deliverypoints",
-    tags=["Delivery Points"]
+    tags=["Delivery Points"],
+    prefix=router_path + "/deliverypoints"
 )
 
 # get all delivery points route
@@ -81,6 +80,7 @@ async def getdetails(
     summary="Creation router a delivery point",
     description="This router allows to create a delivery point",
     response_model=List[CreateDeliveryPoint],
+    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[DeliveryPointInput],
@@ -94,6 +94,7 @@ async def create(
     summary="Update router a delivery point",
     description="This router allows to update a delivery point",
     response_model=DeliveryPointSchema,
+    dependencies=[Depends(JWTBearer())]
 )
 async def update(
     number: int,

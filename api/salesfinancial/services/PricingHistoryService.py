@@ -39,8 +39,7 @@ class PricingHistoryService:
             if pricinghistory:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Pricing History already registered with code "
-                    + str(item.code),
+                    detail=f"Pricing History already registered with code {item.code}",
                 )
 
             pricinghistory = self.pricinghistory.getbyname(
@@ -49,8 +48,7 @@ class PricingHistoryService:
             if pricinghistory:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Pricing History already registered with name "
-                    + item.name,
+                    detail=f"Pricing History already registered with name {item.name}",
                 )
 
         return self.pricinghistory.create(data=data)

@@ -10,9 +10,7 @@ from api.ageographical.schemas.PrefectureSchema import CreatePrefecture, Prefect
 class PrefectureRepo:
     db: Session
 
-    def __init__(
-        self, db: Session = Depends(get_db)
-    ) -> None:
+    def __init__(self, db: Session = Depends(get_db)) -> None:
         self.db = db
 
     # count total rows of prefecture
@@ -62,9 +60,7 @@ class PrefectureRepo:
         )
 
     # get all prefectures function
-    def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[PrefectureModel]:
+    def list(self, skip: int = 0, limit: int = 100) -> List[PrefectureModel]:
         return (
             self.db.query(PrefectureModel)
             .offset(skip)
@@ -84,23 +80,24 @@ class PrefectureRepo:
     def get(self, number: str) -> PrefectureModel:
         return (
             self.db.query(PrefectureModel)
-            .where(
-                PrefectureModel.prefecture_number == number
-            ).first()
+            .where(PrefectureModel.prefecture_number == number)
+            .first()
         )
 
     # get prefecture code function
     def getbycode(self, code: int) -> PrefectureModel:
         return (
-            self.db.query(PrefectureModel).where(PrefectureModel.code == code).first()
+            self.db.query(PrefectureModel)
+            .where(PrefectureModel.code == code)
+            .first()
         )
 
     # get prefecture name function
     def getbyname(self, name: str) -> PrefectureModel:
         return (
-            self.db.query(PrefectureModel).where(
-                func.lower(func.json_unquote(PrefectureModel.name))== name.lower()
-            ).first()
+            self.db.query(PrefectureModel)
+            .where(func.lower(func.json_unquote(PrefectureModel.name))== name.lower())
+            .first()
         )
 
     # create prefecture function

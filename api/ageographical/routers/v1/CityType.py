@@ -1,9 +1,9 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.JWTBearer import JWTBearer, env
 from fastapi import (
     Depends,
-    APIRouter,
     status,
+    APIRouter,
     HTTPException,
 )
 from api.ageographical.services.CityTypeService import CityTypeService
@@ -14,11 +14,11 @@ from api.ageographical.schemas.CityTypeSchema import (
     CityTypeSchema,
 )
 
-env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 citytypeRouter = APIRouter(
-    prefix=router_path + "/citytypes", tags=["City Types"]
+    tags=["City Types"],
+    prefix=router_path + "/citytypes"
 )
 
 # get all city types route
@@ -59,6 +59,7 @@ async def get(
     summary="Creation router a city type",
     description="This router allows to create a city type",
     response_model=List[CreateCityType],
+    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[CityTypeInput],
@@ -72,6 +73,7 @@ async def create(
     summary="Update router a city type",
     description="This router allows to update a city type",
     response_model=CityTypeSchema,
+    dependencies=[Depends(JWTBearer())]
 )
 async def update(
     code: int,

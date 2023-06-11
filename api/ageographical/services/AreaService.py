@@ -1,4 +1,6 @@
 from typing import List
+from datetime import datetime
+from api.tools.Helper import Helper
 from fastapi.encoders import jsonable_encoder
 from api.logs.repositories.LogRepo import LogRepo
 from fastapi import Depends, HTTPException, status
@@ -7,14 +9,13 @@ from api.ageographical.repositories.AreaRepo import AreaRepo
 from api.ageographical.repositories.CityRepo import CityRepo
 from api.ageographical.repositories.AgencyRepo import AgencyRepo
 from api.ageographical.repositories.AreaTypeRepo import AreaTypeRepo
-from api.tools.Helper import area_basecode, build_log, generate_zipcode, generate_code
 from api.ageographical.schemas.AreaSchema import (
     AreaInput,
     AreaUpdate,
     CreateArea,
 )
 
-
+#
 class AreaService:
     log: LogRepo
     area: AreaRepo
@@ -54,6 +55,8 @@ class AreaService:
         area_type = None
         place_code = None
         step_zipcode = 0
+        no_hirearchical_type = AreaTypeRepo.no_hierarchical_type(self.area)
+    
         for item in data:
             maxcode = 0
             city_id = 0
@@ -61,22 +64,21 @@ class AreaService:
             input_code = 0
             area_type_id = 0
             hierarchical_area_id = None
-            no_hirearchical_areas = ['district', 'secteur', 'village']
             
             if (
                 hasattr(item.infos, "hierarchical_area_code") 
                 and item.infos.hierarchical_area_code is not None
-                and str(item.infos.area_type).lower() not in no_hirearchical_areas
+                and str(item.infos.area_type).lower() not in no_hirearchical_type
             ):
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"The area type must be in {no_hirearchical_areas}"
+                    detail=f"The area type must be in {no_hirearchical_type}"
                 )
                 
             if (
                 hasattr(item.infos, "hierarchical_area_code") 
                 and item.infos.hierarchical_area_code is not None
-                and str(item.infos.area_type).lower() in no_hirearchical_areas
+                and str(item.infos.area_type).lower() in no_hirearchical_type
             ):
                 count = self.area.checkname_by_hierarchy(
                     hierarchical_area_code=item.infos.hierarchical_area_code, 
@@ -92,13 +94,11 @@ class AreaService:
                 zipcode = area.zipcode
                 hierarchical_area_id =  area.id
                 input_code = item.infos.hierarchical_area_code
-                maxcode = self.area.maxcodebyareaandtype(input_code, area_type_id)
+                maxcode = self.area.maxcode_by_areaandtype(input_code, area_type_id)
                 item.infos.city_code = CityRepo.get(self.area, area.city_id).code
                 area_type_id = AreaTypeRepo.getbyname(self.area, item.infos.area_type).id
-            elif (
-                hasattr(item.infos, "city_code") 
-                and item.infos.city_code is not None
-            ):
+            
+            elif (hasattr(item.infos, "city_code") and item.infos.city_code is not None):
                 count = self.area.checkname_by_citycode(
                     city_code=item.infos.city_code, 
                     name=item.infos.name
@@ -124,8 +124,8 @@ class AreaService:
                 step = 0
 
             step += 1
-            result = generate_code(
-                init_codebase=area_basecode(input_code),
+            result = Helper.generate_code(
+                init_codebase=Helper.area_basecode(input_code),
                 maxcode=maxcode,
                 step=step
             )
@@ -140,7 +140,7 @@ class AreaService:
                 
             if item.infos.is_same_zipcode == False:
                 step_zipcode +=1
-                zipcode = generate_zipcode(int(zipcode), step_zipcode)
+                zipcode = Helper.generate_zipcode(int(zipcode), step_zipcode)
 
             agency_id = None
             if (
@@ -160,15 +160,9 @@ class AreaService:
             )
             arealist.append(area)
 
-            if (
-                hasattr(item.infos, "hierarchical_area_code") 
-                and item.infos.hierarchical_area_code is not None
-            ):
+            if (hasattr(item.infos, "hierarchical_area_code") and item.infos.hierarchical_area_code is not None):
                 place_code = item.infos.hierarchical_area_code
-            elif (
-                hasattr(item.infos, "city_code") 
-                and item.infos.city_code is not None
-            ):
+            elif (hasattr(item.infos, "city_code") and item.infos.city_code is not None):
                 place_code = item.infos.city_code
             
             area_type = item.infos.area_type
@@ -183,7 +177,7 @@ class AreaService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Area not found",
             )
-        no_hirearchical_areas = ['district', 'secteur', 'village']
+        no_hirearchical_type = AreaTypeRepo.no_hierarchical_type(self.area)
         
         if (hasattr(data.infos, "agency_code") and data.infos.agency_code is not None):
             data.agency_id = AgencyRepo.getidbycode(self.area, data.infos.agency_code)
@@ -198,16 +192,16 @@ class AreaService:
             
         if (hasattr(data.infos, "hierarchical_area_code") 
             and data.infos.hierarchical_area_code is not None
-            and str(area_type).lower() not in no_hirearchical_areas
+            and str(area_type).lower() not in no_hirearchical_type
         ):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"The area type must be in {no_hirearchical_areas}"
+                detail=f"The area type must be in {no_hirearchical_type}"
             )
         
         if (hasattr(data.infos, "hierarchical_area_code") 
             and data.infos.hierarchical_area_code is not None
-            and str(area_type).lower() in no_hirearchical_areas
+            and str(area_type).lower() in no_hirearchical_type
         ):
             hierachical_area = self.area.getbycode(code=data.infos.hierarchical_area_code)
             hierarchical_area_id = hierachical_area.id
@@ -224,24 +218,33 @@ class AreaService:
                 else:
                     step_zipcode +=1
                     maxzipcode = AreaRepo.maxzipcodebycity(city_id=city_id).zipcode
-                    data.zipcode = generate_zipcode(maxzipcode, step_zipcode)
+                    data.zipcode = Helper.generate_zipcode(maxzipcode, step_zipcode)
         
-        current_data = jsonable_encoder(self.areatype.update(code=code, data=data.dict()))
-        logs = [build_log(f"/areatypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        current_data = jsonable_encoder(self.area.update(code=code, data=data.dict()))
+        logs = [Helper.build_log(f"/areas/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return current_data
 
-    # delete area function
-    async def delete(self, code: int) -> None:
-        data = self.area.getbycode(code=code)
-        if data is None:
+    # activate or desactivate agency function
+    async def activate_desactivate(self, code: int, flag: bool) -> None:
+        old_data = jsonable_encoder(self.area.getbycode(code=code))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Area not found"
+                detail="Agency not found"
             )
-
-        self.area.delete(data)
-        return HTTPException(
-            status_code=status.HTTP_200_OK,
-            detail="Area deleted"
+        message = "Agency desactivated"
+        deleted_at = datetime.utcnow().isoformat()
+        
+        if flag == True:
+            deleted_at = None
+            message = "Agency activated"
+        
+        data = dict(
+            is_activated = flag,
+            deleted_at = deleted_at
         )
+        current_data = jsonable_encoder(self.area.update(code=code, data=data))
+        logs = [Helper.build_log(f"/areas/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return HTTPException(status_code=status.HTTP_200_OK, detail=message)

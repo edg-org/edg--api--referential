@@ -1,9 +1,9 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.JWTBearer import JWTBearer, env
 from fastapi import (
     Depends,
-    APIRouter,
     status,
+    APIRouter,
     HTTPException,
 )
 from api.electrical.services.MeterDeliveryPointService import MeterDeliveryPointService
@@ -13,12 +13,11 @@ from api.electrical.schemas.MeterDeliveryPointSchema import (
     MeterDeliveryPointSchema
 )
 
-env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 meterdeliveryRouter = APIRouter(
-    prefix=router_path + "/meterdeliverypoints",
     tags=["Meter Delivery Points"],
+    prefix=router_path + "/meterdeliverypoints"
 )
 
 
@@ -46,7 +45,7 @@ async def list(
 )
 async def get(
     id: int,
-    meterdeliveryService: MeterDeliveryPointService = Depends(),
+    meterdeliveryService: MeterDeliveryPointService = Depends()
 ):
     supply = await meterdeliveryService.get(id=id)
     if supply is None:
@@ -63,9 +62,10 @@ async def get(
     summary="Creation router a meter delivery point",
     description="This router allows to create a meter delivery point",
     response_model=List[CreateMeterDeliveryPoint],
+    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[MeterDeliveryPointInput],
-    meterdeliveryService: MeterDeliveryPointService = Depends(),
+    meterdeliveryService: MeterDeliveryPointService = Depends()
 ):
     return await meterdeliveryService.create(data=data)

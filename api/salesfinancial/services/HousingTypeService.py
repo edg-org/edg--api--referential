@@ -1,5 +1,6 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.Helper import Helper
+from fastapi.encoders import jsonable_encoder
 from fastapi import Depends, HTTPException, status
 from api.salesfinancial.models.HousingTypeModel import HousingTypeModel
 from api.salesfinancial.repositories.HousingTypeRepo import HousingTypeRepo
@@ -38,55 +39,42 @@ class HousingTypeService:
             if housingtype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Housing Type already registered with code "
-                    + str(item.code),
+                    detail=f"Housing Type already registered with code {item.code}",
                 )
 
             housingtype = self.housingtype.getbyname(name=item.name)
             if housingtype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Housing Type already registered with name "
-                    + item.name,
+                    detail=f"Housing Type already registered with name {item.name}",
                 )
 
         return self.housingtype.create(data=data)
 
     # update housing type function
     async def update(self, code: int, data: HousingTypeUpdate) -> HousingTypeModel:
-        housingtype_count = self.housingtype.countbycode(code=code)
-        if housingtype_count is None:
+        old_data = jsonable_encoder(self.housingtype.getbycode(code=code))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Housing Type not found",
             )
-        housing_old = self.housingtype.getbycode(code=code)
-        housing_update = housing_old
-        housingtype = data.dict(exclude_unset=True)
-        for key, value in housingtype.items():
-            setattr(housing_update, key, value)
-            
-        #logs = add_log(
-        #    microservice_name="referential",
-        #    endpoint="/housingtype/{code}",
-        #    verb="PUT",
-        #    user_email="ousou.diakite@gmail.com",
-        #    previous_metadata=housing_old.__dict__,
-        #    current_metadata=housing_update.dict()
-        #)
-        #print(logs)
-        return self.housingtype.update(housing_update)
+
+        current_data = jsonable_encoder(self.housingtype.update(code, data=data.dict()))
+        logs = [Helper.build_log(f"/housingtypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return current_data
 
     # delete housing type %function
     async def delete(self, code: int) -> None:
-        housingtype = self.housingtype.getbycode(code=code)
-        if housingtype is None:
+        data = self.housingtype.getbycode(code=code)
+        if data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Housing Type not found",
             )
 
-        self.housingtype.update(housingtype)
+        self.housingtype.delete(data)
         return HTTPException(
             status_code=status.HTTP_200_OK,
             detail="Housing Type deleted",

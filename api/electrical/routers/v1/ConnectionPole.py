@@ -1,9 +1,9 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.JWTBearer import JWTBearer, env
 from fastapi import (
     Depends,
-    APIRouter,
     status,
+    APIRouter,
     HTTPException,
 )
 from api.electrical.services.ConnectionPoleService import ConnectionPoleService
@@ -15,12 +15,11 @@ from api.electrical.schemas.ConnectionPoleSchema import (
     ConnectionPoleItemSchema
 )
 
-env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 poleRouter = APIRouter(
-    prefix=router_path + "/connectionpoles",
     tags=["Connection Poles"],
+    prefix=router_path + "/connectionpoles"
 )
 
 # get all connection poles route
@@ -85,6 +84,7 @@ async def get_tranformer_item(
     summary="Creation router a connection pole",
     description="This router allows to create a connection pole",
     response_model=List[CreateConnectionPole],
+    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[ConnectionPoleInput],
@@ -98,6 +98,7 @@ async def create(
     summary="Update router a connection pole",
     description="This router allows to update a connection pole",
     response_model=ConnectionPoleSchema,
+    dependencies=[Depends(JWTBearer())]
 )
 async def update(
     number: int,

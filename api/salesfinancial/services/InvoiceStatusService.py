@@ -1,4 +1,6 @@
 from typing import List
+from api.tools.Helper import Helper
+from fastapi.encoders import jsonable_encoder
 from fastapi import Depends, HTTPException, status
 from api.salesfinancial.models.InvoiceStatusModel import InvoiceStatusModel
 from api.salesfinancial.repositories.InvoiceStatusRepo import InvoiceStatusRepo
@@ -41,44 +43,42 @@ class InvoiceStatusService:
             if invoicestatus:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Invoice Status already registered with code "
-                    + str(item.code),
+                    detail=f"Invoice Status already registered with code {item.code}"
                 )
 
             invoicestatus = self.invoicestatus.getbyname(name=item.name)
             if invoicestatus:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Invoice Status already registered with name "
-                    + item.name,
+                    detail=f"Invoice Status already registered with name {item.name}"
                 )
 
         return self.invoicestatus.create(data=data)
 
     # update invoice status function
     async def update(self, code: int, data: CreateInvoiceStatus) -> InvoiceStatusModel:
-        invoicestatus = self.invoicestatus.getbycode(code=code)
-        if invoicestatus is None:
+        old_data = jsonable_encoder(self.invoicestatus.getbycode(code=code))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Invoice Status not found",
             )
 
-        statusdict = data.dict(exclude_unset=True)
-        for key, val in statusdict.items():
-            setattr(invoicestatus, key, val)
-        return self.invoicestatus.update(invoicestatus)
+        current_data = jsonable_encoder(self.invoicestatus.update(code, data=data.dict()))
+        logs = [Helper.build_log(f"/invoicestatus/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return current_data
 
     # delete invoice status %function
-    async def delete(self, invoice: InvoiceStatusModel) -> None:
-        invoicestatus = self.invoicestatus.getbycode(code=code)
-        if invoicestatus is None:
+    async def delete(self, code: int) -> None:
+        data = self.invoicestatus.getbycode(code=code)
+        if data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Invoice Status not found",
             )
 
-        self.invoicestatus.update(invoice)
+        self.invoicestatus.delete(data)
         return HTTPException(
             status_code=status.HTTP_200_OK,
             detail="Invoice Status deleted",

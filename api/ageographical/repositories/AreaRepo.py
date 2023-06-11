@@ -2,7 +2,7 @@ from typing import List
 from sqlalchemy.orm import Session
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from sqlalchemy import insert, func, and_
+from sqlalchemy import insert, update, func, and_, or_
 from api.ageographical.models.AreaModel import AreaModel
 from api.ageographical.schemas.AreaSchema import CreateArea
 
@@ -10,9 +10,7 @@ from api.ageographical.schemas.AreaSchema import CreateArea
 class AreaRepo:
     db: Session
 
-    def __init__(
-        self, db: Session = Depends(get_db)
-    ) -> None:
+    def __init__(self, db: Session = Depends(get_db)) -> None:
         self.db = db
 
     # get max code of area by city and area type
@@ -39,19 +37,26 @@ class AreaRepo:
         return 0 if codemax is None else codemax
     
     # get max code of area by hierarchical area and type
-    def maxcodebyareaandtype(self, hierarchical_area_code: int, area_type_id: int) -> int:
+    def maxcode_by_areaandtype(self, hierarchical_area_code: int, area_type_id: int) -> int:
         codemax = (
             self.db.query(func.max(AreaModel.code))
-            .where(AreaModel.infos["hierarchical_area_code"] == hierarchical_area_code)
+            .where(
+                and_(
+                    AreaModel.area_type_id == area_type_id,
+                    AreaModel.infos["hierarchical_area_code"] == hierarchical_area_code
+                )
+            )
             .one()[0]
         )
         return 0 if codemax is None else codemax
 
     # count total rows of area by name
     def countbyname(self, name: str) -> int:
-        return self.db.query(AreaModel).where(
-            func.lower(func.json_unquote(AreaModel.infos["name"])) == name.lower()
-        ).count()
+        return (
+            self.db.query(AreaModel)
+            .where(func.lower(func.json_unquote(AreaModel.infos["name"])) == name.lower())
+            .count()
+        )
     
     # check area name by city function
     def checkname_by_citycode(self, city_code: int, name: str) -> int:
@@ -109,11 +114,7 @@ class AreaRepo:
         )
 
     # get all areas function
-    def list(
-        self, 
-        skip: int = 0, 
-        limit: int = 100
-    ) -> List[AreaModel]:
+    def list(self, skip: int = 0, limit: int = 100) -> List[AreaModel]:
         return (
             self.db.query(AreaModel)
             .offset(skip)
@@ -143,20 +144,16 @@ class AreaRepo:
     def getbycode(self, code: int) -> AreaModel:
         return (
             self.db.query(AreaModel)
-            .where(
-                AreaModel.code == code
-            ).first()
+            .where(AreaModel.code == code)
+            .first()
         )
 
     # get area name function
     def getbyname(self, name: str) -> AreaModel:
         return (
             self.db.query(AreaModel)
-            .where(
-                func.lower(
-                    func.json_unquote(AreaModel.infos["name"])
-                ) == name.lower()
-            ).first()
+            .where(func.lower(func.json_unquote(AreaModel.infos["name"])) == name.lower())
+            .first()
         )
 
     # create area function
@@ -169,11 +166,14 @@ class AreaRepo:
         return data
 
     # update area function
-    def update(self, data: CreateArea) -> AreaModel:
-        self.db.merge(data)
+    def update(self, code: int, data: dict) -> AreaModel:
+        self.db.execute(
+            update(AreaModel)
+            .where(AreaModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete area function
     def delete(self, area: AreaModel) -> None:

@@ -1,7 +1,9 @@
 from typing import List
+from datetime import datetime
+from api.tools.Helper import Helper
+from fastapi.encoders import jsonable_encoder
 from api.logs.repositories.LogRepo import LogRepo
 from fastapi import Depends, HTTPException, status
-from api.tools.Helper import agency_basecode, generate_code
 from api.ageographical.repositories.CityRepo import CityRepo
 from api.ageographical.models.AgencyModel import AgencyModel
 from api.ageographical.repositories.AgencyRepo import AgencyRepo
@@ -58,8 +60,8 @@ class AgencyService:
                 )
 
             step += 10
-            result = generate_code(
-                init_codebase=agency_basecode(item.infos.city_code),
+            result = Helper.generate_code(
+                init_codebase=Helper.agency_basecode(item.infos.city_code),
                 maxcode=self.agency.maxcodebycity(item.infos.city_code),
                 step=step
             )
@@ -84,34 +86,42 @@ class AgencyService:
 
     # update agency function
     async def update(self, code: int, data: AgencyUpdate) -> AgencyModel:
-        count = self.agency.countbycode(code=code)
-        if count == 0:
+        old_data = jsonable_encoder(self.agency.getbycode(code=code))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Agency not found",
             )
 
-        agency = CreateAgency(
-            code = code,
-            city_id = CityRepo.getidbycode(self.agency, data.infos.city_code),
-            infos = data.infos
-        )
-        agencydict = agency.dict(exclude_unset=True)
-        for key, val in agencydict.items():
-            setattr(agency, key, val)
-        return self.agency.update(agency)
+        if (hasattr(data.infos, "city_id") and data.infos.city_id is None):
+            data.city_id = CityRepo.getidbycode(self.agency, data.infos.city_code)
+            
+        current_data = jsonable_encoder(self.agency.update(code=code, data=data.dict()))
+        logs = [Helper.build_log(f"/agencies/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return current_data
 
-    # delete agency function
-    async def delete(self, code: int) -> None:
-        data = self.agency.getbycode(code=code)
-        if data is None:
+        
+    # activate or desactivate agency function
+    async def activate_desactivate(self, code: int, flag: bool) -> None:
+        old_data = jsonable_encoder(self.agency.getbycode(code=code))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Agency not found",
+                detail="Agency not found"
             )
-
-        self.agency.delete(data)
-        return HTTPException(
-            status_code=status.HTTP_200_OK,
-            detail="Agency deleted"
+        message = "Agency desactivated"
+        deleted_at = datetime.utcnow().isoformat()
+        
+        if flag == True:
+            deleted_at = None
+            message = "Agency activated"
+        
+        data = dict(
+            is_activated = flag,
+            deleted_at = deleted_at
         )
+        current_data = jsonable_encoder(self.agency.update(code=code, data=data))
+        logs = [Helper.build_log(f"/agencies/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return HTTPException(status_code=status.HTTP_200_OK, detail=message)

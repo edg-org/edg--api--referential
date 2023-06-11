@@ -1,6 +1,6 @@
 from typing import List
 from datetime import datetime
-from api.tools.Helper import build_log
+from api.tools.Helper import Helper
 from fastapi.encoders import jsonable_encoder
 from api.logs.repositories.LogRepo import LogRepo
 from fastapi import Depends, HTTPException, status
@@ -11,7 +11,7 @@ from api.electrical.repositories.ElectricMeterRepo import ElectricMeterRepo
 from api.electrical.schemas.ElectricMeterSchema import (
     ElectricMeterInput,
     ElectricMeterUpdate,
-    CreateElectricMeter,
+    CreateElectricMeter
 )
 
 #
@@ -51,8 +51,7 @@ class ElectricMeterService:
             if count > 0:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Electric Meter already registered with number " +
-                    str(item.meter_number),
+                    detail=f"Electric Meter already registered with number {item.meter_number}"
                 )
 
             meter = CreateElectricMeter(
@@ -81,7 +80,7 @@ class ElectricMeterService:
             data.power_mode_id = SupplyModeRepo.getbyname(self.meter, data.infos.power_mode).id
             
         current_data = jsonable_encoder(self.meter.update(number=number, data=data.dict()))
-        logs = [build_log(f"/meters/{number}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [Helper.build_log(f"/meters/{number}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return current_data
     
@@ -101,24 +100,24 @@ class ElectricMeterService:
             message = "Electric Meter activated"
         
         data = dict(
-            is_activated=flag,
+            is_activated = flag,
             deleted_at = deleted_at
         )
         current_data = jsonable_encoder(self.meter.update(number=number, data=data))
-        logs = [build_log(f"/meters/{number}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [Helper.build_log(f"/meters/{number}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return HTTPException(status_code=status.HTTP_200_OK, detail=message)
 
     # delete electric meter function
-    async def delete(self, meter: ElectricMeterModel) -> None:
-        meter = self.meter.get(id=id)
-        if meter is None:
+    async def delete(self, number: str) -> None:
+        data = self.meter.getbynumber(number=number)
+        if data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Electric Meter not found",
             )
 
-        self.meter.update(meter)
+        self.meter.delete(data)
         return HTTPException(
             status_code=status.HTTP_200_OK,
             detail="Electric Meter deleted",

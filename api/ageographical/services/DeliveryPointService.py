@@ -1,4 +1,6 @@
 from typing import List
+from datetime import datetime
+from api.tools.Helper import Helper
 from fastapi.encoders import jsonable_encoder
 from fastapi import Depends, HTTPException, status
 from api.logs.services.LogService import LogService
@@ -8,7 +10,6 @@ from api.ageographical.services.CityService import CityService
 from api.electrical.services.TransformerService import TransformerService
 from api.ageographical.services.PrefectureService import PrefectureService
 from api.ageographical.models.DeliveryPointModel import DeliveryPointModel
-from api.tools.Helper import build_log, deliverypoint_basecode, generate_code
 from api.electrical.repositories.ConnectionPoleRepo import ConnectionPoleRepo
 from api.electrical.services.ConnectionPoleService import ConnectionPoleService
 from api.ageographical.repositories.DeliveryPointRepo import DeliveryPointRepo
@@ -105,8 +106,8 @@ class DeliveryPointService:
                     detail="You should only have the list of agencies for one city or at a time"
                 )
 
-            result = generate_code(
-                init_codebase=deliverypoint_basecode(item.infos.area_code),
+            result = Helper.generate_code(
+                init_codebase=Helper.deliverypoint_basecode(item.infos.area_code),
                 maxcode=self.deliverypoint.maxnumberyarea(item.infos.area_code),
                 step=item.infos.number
             )
@@ -123,7 +124,7 @@ class DeliveryPointService:
             deliverypoint = CreateDeliveryPoint(
                 delivery_point_number = delivery_point_number,
                 area_id = AreaRepo.getidbycode(self.deliverypoint, item.infos.area_code),
-                connection_point_id = ConnectionPoleRepo.getbynumber(self.deliverypoint, item.infos.connection_point_number).id,
+                pole_id = ConnectionPoleRepo.getbynumber(self.deliverypoint, item.infos.pole_number).id,
                 infos = item.infos
             )
             
@@ -141,22 +142,37 @@ class DeliveryPointService:
                 detail="Delivery Point not found",
             )
 
+        if (hasattr(data.infos, "area_code") and data.infos.area_code is not None):
+            data.area_id = AreaRepo.getidbycode(self.deliverypoint, data.infos.area_code)
+            
+        if (hasattr(data.infos, "pole_number") and data.infos.pole_number is not None):
+            data.pole_id = ConnectionPoleRepo.getbynumber(self.deliverypoint, data.infos.pole_number).id
+             
         current_data = jsonable_encoder(self.deliverypoint.update(number, data=data.dict()))
-        logs = [build_log(f"/deliverypoints/{number}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [Helper.build_log(f"/deliverypoints/{number}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return current_data
 
-    # delete delivery point function
-    async def delete(self, deliverypoint: DeliveryPointModel) -> None:
-        deliverypoint = self.deliverypoint.get(id=id)
-        if deliverypoint is None:
+    # activate or desactivate agency function
+    async def activate_desactivate(self, code: int, flag: bool) -> None:
+        old_data = jsonable_encoder(self.area.getbycode(code=code))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Delivery Point not found",
+                detail="Delivery Point not found"
             )
-
-        self.deliverypoint.update(deliverypoint)
-        return HTTPException(
-            status_code=status.HTTP_200_OK,
-            detail="Delivery Point deleted",
+        message = "Delivery Point desactivated"
+        deleted_at = datetime.utcnow().isoformat()
+        
+        if flag == True:
+            deleted_at = None
+            message = "Delivery Point activated"
+        
+        data = dict(
+            is_activated = flag,
+            deleted_at = deleted_at
         )
+        current_data = jsonable_encoder(self.area.update(code=code, data=data))
+        logs = [Helper.build_log(f"/deliverypoints/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return HTTPException(status_code=status.HTTP_200_OK, detail=message)

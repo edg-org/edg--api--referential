@@ -26,8 +26,7 @@ class CreateCityType(CityTypeSchema):
 
 #
 class CityTypeInput(CreateCityType):
-    class Config:
-        fields_to_hide = {"code"}
+    pass
 
 #
 class CityTypeUpdate(CityTypeInput):

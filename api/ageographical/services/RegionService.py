@@ -1,12 +1,12 @@
 from typing import List
 from datetime import datetime
+from api.tools.Helper import Helper
 from fastapi.encoders import jsonable_encoder
 from fastapi import Depends, HTTPException, status
 from api.logs.services.LogService import LogService
 from api.ageographical.models.RegionModel import RegionModel
 from api.ageographical.repositories.RegionRepo import RegionRepo
 from api.ageographical.repositories.NaturalZoneRepo import ZoneRepo
-from api.tools.Helper import region_basecode, generate_code, build_log
 from api.ageographical.schemas.RegionSchema import (
     RegionInput,
     RegionUpdate,
@@ -53,7 +53,7 @@ class RegionService:
             if region:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Administrative Region already registered with name {item.name}",
+                    detail=f"Administrative Region already registered with name {item.name}"
                 )
 
             if (zone_name is not None) and  (zone_name != item.infos.natural_zone):
@@ -64,8 +64,8 @@ class RegionService:
 
             step += 1
             natural_zone = ZoneRepo.getbyname(self.region, item.infos.natural_zone)
-            result = generate_code(
-                init_codebase=region_basecode(natural_zone.code),
+            result = Helper.Helper.generate_code(
+                init_codebase=Helper.region_basecode(natural_zone.code),
                 maxcode=self.region.maxcodebyzone(item.infos.natural_zone),
                 step=step
             )
@@ -75,7 +75,7 @@ class RegionService:
             if region:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Administrative Region already registered with code {region_code}",
+                    detail=f"Administrative Region already registered with code {region_code}"
                 )
 
             region = CreateRegion(
@@ -95,21 +95,21 @@ class RegionService:
         if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Administrative Region not found",
+                detail="Administrative Region not found"
             )
 
         current_data = jsonable_encoder(self.region.update(code, data=data.dict()))
-        logs = [build_log(f"/regions/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [Helper.build_log(f"/regions/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return current_data
 
     # activate or desactivate region function
     async def activate_desactivate(self, code: int, flag: bool) -> None:
-        old_data = self.region.getbycode(code=code)
+        old_data = jsonable_encoder(self.region.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Administrative Region not found",
+                detail="Administrative Region not found"
             )
         message = "Administrative Region desactivated"
         deleted_at = datetime.utcnow().isoformat()
@@ -123,6 +123,6 @@ class RegionService:
             deleted_at = deleted_at
         )
         current_data = jsonable_encoder(self.region.update(code=code, data=data))
-        logs = [build_log(f"/regions/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [Helper.build_log(f"/regions/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return HTTPException(status_code=status.HTTP_200_OK, detail=message)

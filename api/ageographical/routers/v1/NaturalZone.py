@@ -1,9 +1,9 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.JWTBearer import JWTBearer, env
 from fastapi import (
     Depends,
-    APIRouter,
     status,
+    APIRouter,
     HTTPException,
 )
 from api.ageographical.services.NaturalZoneService import ZoneService
@@ -15,12 +15,11 @@ from api.ageographical.schemas.NaturalZoneSchema import (
     ZoneItemSchema,
 )
 
-env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 zoneRouter = APIRouter(
-    prefix=router_path + "/naturalregions",
     tags=["Natural Regions"],
+    prefix=router_path + "/naturalregions"
 )
 
 # post natural region route
@@ -29,10 +28,11 @@ zoneRouter = APIRouter(
     summary="Creation router a natural region",
     description="This router allows to create a natural region",
     response_model=List[CreateZone],
+    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[ZoneInput],
-    zoneService: ZoneService = Depends(),
+    zoneService: ZoneService = Depends()
 ):
     return await zoneService.create(data=data)
 
@@ -94,6 +94,7 @@ async def get_zone_item(
     summary="Update router a natural region",
     description="This router allows to update a natural region",
     response_model=ZoneSchema,
+    dependencies=[Depends(JWTBearer())]
 )
 async def update(
     code: int,

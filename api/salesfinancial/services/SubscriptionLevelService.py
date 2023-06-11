@@ -1,4 +1,6 @@
 from typing import List
+from api.tools.Helper import Helper
+from fastapi.encoders import jsonable_encoder
 from fastapi import Depends, HTTPException, status
 from api.salesfinancial.models.SubscriptionLevelModel import SubscriptionLevelModel
 from api.salesfinancial.schemas.SubscriptionLevelSchema import CreateSubscriptionLevel
@@ -39,44 +41,42 @@ class SubscriptionLevelService:
             if invoicelevel:
                 raise HTTPException(
                     level_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Subscription Level already registered with code "
-                    + str(item.code),
+                    detail=f"Subscription Level already registered with code {item.code}"
                 )
 
             invoicelevel = self.invoicelevel.getbyname(name=item.name)
             if invoicelevel:
                 raise HTTPException(
                     level_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Subscription Level already registered with name "
-                    + item.name,
+                    detail=f"Subscription Level already registered with name {item.name}"
                 )
 
         return self.invoicelevel.create(data=data)
 
     # update invoice level function
     async def update(self, code: int, data: CreateSubscriptionLevel) -> SubscriptionLevelModel:
-        invoicelevel = self.invoicelevel.getbycode(code=code)
-        if invoicelevel is None:
+        old_data = jsonable_encoder(self.subscriptionstatus.getbycode(code=code))
+        if old_data is None:
             raise HTTPException(
-                level_code=status.HTTP_404_NOT_FOUND,
-                detail="Subscription Level not found",
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Subscription Status not found",
             )
 
-        leveldict = data.dict(exclude_unset=True)
-        for key, val in leveldict.items():
-            setattr(invoicelevel, key, val)
-        return self.invoicelevel.update(invoicelevel)
+        current_data = jsonable_encoder(self.subscriptionstatus.update(code, data=data.dict()))
+        logs = [Helper.build_log(f"/subscriptionstatus/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return current_data
 
     # delete invoice level %function
-    async def delete(self, invoice: SubscriptionLevelModel) -> None:
-        invoicelevel = self.invoicelevel.getbycode(code=code)
-        if invoicelevel is None:
+    async def delete(self, code: int) -> None:
+        data = self.invoicelevel.getbycode(code=code)
+        if data is None:
             raise HTTPException(
                 level_code=status.HTTP_404_NOT_FOUND,
                 detail="Subscription Level not found",
             )
 
-        self.invoicelevel.update(invoice)
+        self.invoicelevel.delete(data)
         return HTTPException(
             level_code=status.HTTP_200_OK,
             detail="Subscription Level deleted",

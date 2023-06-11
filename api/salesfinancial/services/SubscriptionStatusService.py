@@ -1,4 +1,6 @@
 from typing import List
+from api.tools.Helper import Helper
+from fastapi.encoders import jsonable_encoder
 from fastapi import Depends, HTTPException, status
 from api.salesfinancial.models.SubscriptionStatusModel import SubscriptionStatusModel
 from api.salesfinancial.schemas.SubscriptionStatusSchema import CreateSubscriptionStatus
@@ -40,8 +42,7 @@ class SubscriptionStatusService:
             if subscriptionstatus:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Subscription Status already registered with code "
-                    + str(item.code),
+                    detail=f"Subscription Status already registered with code {item.code}"
                 )
 
             subscriptionstatus = self.subscriptionstatus.getbyname(name=item.name)
@@ -49,37 +50,36 @@ class SubscriptionStatusService:
             if subscriptionstatus:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Subscription Status already registered with name "
-                    + item.name,
+                    detail=f"Subscription Status already registered with name {item.name}"
                 )
 
         return self.subscriptionstatus.create(data=data)
 
     # update subscription status function
     async def update(self, code: int, data: CreateSubscriptionStatus) -> SubscriptionStatusModel:
-        subscriptionstatus = self.subscriptionstatus.getbycode(code=code)
-        if subscriptionstatus is None:
+        old_data = jsonable_encoder(self.subscriptionstatus.getbycode(code=code))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Subscription Status not found",
+                detail="Subscription Status not found"
             )
 
-        statusdict = data.dict(exclude_unset=True)
-        for key, val in statusdict.items():
-            setattr(subscriptionstatus, key, val)
-        return self.subscriptionstatus.update(subscriptionstatus)
+        current_data = jsonable_encoder(self.subscriptionstatus.update(code, data=data.dict()))
+        logs = [Helper.build_log(f"/subscriptionstatus/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return current_data
 
     # delete subscription status %function
-    async def delete(self, subscription: SubscriptionStatusModel) -> None:
-        subscriptionstatus = self.subscriptionstatus.getbycode(code=code)
-        if subscriptionstatus is None:
+    async def delete(self, code: int) -> None:
+        data = self.subscriptionstatus.getbycode(code=code)
+        if data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Subscription Status not found",
+                detail="Subscription Status not found"
             )
 
-        self.subscriptionstatus.update(subscription)
+        self.subscriptionstatus.delete(data)
         return HTTPException(
             status_code=status.HTTP_200_OK,
-            detail="Subscription Status deleted",
+            detail="Subscription Status deleted"
         )

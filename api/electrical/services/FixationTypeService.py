@@ -1,5 +1,5 @@
 from typing import List
-from api.tools.Helper import build_log
+from api.tools.Helper import Helper
 from fastapi.encoders import jsonable_encoder
 from api.logs.repositories.LogRepo import LogRepo
 from fastapi import Depends, HTTPException, status
@@ -48,14 +48,14 @@ class FixationTypeService:
             if fixationtype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Fixation Type already registered with code " + str(item.code),
+                    detail=f"Fixation Type already registered with code {item.code}"
                 )
 
             fixationtype = self.fixationtype.getbyname(name=item.name)
             if fixationtype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Fixation Type already registered with name " + item.name,
+                    detail=f"Fixation Type already registered with name {item.name}"
                 )
         return self.fixationtype.create(data=data)
 
@@ -69,7 +69,7 @@ class FixationTypeService:
             )
 
         current_data = jsonable_encoder(self.fixationtype.update(code=code, data=data.dict()))
-        logs = [build_log(f"/fixationtypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [Helper.build_log(f"/fixationtypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return current_data
 

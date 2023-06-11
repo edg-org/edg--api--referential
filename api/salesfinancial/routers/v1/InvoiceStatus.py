@@ -1,10 +1,10 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.JWTBearer import JWTBearer, env
 from api.salesfinancial.services.InvoiceStatusService import InvoiceStatusService
 from fastapi import (
     Depends,
-    APIRouter,
     status,
+    APIRouter,
     HTTPException,
 )
 from api.salesfinancial.schemas.InvoiceStatusSchema import (
@@ -13,12 +13,11 @@ from api.salesfinancial.schemas.InvoiceStatusSchema import (
     InvoiceStatusSchema
 )
 
-env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 invoicestatusRouter = APIRouter(
-    prefix=router_path + "/invoicestatus",
     tags=["Invoice Status"],
+    prefix=router_path + "/invoicestatus"
 )
 
 
@@ -63,10 +62,11 @@ async def get(
     summary="Creation router a invoice status",
     description="This router allows to create a invoice status",
     response_model=List[CreateInvoiceStatus],
+    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[CreateInvoiceStatus],
-    statusService: InvoiceStatusService = Depends(),
+    statusService: InvoiceStatusService = Depends()
 ):
     return await statusService.create(data=data)
 
@@ -77,10 +77,11 @@ async def create(
     summary="Update router a invoice status",
     description="This router allows to update a invoice status",
     response_model=InvoiceStatusSchema,
+    dependencies=[Depends(JWTBearer())]
 )
 async def update(
     code: int,
     data: InvoiceStatusUpdate,
-    statusService: InvoiceStatusService = Depends(),
+    statusService: InvoiceStatusService = Depends()
 ):
     return await statusService.update(code=code, data=data)

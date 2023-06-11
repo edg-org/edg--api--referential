@@ -2,7 +2,7 @@ from typing import List
 from sqlalchemy.orm import Session
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from sqlalchemy import insert, func, and_, or_, Unicode, update
+from sqlalchemy import insert, func, and_, update
 from api.ageographical.models.CityModel import CityModel
 from api.ageographical.schemas.CitySchema import CreateCity, CityUpdate, CitySearchParams
 
@@ -10,9 +10,7 @@ from api.ageographical.schemas.CitySchema import CreateCity, CityUpdate, CitySea
 class CityRepo:
     db: Session
 
-    def __init__(
-        self, db: Session = Depends(get_db)
-    ) -> None:
+    def __init__(self, db: Session = Depends(get_db)) -> None:
         self.db = db
 
     # get max code of city by prefecture
@@ -78,9 +76,7 @@ class CityRepo:
         )
 
     # get all cities function
-    def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[CityModel]:
+    def list(self, skip: int = 0, limit: int = 100) -> List[CityModel]:
         return (
             self.db.query(CityModel)
             .offset(skip)
@@ -108,9 +104,8 @@ class CityRepo:
     def getbyname(self, name: str) -> CityModel:
         return (
             self.db.query(CityModel)
-            .where(
-                func.lower(func.json_unquote(CityModel.infos["name"])) == name.lower()
-            ).all()
+            .where(func.lower(func.json_unquote(CityModel.infos["name"])) == name.lower())
+            .all()
         )
     
     # check city name in the prefecture function

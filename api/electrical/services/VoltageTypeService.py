@@ -1,5 +1,5 @@
 from typing import List
-from api.tools.Helper import build_log
+from api.tools.Helper import Helper
 from fastapi.encoders import jsonable_encoder
 from fastapi import Depends, HTTPException, status
 from api.logs.services.LogService import LogService
@@ -76,7 +76,7 @@ class VoltageTypeService:
             )
         
         current_data = jsonable_encoder(self.voltagetype.update(code=code, data=data.dict()))
-        logs = [build_log(f"/voltagetypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [Helper.build_log(f"/voltagetypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return current_data
     

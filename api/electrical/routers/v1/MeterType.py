@@ -1,9 +1,9 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.JWTBearer import JWTBearer, env
 from fastapi import (
     Depends,
-    APIRouter,
     status,
+    APIRouter,
     HTTPException,
 )
 from api.electrical.services.MeterTypeService import MeterTypeService
@@ -14,11 +14,11 @@ from api.electrical.schemas.MeterTypeSchema import (
     MeterTypeSchema
 )
 
-env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 metertypeRouter = APIRouter(
-    prefix=router_path + "/metertypes", tags=["Meter Types"]
+    tags=["Meter Types"],
+    prefix=router_path + "/metertypes"
 )
 
 
@@ -32,9 +32,9 @@ metertypeRouter = APIRouter(
 async def list(
     skip: int = 0,
     limit: int = 100,
-    typeService: MeterTypeService = Depends(),
+    metertypeService: MeterTypeService = Depends(),
 ):
-    return await typeService.list(skip, limit)
+    return await metertypeService.list(skip, limit)
 
 
 # get meter type route
@@ -42,12 +42,13 @@ async def list(
     "/{code}",
     summary="Getting router a meter type without items",
     description="This router allows to get a meter type without items",
-    response_model=MeterTypeSchema,
+    response_model=MeterTypeSchema
 )
 async def get(
-    code: int, typeService: MeterTypeService = Depends()
+    code: int, 
+    metertypeService: MeterTypeService = Depends()
 ):
-    metertype = await typeService.getbycode(code=code)
+    metertype = await metertypeService.getbycode(code=code)
     if metertype is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -62,12 +63,13 @@ async def get(
     summary="Creation router a meter type",
     description="This router allows to create a meter type",
     response_model=List[CreateMeterType],
+    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[MeterTypeInput],
-    typeService: MeterTypeService = Depends(),
+    metertypeService: MeterTypeService = Depends(),
 ):
-    return await typeService.create(data=data)
+    return await metertypeService.create(data=data)
 
 
 # update meter type route
@@ -76,10 +78,11 @@ async def create(
     summary="Update router a meter type",
     description="This router allows to update a meter type",
     response_model=MeterTypeSchema,
+    dependencies=[Depends(JWTBearer())]
 )
 async def update(
     code: int,
     data: MeterTypeUpdate,
-    typeService: MeterTypeService = Depends(),
+    metertypeService: MeterTypeService = Depends(),
 ):
-    return await typeService.update(code=code, data=data)
+    return await metertypeService.update(code=code, data=data)

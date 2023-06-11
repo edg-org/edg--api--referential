@@ -1,5 +1,5 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.JWTBearer import JWTBearer, env
 from fastapi import (
     Depends,
     APIRouter,
@@ -14,11 +14,11 @@ from api.ageographical.schemas.AgencySchema import (
     AgencySchema,
 )
 
-env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 agencyRouter = APIRouter(
-    prefix=router_path + "/agencies", tags=["Agencies"]
+    tags=["Agencies"],
+    prefix=router_path + "/agencies",
 )
 
 # get all agencies route
@@ -43,7 +43,8 @@ async def list(
     response_model=AgencySchema,
 )
 async def get(
-    code: int, agencyService: AgencyService = Depends()
+    code: int, 
+    agencyService: AgencyService = Depends()
 ):
     agency = await agencyService.getbycode(code=code)
     if agency is None:
@@ -59,6 +60,7 @@ async def get(
     summary="Creation router a agency",
     description="This router allows to create a agency",
     response_model=List[CreateAgency],
+    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[AgencyInput],
@@ -73,6 +75,7 @@ async def create(
     summary="Update router a agency",
     description="This router allows to update a agency",
     response_model=AgencySchema,
+    dependencies=[Depends(JWTBearer())]
 )
 async def update(
     code: int,

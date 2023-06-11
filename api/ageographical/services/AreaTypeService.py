@@ -1,5 +1,5 @@
 from typing import List
-from api.tools.Helper import build_log
+from api.tools.Helper import Helper
 from fastapi.encoders import jsonable_encoder
 from api.logs.repositories.LogRepo import LogRepo
 from fastapi import Depends, HTTPException, status
@@ -39,9 +39,7 @@ class AreaTypeService:
     # create area type function
     async def create(self, data: List[CreateAreaType]) -> List[CreateAreaType]:
         for item in data:
-            areatype = self.areatype.getbycode(
-                code=item.code
-            )
+            areatype = self.areatype.getbycode(code=item.code)
             if areatype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
@@ -67,7 +65,7 @@ class AreaTypeService:
             )
 
         current_data = jsonable_encoder(self.areatype.update(code=code, data=data.dict()))
-        logs = [build_log(f"/areatypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [Helper.build_log(f"/areatypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return current_data
 

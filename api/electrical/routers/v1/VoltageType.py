@@ -1,5 +1,5 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.JWTBearer import JWTBearer, env
 from fastapi import (
     Depends,
     APIRouter,
@@ -14,11 +14,11 @@ from api.electrical.schemas.VoltageTypeSchema import (
     VoltageTypeSchema
 )
 
-env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 voltagetypeRouter = APIRouter(
-    prefix=router_path + "/voltagetypes", tags=["Supply Line Voltage Types"]
+    tags=["Supply Line Voltage Types"],
+    prefix=router_path + "/voltagetypes"
 )
 
 # get all voltage types route
@@ -31,9 +31,9 @@ voltagetypeRouter = APIRouter(
 async def list(
     skip: int = 0,
     limit: int = 100,
-    supplylineService: VoltageTypeService = Depends(),
+    voltagetypeService: VoltageTypeService = Depends(),
 ):
-    return await supplylineService.list(skip, limit)
+    return await voltagetypeService.list(skip, limit)
 
 
 # get voltage type route
@@ -44,15 +44,15 @@ async def list(
     response_model=VoltageTypeSchema,
 )
 async def get(
-    code: int, supplylineService: VoltageTypeService = Depends()
+    code: int, voltagetypeService: VoltageTypeService = Depends()
 ):
-    supplyline = await supplylineService.getbycode(code=code)
-    if supplylinetype is None:
+    voltagetype = await voltagetypeService.getbycode(code=code)
+    if voltagetype is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Supply Line Voltage Type not found",
         )
-    return supplyline
+    return voltagetype
 
 
 # post voltage type route
@@ -61,12 +61,13 @@ async def get(
     summary="Creation router a supply line voltage type",
     description="This router allows to create a supply line voltage type",
     response_model=List[CreateVoltageType],
+    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[VoltageTypeInput],
-    supplylineService: VoltageTypeService = Depends(),
+    voltagetypeService: VoltageTypeService = Depends(),
 ):
-    return await supplylineService.create(data=data)
+    return await voltagetypeService.create(data=data)
 
 
 # update voltage type route
@@ -75,10 +76,11 @@ async def create(
     summary="Update router a supply line voltage type",
     description="This router allows to update a supply line voltage type",
     response_model=VoltageTypeSchema,
+    dependencies=[Depends(JWTBearer())]
 )
 async def update(
     code: int,
     data: VoltageTypeUpdate,
-    supplylineService: VoltageTypeService = Depends(),
+    voltagetypeService: VoltageTypeService = Depends(),
 ):
-    return await supplylineService.update(code=code, data=data)
+    return await voltagetypeService.update(code=code, data=data)

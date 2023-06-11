@@ -1,8 +1,8 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
+from sqlalchemy import insert, update, func
 from api.ageographical.models.CityLevelModel import CityLevelModel
 from api.ageographical.schemas.CityLevelSchema import CreateCityLevel, CityLevelUpdate
 
@@ -10,22 +10,19 @@ from api.ageographical.schemas.CityLevelSchema import CreateCityLevel, CityLevel
 class CityLevelRepo:
     db: Session
 
-    def __init__(
-        self, db: Session = Depends(get_db)
-    ) -> None:
+    def __init__(self, db: Session = Depends(get_db)) -> None:
         self.db = db
 
     # get max code
     def maxcode(self) -> int:
-        codemax = self.db.query(
-            func.max(CityLevelModel.code)
-        ).one()[0]
+        codemax = (
+            self.db.query(func.max(CityLevelModel.code))
+            .one()[0]
+        )
         return 0 if codemax is None else codemax
 
     # get all city levels function
-    def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[CityLevelModel]:
+    def list(self, skip: int = 0, limit: int = 100) -> List[CityLevelModel]:
         return (
             self.db.query(CityLevelModel)
             .offset(skip)
@@ -53,10 +50,7 @@ class CityLevelRepo:
     def getbyname(self, name: str) -> CityLevelModel:
         return (
             self.db.query(CityLevelModel)
-            .where(
-                func.lower(CityLevelModel.name)
-                == name.lower()
-            )
+            .where(func.lower(CityLevelModel.name) == name.lower())
             .first()
         )
 
@@ -70,11 +64,14 @@ class CityLevelRepo:
         return data
 
     # update city level function
-    def update(self, data: CityLevelUpdate) -> CityLevelModel:
-        self.db.merge(data)
+    def update(self, code: int, data: dict) -> CityLevelModel:
+        self.db.execute(
+            update(CityLevelUpdate)
+            .where(CityLevelUpdate.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete city level function
     def delete(self, city: CityLevelModel) -> None:

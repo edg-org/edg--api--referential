@@ -11,9 +11,7 @@ from api.ageographical.schemas.RegionSchema import CreateRegion
 class RegionRepo:
     db: Session
 
-    def __init__(
-        self, db: Session = Depends(get_db)
-    ) -> None:
+    def __init__(self, db: Session = Depends(get_db)) -> None:
         self.db = db
 
     # count total rows of administative region by natural region
@@ -28,7 +26,7 @@ class RegionRepo:
     def maxcodebyzone(self, natural_zone: str) -> int:
         codemax = (
             self.db.query(func.max(RegionModel.code))
-            .where(func.lower(RegionModel.infos["natural_zone"]) == natural_zone.lower())
+            .where(func.lower(func.json_unquote(RegionModel.infos["natural_zone"])) == natural_zone.lower())
             .one()[0]
         )
         return 0 if codemax is None else codemax
@@ -50,11 +48,7 @@ class RegionRepo:
         )
 
     # get all regions function
-    def list(
-        self, 
-        skip: int = 0, 
-        limit: int = 100
-    ) -> List[RegionModel]:
+    def list(self, skip: int = 0, limit: int = 100) -> List[RegionModel]:
         return (
             self.db.query(RegionModel)
             .offset(skip)

@@ -1,4 +1,6 @@
 from typing import List
+from api.tools.Helper import Helper
+from fastapi.encoders import jsonable_encoder
 from fastapi import Depends, HTTPException, status
 from api.salesfinancial.models.ContactTypeModel import ContactTypeModel
 from api.salesfinancial.repositories.ContactTypeRepo import ContactTypeRepo
@@ -37,44 +39,42 @@ class ContactTypeService:
             if contacttype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Contact Type already registered with code "
-                    + str(item.code),
+                    detail=f"Contact Type already registered with code {item.code}"
                 )
 
             contacttype = self.contacttype.getbyname(name=item.name)
             if contacttype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Contact Type already registered with name "
-                    + item.name,
+                    detail=f"Contact Type already registered with name {item.name}"
                 )
 
         return self.contacttype.create(data=data)
 
     # update contact type function
     async def update(self, code: int, data: CreateContactType) -> ContactTypeModel:
-        contacttype = self.contacttype.getbycode(code=code)
-        if contacttype is None:
+        old_data = jsonable_encoder(self.contacttype.getbycode(code=code))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Contact Type not found",
             )
 
-        typedict = data.dict(exclude_unset=True)
-        for key, val in typedict.items():
-            setattr(contacttype, key, val)
-        return self.contacttype.update(contacttype)
+        current_data = jsonable_encoder(self.contacttype.update(code, data=data.dict()))
+        logs = [Helper.build_log(f"/contacttypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return current_data
 
     # delete contact type %function
-    async def delete(self, contact: ContactTypeModel) -> None:
-        contacttype = self.contacttype.getbycode(code=code)
-        if contacttype is None:
+    async def delete(self, code: int) -> None:
+        data = self.contacttype.getbycode(code=code)
+        if data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Contact Type not found",
             )
 
-        self.contacttype.update(contact)
+        self.contacttype.delete(data)
         return HTTPException(
             status_code=status.HTTP_200_OK,
             detail="Contact Type deleted",

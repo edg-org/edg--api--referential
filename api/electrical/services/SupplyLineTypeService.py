@@ -1,5 +1,5 @@
 from typing import List
-from api.tools.Helper import build_log
+from api.tools.Helper import Helper
 from fastapi.encoders import jsonable_encoder
 from api.logs.repositories.LogRepo import LogRepo
 from fastapi import Depends, HTTPException, status
@@ -46,14 +46,14 @@ class SupplyLineTypeService:
             if supplytype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Supply Line Type already registered with code " + str(item.code),
+                    detail=f"Supply Line Type already registered with code {item.code}"
                 )
 
             supplytype = self.supplytype.getbyname(name=item.name)
             if supplytype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Supply Line Type already registered with name " + item.name,
+                    detail=f"Supply Line Type already registered with name {item.name}"
                 )
         return self.supplytype.create(data=data)
 
@@ -67,7 +67,7 @@ class SupplyLineTypeService:
             )
 
         current_data = jsonable_encoder(self.supplytype.update(code=code, data=data.dict()))
-        logs = [build_log(f"/supplytypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [Helper.build_log(f"/supplytypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return current_data
 
@@ -77,11 +77,11 @@ class SupplyLineTypeService:
         if data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Supply Line Type not found",
+                detail="Supply Line Type not found"
             )
 
         self.supplytype.delete(type)
         return HTTPException(
             status_code=status.HTTP_200_OK,
-            detail="Supply Line Type deleted",
+            detail="Supply Line Type deleted"
         )
