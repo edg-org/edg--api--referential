@@ -1,11 +1,11 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.JWTBearer import JWTBearer, env
 from api.salesfinancial.services.ContactTypeService import ContactTypeService
 from fastapi import (
     Depends,
-    APIRouter,
     status,
-    HTTPException,
+    APIRouter,
+    HTTPException
 )
 from api.salesfinancial.schemas.ContactTypeSchema import (
     CreateContactType,
@@ -13,12 +13,10 @@ from api.salesfinancial.schemas.ContactTypeSchema import (
     ContactTypeSchema
 )
 
-env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
-
 contacttypeRouter = APIRouter(
-    prefix=router_path + "/contacttypes",
     tags=["Contact Types"],
+    prefix=router_path + "/contacttypes"
 )
 
 
@@ -62,6 +60,7 @@ async def get(
     summary="Creation router a contact type",
     description="This router allows to create a contact type",
     response_model=List[CreateContactType],
+    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[CreateContactType],
@@ -76,6 +75,7 @@ async def create(
     summary="Update router a contact type",
     description="This router allows to update a contact type",
     response_model=ContactTypeSchema,
+    dependencies=[Depends(JWTBearer())]
 )
 async def update(
     code: int,

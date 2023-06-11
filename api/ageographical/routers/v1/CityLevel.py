@@ -1,9 +1,9 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.JWTBearer import JWTBearer, env
 from fastapi import (
     Depends,
-    APIRouter,
     status,
+    APIRouter,
     HTTPException,
 )
 from api.ageographical.services.CityLevelService import CityLevelService
@@ -14,12 +14,12 @@ from api.ageographical.schemas.CityLevelSchema import (
     CityLevelSchema,
 )
 
-env = get_env_var()
+
 router_path = env.api_routers_prefix + env.api_version
 
 citylevelRouter = APIRouter(
-    prefix=router_path + "/citylevels", 
-    tags=["City Levels"]
+    tags=["City Levels"],
+    prefix=router_path + "/citylevels"
 )
 
 # get all city levels route
@@ -61,6 +61,7 @@ async def get(
     summary="Creation router a city level",
     description="This router allows to create a city level",
     response_model=List[CreateCityLevel],
+    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[CityLevelInput],
@@ -74,6 +75,7 @@ async def create(
     summary="Update router a city level",
     description="This router allows to update a city level",
     response_model=CityLevelSchema,
+    dependencies=[Depends(JWTBearer())]
 )
 async def update(
     code: int,

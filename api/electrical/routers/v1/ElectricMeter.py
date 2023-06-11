@@ -1,9 +1,9 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.JWTBearer import JWTBearer, env
 from fastapi import (
     Depends,
-    APIRouter,
     status,
+    APIRouter,
     HTTPException,
 )
 from api.electrical.services.ElectricMeterService import ElectricMeterService
@@ -14,12 +14,11 @@ from api.electrical.schemas.ElectricMeterSchema import (
     ElectricMeterSchema
 )
 
-env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 meterRouter = APIRouter(
-    prefix=router_path + "/meters",
     tags=["Electric Meters"],
+    prefix=router_path + "/meters"
 )
 
 
@@ -28,7 +27,7 @@ meterRouter = APIRouter(
     "/",
     summary="Getting router for all electric meters",
     description="This router allows to get all electric meters",
-    response_model=List[ElectricMeterSchema],
+    response_model=List[ElectricMeterSchema]
 )
 async def list(
     skip: int = 0,
@@ -66,6 +65,7 @@ async def get(
     summary="Creation router a electric meter",
     description="This router allows to create a electric meter",
     response_model=List[CreateElectricMeter],
+    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[ElectricMeterInput],
@@ -80,6 +80,7 @@ async def create(
     summary="Update router a electric meter",
     description="This router allows to update a electric meter",
     response_model=ElectricMeterSchema,
+    dependencies=[Depends(JWTBearer())]
 )
 async def update(
     number: int,

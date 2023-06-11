@@ -6,7 +6,7 @@ class PricingSlices(BaseSchema):
     name: str
     unit_price: float
     lower_index: float
-    upper_index: Optional[float] | None
+    upper_index: Optional[float]
 
 class PricingInfos(BaseSchema):
     subscription_fee: float

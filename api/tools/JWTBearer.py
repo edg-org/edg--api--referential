@@ -1,10 +1,7 @@
-from api.tools.Helper import Helper
-from api.configs.Environment import get_env_var
+import json
+from api.tools.Helper import Helper, env
 from fastapi import Request, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-
-
-env = get_env_var()
 
 class JWTBearer(HTTPBearer):
     
@@ -23,6 +20,6 @@ class JWTBearer(HTTPBearer):
                     status_code=status.HTTP_403_FORBIDDEN,
                     detail="Invalid authentication scheme."
                 )
-            await Helper.get_request(f"{env.auth_domaine_name}/v1/token/introspect",authorization)
+            return json.loads(await Helper.get_request(f"{env.auth_domaine_name}/v1/token/introspect", authorization))
         else:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid authorization code.")

@@ -1,9 +1,9 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.JWTBearer import JWTBearer, env
 from fastapi import (
     Depends,
-    APIRouter,
     status,
+    APIRouter,
     HTTPException,
 )
 from api.ageographical.services.RegionService import RegionService
@@ -15,12 +15,11 @@ from api.ageographical.schemas.RegionSchema import (
     RegionItemSchema,
 )
 
-env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 regionRouter = APIRouter(
     prefix=router_path + "/regions",
-    tags=["Administrative Regions"],
+    tags=["Administrative Regions"]
 )
 
 # get all administrative regions route
@@ -81,6 +80,7 @@ async def get_region_item(
     summary="Creation router a administrative region",
     description="This router allows to create a administrative region",
     response_model=List[CreateRegion],
+    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[RegionInput],
@@ -94,6 +94,7 @@ async def create(
     summary="Update router a administrative region",
     description="This router allows to update a administrative region",
     response_model=RegionSchema,
+    dependencies=[Depends(JWTBearer())]
 )
 async def update(
     code: int,

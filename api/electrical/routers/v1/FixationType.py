@@ -1,9 +1,9 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.JWTBearer import JWTBearer, env
 from fastapi import (
     Depends,
-    APIRouter,
     status,
+    APIRouter,
     HTTPException,
 )
 from api.electrical.services.FixationTypeService import FixationTypeService
@@ -14,11 +14,11 @@ from api.electrical.schemas.FixationTypeSchema import (
     FixationTypeSchema
 )
 
-env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 fixationtypeRouter = APIRouter(
-    prefix=router_path + "/fixationtypes", tags=["Transformer Fixation Types"]
+    tags=["Transformer Fixation Types"],
+    prefix=router_path + "/fixationtypes"
 )
 
 # get all fixation types route
@@ -31,9 +31,9 @@ fixationtypeRouter = APIRouter(
 async def list(
     skip: int = 0,
     limit: int = 100,
-    supplylineService: FixationTypeService = Depends(),
+    fixationtypeService: FixationTypeService = Depends(),
 ):
-    return await supplylineService.list(skip, limit)
+    return await fixationtypeService.list(skip, limit)
 
 
 # get fixation type route
@@ -44,15 +44,16 @@ async def list(
     response_model=FixationTypeSchema,
 )
 async def get(
-    code: int, supplylineService: FixationTypeService = Depends()
+    code: int, 
+    fixationtypeService: FixationTypeService = Depends()
 ):
-    supplyline = await supplylineService.getbycode(code=code)
-    if supplylinetype is None:
+    fixation = await fixationtypeService.getbycode(code=code)
+    if fixation is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Transformer Fixation Type not found",
         )
-    return supplyline
+    return fixation
 
 
 # post fixation type route
@@ -61,12 +62,13 @@ async def get(
     summary="Creation router a transformer fixation type",
     description="This router allows to create a tranformer fixation type",
     response_model=List[CreateFixationType],
+    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[FixationTypeInput],
-    supplylineService: FixationTypeService = Depends(),
+    fixationtypeService: FixationTypeService = Depends(),
 ):
-    return await supplylineService.create(data=data)
+    return await fixationtypeService.create(data=data)
 
 
 # update fixation type route
@@ -75,10 +77,11 @@ async def create(
     summary="Update router a transfomer fixation type",
     description="This router allows to update a tranformer fixation type",
     response_model=FixationTypeSchema,
+    dependencies=[Depends(JWTBearer())]
 )
 async def update(
     code: int,
     data: FixationTypeUpdate,
-    supplylineService: FixationTypeService = Depends(),
+    fixationtypeService: FixationTypeService = Depends(),
 ):
-    return await supplylineService.update(code=code, data=data)
+    return await fixationtypeService.update(code=code, data=data)

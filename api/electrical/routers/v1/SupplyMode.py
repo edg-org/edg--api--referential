@@ -1,9 +1,9 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.JWTBearer import JWTBearer, env
 from fastapi import (
     Depends,
-    APIRouter,
     status,
+    APIRouter,
     HTTPException,
 )
 from api.electrical.services.SupplyModeService import SupplyModeService
@@ -14,11 +14,11 @@ from api.electrical.schemas.SupplyModeSchema import (
     SupplyModeSchema
 )
 
-env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 supplymodeRouter = APIRouter(
-    prefix=router_path + "/supplymodes", tags=["Supply Modes"]
+    tags=["Supply Modes"],
+    prefix=router_path + "/supplymodes"
 )
 
 # get all supply modes route
@@ -44,7 +44,8 @@ async def list(
     response_model=SupplyModeSchema,
 )
 async def get(
-    code: int, supplymodeService: SupplyModeService = Depends()
+    code: int, 
+    supplymodeService: SupplyModeService = Depends()
 ):
     supplymode = await supplymodeService.getbycode(code=code)
     if supplymode is None:
@@ -61,6 +62,7 @@ async def get(
     summary="Creation router a supply mode",
     description="This router allows to create a supply mode",
     response_model=List[CreateSupplyMode],
+    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[SupplyModeInput],
@@ -75,6 +77,7 @@ async def create(
     summary="Update router a supply mode",
     description="This router allows to update a supply mode",
     response_model=SupplyModeSchema,
+    dependencies=[Depends(JWTBearer())]
 )
 async def update(
     code: int,

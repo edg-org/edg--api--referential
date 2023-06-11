@@ -19,16 +19,6 @@ class BaseSchema(BaseModel):
                 new_fields[field_name] = field
         cls.__fields__ = new_fields
         super().__init_subclass__(**kwargs)
-
-#
-class DateTimeModelMixin(BaseModel):
-    created_at: datetime | None = None
-    updated_at: datetime | None = None
-    deleted_at: datetime | None = None
-
-    @validator("created_at", "updated_at", pre=True)
-    def default_datetime(cls, value: datetime) -> datetime:
-        return value or datetime.now()
     
 # create database function
 @lru_cache()

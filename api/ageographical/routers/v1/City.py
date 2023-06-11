@@ -1,5 +1,5 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.JWTBearer import JWTBearer, env
 from fastapi import (
     Depends,
     APIRouter,
@@ -16,12 +16,11 @@ from api.ageographical.schemas.CitySchema import (
     CitySearchParams
 )
 
-env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 cityRouter = APIRouter(
-    prefix=router_path + "/cities", 
-    tags=["Cities"]
+    tags=["Cities"],
+    prefix=router_path + "/cities"
 )
 
 # get all cities route
@@ -101,6 +100,7 @@ async def get_city_items(
     summary="Creation router a city",
     description="This router allows to create a city",
     response_model=List[CreateCity],
+    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[CityInput],
@@ -114,6 +114,7 @@ async def create(
     summary="Update router a city",
     description="This router allows to update a city",
     response_model=CitySchema,
+    dependencies=[Depends(JWTBearer())]
 )
 async def update(
     id: int,

@@ -1,23 +1,22 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.JWTBearer import JWTBearer, env
 from api.salesfinancial.services.PricingHistoryService import PricingHistoryService
 from fastapi import (
     Depends,
-    APIRouter,
     status,
-    HTTPException,
+    APIRouter,
+    HTTPException
 )
 from api.salesfinancial.schemas.PricingHistorySchema import (
     CreatePricingHistory,
     PricingHistorySchema,
 )
 
-env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 pricinghistoryRouter = APIRouter(
-    prefix=router_path + "/pricinghistories",
     tags=["Pricing Histories"],
+    prefix=router_path + "/pricinghistories"
 )
 
 
@@ -64,6 +63,7 @@ async def get(
     summary="Creation router a pricing history",
     description="This router allows to create a pricing history",
     response_model=List[CreatePricingHistory],
+    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[CreatePricingHistory],

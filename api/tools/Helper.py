@@ -90,9 +90,10 @@ class Helper:
 
     # add logs function
     @classmethod
-    async def get_request(url: str, params : Any) -> Response:
+    async def get_request(cls, url: str, token: str) -> Response:
+        header = {"Authorization": token}
         client = AsyncClient()
-        response = await client.get(url, headers=params)
+        response = await client.get(url, headers=header)
         status_code=response.status_code 
         
         if status_code != 200:

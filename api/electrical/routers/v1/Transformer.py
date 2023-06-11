@@ -1,9 +1,9 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.JWTBearer import JWTBearer, env
 from fastapi import (
     Depends,
-    APIRouter,
     status,
+    APIRouter,
     HTTPException,
 )
 from api.electrical.services.TransformerService import TransformerService
@@ -15,12 +15,11 @@ from api.electrical.schemas.TransformerSchema import (
     TransformerItemSchema
 )
 
-env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 transformerRouter = APIRouter(
-    prefix=router_path + "/transformers",
     tags=["Transformers"],
+    prefix=router_path + "/transformers"
 )
 
 
@@ -64,7 +63,7 @@ async def get(
     "/{code}/items",
     summary="Getting router a transformer with items",
     description="This router allows to get a transformer with items",
-    response_model=TransformerItemSchema,
+    response_model=TransformerItemSchema
 )
 async def get_tranformer_item(
     code: int,
@@ -85,6 +84,7 @@ async def get_tranformer_item(
     summary="Creation router a transformer",
     description="This router allows to create a transformer",
     response_model=List[CreateTransformer],
+    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[TransformerInput],
@@ -99,6 +99,7 @@ async def create(
     summary="Update router a transformer",
     description="This router allows to update a transformer",
     response_model=TransformerSchema,
+    dependencies=[Depends(JWTBearer())]
 )
 async def update(
     code: int,

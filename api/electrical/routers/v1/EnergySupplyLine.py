@@ -1,9 +1,9 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.JWTBearer import JWTBearer, env
 from fastapi import (
     Depends,
-    APIRouter,
     status,
+    APIRouter,
     HTTPException,
 )
 from api.electrical.services.EnergySupplyLineService import EnergySupplyLineService
@@ -14,12 +14,11 @@ from api.electrical.schemas.EnergySupplyLineSchema import (
     EnergySupplyLineUpdate
 )
 
-env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 energysupplyRouter = APIRouter(
-    prefix=router_path + "/supplylines",
     tags=["Energy Supply Lines"],
+    prefix=router_path + "/supplylines"
 )
 
 # get all energy supply line lines route
@@ -62,6 +61,7 @@ async def get(
     summary="Creation router a energy supply line",
     description="This router allows to create a energy supply line",
     response_model=List[CreateEnergySupplyLine],
+    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[EnergySupplyLineInput],
@@ -76,6 +76,7 @@ async def create(
     summary="Update router a energy supply line",
     description="This router allows to update a energy supply line",
     response_model=EnergySupplyLineSchema,
+    dependencies=[Depends(JWTBearer())]
 )
 async def update(
     code: int,

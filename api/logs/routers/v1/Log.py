@@ -1,19 +1,24 @@
 from typing import List
-from api.configs.Environment import get_env_var
-from fastapi import APIRouter, Depends, status, HTTPException
+from api.tools.JWTBearer import JWTBearer, env
 from api.logs.services.LogService import LogService
+from fastapi import (
+    status, 
+    Depends, 
+    APIRouter, 
+    HTTPException
+)
 from api.logs.schemas.LogSchema import (
     LogInput,
     LogSchema,
     CreateLog
 )
 
-env = get_env_var()
 router_path = env.api_routers_prefix+env.api_version
 
 logRouter = APIRouter(
+    tags=["Logs"],
     prefix=router_path+"/logs",
-    tags=["Logs"]
+    dependencies=[Depends(JWTBearer())]
 )
 
 #get all cities route

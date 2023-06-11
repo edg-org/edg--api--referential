@@ -1,9 +1,9 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.JWTBearer import JWTBearer, env
 from fastapi import (
     Depends,
-    APIRouter,
     status,
+    APIRouter,
     HTTPException,
 )
 from api.ageographical.services.AreaTypeService import AreaTypeService
@@ -14,7 +14,6 @@ from api.ageographical.schemas.AreaTypeSchema import (
     AreaTypeSchema,
 )
 
-env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 areatypeRouter = APIRouter(
@@ -61,6 +60,7 @@ async def get(
     summary="Creation router a area type",
     description="This router allows to create a area type",
     response_model=List[CreateAreaType],
+    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[AreaTypeInput],
@@ -74,6 +74,7 @@ async def create(
     summary="Update router a area type",
     description="This router allows to update a area type",
     response_model=AreaTypeSchema,
+    dependencies=[Depends(JWTBearer())]
 )
 async def update(
     code: int,

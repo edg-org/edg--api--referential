@@ -1,10 +1,10 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.JWTBearer import JWTBearer, env
 from api.salesfinancial.services.InvoicingFrequencyService import InvoicingFrequencyService
 from fastapi import (
     Depends,
-    APIRouter,
     status,
+    APIRouter,
     HTTPException,
 )
 from api.salesfinancial.schemas.InvoicingFrequencySchema import (
@@ -13,12 +13,11 @@ from api.salesfinancial.schemas.InvoicingFrequencySchema import (
     InvoicingFrequencySchema
 )
 
-env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 invoicingRouter = APIRouter(
-    prefix=router_path + "/invoicingfrequencies",
     tags=["Invoicing Frequencies"],
+    prefix=router_path + "/invoicingfrequencies"
 )
 
 
@@ -65,6 +64,7 @@ async def get(
     summary="Creation router a invoicing frequency",
     description="This router allows to create a invoicing frequency",
     response_model=List[CreateInvoicingFrequency],
+    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[CreateInvoicingFrequency],
@@ -79,6 +79,7 @@ async def create(
     summary="Update router a invoicing frequency",
     description="This router allows to update a invoicing frequency",
     response_model=InvoicingFrequencySchema,
+    dependencies=[Depends(JWTBearer())]
 )
 async def update(
     code: int,

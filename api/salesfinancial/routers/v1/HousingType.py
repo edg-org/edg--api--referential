@@ -1,11 +1,10 @@
 from typing import List
 from api.tools.JWTBearer import JWTBearer, env
-#from api.configs.Environment import get_env_var
 from api.salesfinancial.services.HousingTypeService import HousingTypeService
 from fastapi import (
     Depends,
-    APIRouter,
     status,
+    APIRouter,
     HTTPException,
 )
 from api.salesfinancial.schemas.HousingTypeSchema import (
@@ -14,13 +13,11 @@ from api.salesfinancial.schemas.HousingTypeSchema import (
     HousingTypeSchema,
 )
 
-#env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 housingRouter = APIRouter(
-    prefix=router_path + "/housingtypes",
     tags=["Housing Types"],
-    #dependencies=[Depends(JWTBearer())]
+    prefix=router_path + "/housingtypes"
 )
 
 # get all housing type route
@@ -61,10 +58,11 @@ async def get(
     summary="Creation router a housing type",
     description="This router allows to create a housing type",
     response_model=List[CreateHousingType],
+    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[CreateHousingType],
-    typeService: HousingTypeService = Depends(),
+    typeService: HousingTypeService = Depends()
 ):
     return await typeService.create(data=data)
 
@@ -74,10 +72,13 @@ async def create(
     summary="Update router a housing type",
     description="This router allows to update a housing type",
     response_model=HousingTypeSchema,
+    dependencies=[Depends(JWTBearer())]
+    
 )
 async def update(
     code: int,
     data: HousingTypeUpdate,
-    typeService: HousingTypeService = Depends(),
+    typeService: HousingTypeService = Depends()
+    
 ):
     return await typeService.update(code=code, data=data)

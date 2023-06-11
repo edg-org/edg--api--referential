@@ -1,10 +1,10 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.JWTBearer import JWTBearer, env
 from api.salesfinancial.services.SubscriptionTypeService import SubscriptionTypeService
 from fastapi import (
     Depends,
-    APIRouter,
     status,
+    APIRouter,
     HTTPException,
 )
 from api.salesfinancial.schemas.SubscriptionTypeSchema import (
@@ -14,12 +14,11 @@ from api.salesfinancial.schemas.SubscriptionTypeSchema import (
     SubscriptionTypeSchema,
 )
 
-env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 subscriptiontypeRouter = APIRouter(
-    prefix=router_path + "/subscriptiontypes",
     tags=["Subscription Types"],
+    prefix=router_path + "/subscriptiontypes"
 )
 
 
@@ -66,6 +65,7 @@ async def get(
     summary="Creation router a subscription type",
     description="This router allows to create a subscription type",
     response_model=List[CreateSubscriptionType],
+    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[SubscriptionTypeInput],
@@ -80,6 +80,7 @@ async def create(
     summary="Update router a subscription type",
     description="This router allows to update a subscription type",
     response_model=SubscriptionTypeSchema,
+    dependencies=[Depends(JWTBearer())]
 )
 async def update(
     code: int,

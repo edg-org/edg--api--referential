@@ -1,5 +1,5 @@
 from typing import List
-from api.configs.Environment import get_env_var
+from api.tools.JWTBearer import JWTBearer, env
 from fastapi import (
     Depends,
     APIRouter,
@@ -15,12 +15,11 @@ from api.ageographical.schemas.AreaSchema import (
     AreaItemSchema,
 )
 
-env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
 
 areaRouter = APIRouter(
-    prefix=router_path + "/areas", 
-    tags=["Areas"]
+    tags=["Areas"],
+    prefix=router_path + "/areas"
 )
 
 # get all areas route
@@ -80,6 +79,7 @@ async def get_area_item(
     summary="Creation router a area",
     description="This router allows to create a area",
     response_model=List[CreateArea],
+    dependencies=[Depends(JWTBearer())]
 )
 async def create(
     data: List[AreaInput],
@@ -93,6 +93,7 @@ async def create(
     summary="Update router a area",
     description="This router allows to update a area",
     response_model=AreaSchema,
+    dependencies=[Depends(JWTBearer())]
 )
 async def update(
     code: int,
