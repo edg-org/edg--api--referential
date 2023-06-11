@@ -20,6 +20,6 @@ class JWTBearer(HTTPBearer):
                     status_code=status.HTTP_403_FORBIDDEN,
                     detail="Invalid authentication scheme."
                 )
-            return json.loads(await Helper.get_request(f"{env.auth_domaine_name}/v1/token/introspect", authorization))
+            return json.loads(await Helper.get_request(f"{env.auth_domain_name}/v1/token/introspect", authorization))
         else:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid authorization code.")
