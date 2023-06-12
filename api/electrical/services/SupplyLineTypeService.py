@@ -24,8 +24,8 @@ class SupplyLineTypeService:
         self.supplytype = supplytype
 
     # get all supply line types function
-    async def list(self, skip: int = 0, limit: int = 100) -> List[SupplyLineTypeModel]:
-        return self.supplytype.list(skip=skip, limit=limit)
+    async def list(self, start: int = 0, size: int = 100) -> List[SupplyLineTypeModel]:
+        return self.supplytype.list(start=start, size=size)
 
     # get supply line type by id function
     async def get(self, id: int) -> SupplyLineTypeModel:

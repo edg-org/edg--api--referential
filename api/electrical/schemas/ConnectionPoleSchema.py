@@ -62,3 +62,11 @@ class ConnectionPoleUpdate(ConnectionPoleInput):
 
 class ConnectionPoleItemSchema(ConnectionPoleSchema):
     deliverypoints: list[DeliveryPointSchema] = []
+    
+#
+class ConnectionPolePagination(BaseSchema):
+    count: int
+    total: int
+    page_size: int
+    start_index: int
+    results: List[ConnectionPoleSchema] = []

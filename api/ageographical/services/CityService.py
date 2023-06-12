@@ -30,8 +30,8 @@ class CityService:
         self.city = city
 
     # get all citys function
-    async def list(self, skip: int = 0, limit: int = 100) -> List[CityModel]:
-        return self.city.list(skip=skip, limit=limit)
+    async def list(self, start: int = 0, size: int = 100) -> (int, List[CityModel]):
+        return self.city.list(start=start, size=size)
 
     # get city by id function
     async def get(self, id: int) -> CityModel:

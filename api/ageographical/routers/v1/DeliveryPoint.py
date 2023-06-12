@@ -12,7 +12,8 @@ from api.ageographical.schemas.DeliveryPointSchema import (
     CreateDeliveryPoint,
     DeliveryPointUpdate,
     DeliveryPointSchema,
-    DeliveryPointDetails
+    DeliveryPointDetails,
+    DeliveryPointPagination
 )
 
 router_path = env.api_routers_prefix + env.api_version
@@ -28,14 +29,21 @@ deliverypointRouter = APIRouter(
     "/",
     summary="Getting router for all delivery points",
     description="This router allows to get all delivery points",
-    response_model=List[DeliveryPointSchema]
+    response_model=DeliveryPointPagination
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
-    deliverypointService: DeliveryPointService = Depends()
+    start: int = 0,
+    size: int = 100,
+    pointService: DeliveryPointService = Depends()
 ):
-    return await deliverypointService.list(skip, limit)
+    count, points = await pointService.list(start, size)
+    return {
+        "results": [point for point in points],
+        "total": len(points),
+        "count": count,
+        "page_size": size,
+        "start_index": start
+    }
 
 # get delivery point route
 @deliverypointRouter.get(
@@ -46,9 +54,9 @@ async def list(
 )
 async def get(
     number: int,
-    deliverypointService: DeliveryPointService = Depends()
+    pointService: DeliveryPointService = Depends()
 ):
-    deliverypoint = await deliverypointService.getbynumber(number=number)
+    deliverypoint = await pointService.getbynumber(number=number)
     if deliverypoint is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -65,9 +73,9 @@ async def get(
 )
 async def getdetails(
     number: int,
-    deliverypointService: DeliveryPointService = Depends(),
+    pointService: DeliveryPointService = Depends(),
 ):
-    deliverypoint = await deliverypointService.getdetails(number=number)
+    deliverypoint = await pointService.getdetails(number=number)
     if deliverypoint is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -84,9 +92,9 @@ async def getdetails(
 )
 async def create(
     data: List[DeliveryPointInput],
-    deliverypointService: DeliveryPointService = Depends(),
+    pointService: DeliveryPointService = Depends(),
 ):
-    return await deliverypointService.create(data=data)
+    return await pointService.create(data=data)
 
 # update delivery point route
 @deliverypointRouter.put(
@@ -98,7 +106,7 @@ async def create(
 async def update(
     number: int,
     data: DeliveryPointUpdate,
-    deliverypointService: DeliveryPointService = Depends(),
+    pointService: DeliveryPointService = Depends(),
     tokendata: dict = Depends(JWTBearer())
 ):
-    return await deliverypointService.update(number=number, tokendata=tokendata, data=data)
+    return await pointService.update(number=number, tokendata=tokendata, data=data)

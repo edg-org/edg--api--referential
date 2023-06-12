@@ -13,6 +13,7 @@ from api.ageographical.schemas.AreaSchema import (
     AreaSchema,
     AreaUpdate,
     AreaItemSchema,
+    AreaPagination
 )
 
 router_path = env.api_routers_prefix + env.api_version
@@ -28,14 +29,21 @@ areaRouter = APIRouter(
     "/",
     summary="Getting router for all areas",
     description="This router allows to get all areas",
-    response_model=List[AreaSchema]
+    response_model=AreaPagination
 )
 async def list(
-    skip: int = 0, 
-    limit: int = 100,
+    start: int = 0, 
+    size: int = 100,
     areaService: AreaService = Depends()
 ):
-    return await areaService.list(skip, limit)
+    count, areas = await areaService.list(start, size)
+    return {
+        "results": [area for area in areas],
+        "total": len(areas),
+        "count": count,
+        "page_size": size,
+        "start_index": start
+    }
 
 # get area route
 @areaRouter.get(

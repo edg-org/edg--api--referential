@@ -12,7 +12,8 @@ from api.ageographical.schemas.PrefectureSchema import (
     PrefectureSchema,
     PrefectureUpdate,
     CreatePrefecture,
-    PrefectureItemSchema
+    PrefectureItemSchema,
+    PrefecturePagination
 )
 
 router_path = env.api_routers_prefix + env.api_version
@@ -28,14 +29,21 @@ prefectureRouter = APIRouter(
     "/",
     summary="Getting router for all prefectures",
     description="This router allows to get all prefectures",
-    response_model=List[PrefectureSchema],
+    response_model=PrefecturePagination,
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     prefectureService: PrefectureService = Depends(),
 ):
-    return await prefectureService.list(skip, limit)
+    count, prefectures = await prefectureService.list(start, size)
+    return {
+        "results": [prefecture for prefecture in prefectures],
+        "total": len(prefectures),
+        "count": count,
+        "page_size": size,
+        "start_index": start
+    }
 
 # get prefecture route
 @prefectureRouter.get(

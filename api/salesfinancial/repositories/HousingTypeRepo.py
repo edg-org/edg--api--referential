@@ -16,13 +16,9 @@ class HousingTypeRepo:
         self.db = db
 
     # get all housing types function
-    def list(self, skip: int = 0, limit: int = 100) -> List[HousingTypeModel]:
-        return (
-            self.db.query(HousingTypeModel)
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
+    def list(self, start: int = 0, size: int = 100) -> (int, List[HousingTypeModel]):
+        query = self.db.query(HousingTypeModel)
+        return query.count(), query.offset(start).limit(size).all()
 
     # count total rows of transformer by code
     def countbycode(self, code: str) -> int:

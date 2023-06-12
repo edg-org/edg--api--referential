@@ -10,7 +10,8 @@ from api.electrical.services.MeterDeliveryPointService import MeterDeliveryPoint
 from api.electrical.schemas.MeterDeliveryPointSchema import (
     MeterDeliveryPointInput,
     CreateMeterDeliveryPoint,
-    MeterDeliveryPointSchema
+    MeterDeliveryPointSchema,
+    MeterDeliveryPointPagination
 )
 
 router_path = env.api_routers_prefix + env.api_version
@@ -26,14 +27,21 @@ meterdeliveryRouter = APIRouter(
     "/",
     summary="Getting router for all meter delivery points",
     description="This router allows to get all meter delivery points",
-    response_model=List[MeterDeliveryPointSchema],
+    response_model=MeterDeliveryPointPagination,
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     meterdeliveryService: MeterDeliveryPointService = Depends(),
 ):
-    return await meterdeliveryService.list(skip, limit)
+    count, meterdeliveries = await meterdeliveryService.list(start, size)
+    return {
+        "results": [meterdelivery for meterdelivery in meterdeliveries],
+        "total": len(meterdeliveries),
+        "count": count,
+        "page_size": size,
+        "start_index": start
+    }
 
 # get transformer route
 @meterdeliveryRouter.get(

@@ -44,11 +44,11 @@ async def create(
     response_model=List[ZoneSchema],
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     zoneService: ZoneService = Depends(),
 ):
-    return await zoneService.list(skip, limit)
+    return await zoneService.list(start, size)
 
 # get natural region route
 @zoneRouter.get(

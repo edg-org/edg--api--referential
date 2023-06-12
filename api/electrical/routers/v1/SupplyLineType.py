@@ -30,11 +30,11 @@ linetypeRouter = APIRouter(
     response_model=List[SupplyLineTypeSchema],
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     supplylinetypeService: SupplyLineTypeService = Depends(),
 ):
-    return await supplylinetypeService.list(skip, limit)
+    return await supplylinetypeService.list(start, size)
 
 # get supplyline type route
 @linetypeRouter.get(

@@ -17,19 +17,13 @@ class SubscriptionLevelRepo:
 
     # get max code
     def maxcode(self) -> int:
-        codemax = self.db.query(
-            func.max(SubscriptionLevelModel.code)
-        ).one()[0]
+        codemax = self.db.query(func.max(SubscriptionLevelModel.code)).one()[0]
         return 0 if codemax is None else codemax
 
     # get all subscription levels function
-    def list(self, skip: int = 0, limit: int = 100) -> List[SubscriptionLevelModel]:
-        return (
-            self.db.query(SubscriptionLevelModel)
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
+    def list(self, start: int = 0, size: int = 100) -> List[SubscriptionLevelModel]:
+        query = self.db.query(SubscriptionLevelModel)
+        return query.offset(start).limit(size).all()
 
     # get subscription level by id function
     def get(self, id: int) -> SubscriptionLevelModel:

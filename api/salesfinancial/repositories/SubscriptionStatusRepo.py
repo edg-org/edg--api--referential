@@ -16,19 +16,13 @@ class SubscriptionStatusRepo:
 
     # get max code
     def maxcode(self) -> int:
-        codemax = self.db.query(
-            func.max(SubscriptionStatusModel.code)
-        ).one()[0]
+        codemax = self.db.query(func.max(SubscriptionStatusModel.code)).one()[0]
         return 0 if codemax is None else codemax
 
     # get all subscription status function
-    def list(self, skip: int = 0, limit: int = 100) -> List[SubscriptionStatusModel]:
-        return (
-            self.db.query(SubscriptionStatusModel)
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
+    def list(self, start: int = 0, size: int = 100) -> List[SubscriptionStatusModel]:
+        query = self.db.query(SubscriptionStatusModel)
+        return query.offset(start).limit(size).all()
 
     # get subscription status by id function
     def get(self, id: int) -> SubscriptionStatusModel:
@@ -52,10 +46,7 @@ class SubscriptionStatusRepo:
     def getbyname(self, name: str) -> SubscriptionStatusModel:
         return (
             self.db.query(SubscriptionStatusModel)
-            .where(
-                func.lower(SubscriptionStatusModel.name)
-                == name.lower()
-            )
+            .where(func.lower(SubscriptionStatusModel.name) == name.lower())
             .first()
         )
 

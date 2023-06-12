@@ -21,11 +21,11 @@ class SupplyModeRepo:
         ).one()[0]
 
     # get all supply modes function
-    def list(self, skip: int = 0, limit: int = 100) -> List[SupplyModeModel]:
+    def list(self, start: int = 0, size: int = 100) -> List[SupplyModeModel]:
         return (
             self.db.query(SupplyModeModel)
-            .offset(skip)
-            .limit(limit)
+            .offset(start)
+            .limit(size)
             .all()
         )
 

@@ -30,11 +30,11 @@ voltagetypeRouter = APIRouter(
     response_model=List[VoltageTypeSchema],
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     voltagetypeService: VoltageTypeService = Depends(),
 ):
-    return await voltagetypeService.list(skip, limit)
+    return await voltagetypeService.list(start, size)
 
 # get voltage type route
 @voltagetypeRouter.get(

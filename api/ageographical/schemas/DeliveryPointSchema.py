@@ -70,3 +70,11 @@ class DeliveryPointDetails(CreateDeliveryPoint):
             "pole_id",
             "infos"
         }
+
+#
+class DeliveryPointPagination(BaseSchema):
+    count: int
+    total: int
+    page_size: int
+    start_index: int
+    results: List[DeliveryPointSchema] = []

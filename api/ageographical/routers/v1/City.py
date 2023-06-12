@@ -13,7 +13,8 @@ from api.ageographical.schemas.CitySchema import (
     CityUpdate,
     CitySchema,
     CityItemSchema,
-    CitySearchParams
+    CitySearchParams,
+    CityPagination
 )
 
 router_path = env.api_routers_prefix + env.api_version
@@ -29,14 +30,21 @@ cityRouter = APIRouter(
     "/",
     summary="Getting router for all cities",
     description="This router allows to get all cities",
-    response_model=List[CitySchema],
+    response_model=CityPagination,
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     cityService: CityService = Depends(),
 ):
-    return await cityService.list(skip, limit)
+    count, cities = await cityService.list(start, size)
+    return {
+        "results": [city for city in cities],
+        "total": len(cities),
+        "count": count,
+        "page_size": size,
+        "start_index": start
+    }
 
 # search city by parameters route
 @cityRouter.get(

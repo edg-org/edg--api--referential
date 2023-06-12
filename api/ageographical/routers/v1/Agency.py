@@ -12,6 +12,7 @@ from api.ageographical.schemas.AgencySchema import (
     CreateAgency,
     AgencyUpdate,
     AgencySchema,
+    AgencyPagination
 )
 
 router_path = env.api_routers_prefix + env.api_version
@@ -27,14 +28,21 @@ agencyRouter = APIRouter(
     "/",
     summary="Getting router for all agencies",
     description="This router allows to get all agencies",
-    response_model=List[AgencySchema],
+    response_model=AgencyPagination,
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     agencyService: AgencyService = Depends(),
 ):
-    return await agencyService.list(skip, limit)
+    count, agencies = await agencyService.list(start, size)
+    return {
+        "results": [agency for agency in agencies],
+        "total": len(agencies),
+        "count": count,
+        "page_size": size,
+        "start_index": start
+    }
 
 # get agency route
 @agencyRouter.get(

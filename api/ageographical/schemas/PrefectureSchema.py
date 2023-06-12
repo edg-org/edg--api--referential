@@ -1,6 +1,6 @@
 from pydantic import Field
-from typing import Optional
 from datetime import datetime
+from typing import List, Optional
 from api.configs.BaseModel import BaseSchema
 from api.ageographical.schemas.CitySchema import CitySchema
 
@@ -69,3 +69,12 @@ class PrefectureUpdate(BaseSchema):
 #
 class PrefectureItemSchema(PrefectureSchema):
     cities: list[CitySchema] = []
+    
+    
+#
+class PrefecturePagination(BaseSchema):
+    count: int
+    total: int
+    page_size: int
+    start_index: int
+    results: List[PrefectureSchema] = []

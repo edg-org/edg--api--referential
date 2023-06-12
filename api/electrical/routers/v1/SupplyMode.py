@@ -30,11 +30,11 @@ supplymodeRouter = APIRouter(
     response_model=List[SupplyModeSchema],
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     supplymodeService: SupplyModeService = Depends(),
 ):
-    return await supplymodeService.list(skip, limit)
+    return await supplymodeService.list(start, size)
 
 # get supply mode route
 @supplymodeRouter.get(

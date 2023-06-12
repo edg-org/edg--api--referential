@@ -12,6 +12,7 @@ from api.salesfinancial.schemas.SubscriptionTypeSchema import (
     CreateSubscriptionType,
     SubscriptionTypeUpdate,
     SubscriptionTypeSchema,
+    SubscriptionTypePagination
 )
 
 router_path = env.api_routers_prefix + env.api_version
@@ -27,14 +28,21 @@ subscriptiontypeRouter = APIRouter(
     "/",
     summary="Getting router for all subscription types",
     description="This router allows to get all subscription types",
-    response_model=List[SubscriptionTypeSchema]
+    response_model=SubscriptionTypePagination
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     typeService: SubscriptionTypeService = Depends()
 ):
-    return await typeService.list(skip, limit)
+    count, subscriptiontypes = await typeService.list(start, size)
+    return {
+        "results": [subscriptiontype for subscriptiontype in subscriptiontypes],
+        "total": len(subscriptiontypes),
+        "count": count,
+        "page_size": size,
+        "start_index": start
+    }
 
 # get subscription type route
 @subscriptiontypeRouter.get(

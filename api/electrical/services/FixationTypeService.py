@@ -24,10 +24,8 @@ class FixationTypeService:
         self.fixationtype = fixationtype
 
     # get all fixation types function
-    async def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[FixationTypeModel]:
-        return self.fixationtype.list(skip=skip, limit=limit)
+    async def list(self, start: int = 0, size: int = 100) -> List[FixationTypeModel]:
+        return self.fixationtype.list(start=start, size=size)
 
     # get fixation type by id function
     async def get(self, id: int) -> FixationTypeModel:

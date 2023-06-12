@@ -20,8 +20,8 @@ class InvoicingFrequencyService:
         self.invoicingfrequency = invoicingfrequency
 
     # get all invoicing frequencies function
-    async def list(self, skip: int = 0, limit: int = 100) -> List[InvoicingFrequencyModel]:
-        return self.invoicingfrequency.list(skip=skip, limit=limit)
+    async def list(self, start: int = 0, size: int = 100) -> List[InvoicingFrequencyModel]:
+        return self.invoicingfrequency.list(start=start, size=size)
 
     # get invoicing frequency by id function
     async def get(self, id: int) -> InvoicingFrequencyModel:

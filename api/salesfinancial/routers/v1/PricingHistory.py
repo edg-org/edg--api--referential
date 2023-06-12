@@ -10,6 +10,7 @@ from fastapi import (
 from api.salesfinancial.schemas.PricingHistorySchema import (
     CreatePricingHistory,
     PricingHistorySchema,
+    PrincingHistoryPagination
 )
 
 router_path = env.api_routers_prefix + env.api_version
@@ -25,14 +26,21 @@ pricinghistoryRouter = APIRouter(
     "/",
     summary="Getting router for all pricing historys",
     description="This router allows to get all pricing historys",
-    response_model=List[PricingHistorySchema],
+    response_model=PrincingHistoryPagination
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     historyService: PricingHistoryService = Depends(),
 ):
-    return await historyService.list(skip, limit)
+    count, histories = await historyService.list(start, size)
+    return {
+        "results": [history for history in histories],
+        "total": len(histories),
+        "count": count,
+        "page_size": size,
+        "start_index": start
+    }
 
 # get pricing history route
 @pricinghistoryRouter.get(

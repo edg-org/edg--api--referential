@@ -21,8 +21,8 @@ class SubscriptionLevelService:
         self.subscriptionlevel = subscriptionlevel
 
     # get all invoice levels function
-    async def list(self, skip: int = 0, limit: int = 100) -> List[SubscriptionLevelModel]:
-        return self.subscriptionlevel.list(skip=skip, limit=limit)
+    async def list(self, start: int = 0, size: int = 100) -> List[SubscriptionLevelModel]:
+        return self.subscriptionlevel.list(start=start, size=size)
 
     # get invoice level by id function
     async def get(self, id: int) -> SubscriptionLevelModel:

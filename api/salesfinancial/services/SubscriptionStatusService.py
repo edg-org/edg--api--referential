@@ -21,8 +21,8 @@ class SubscriptionStatusService:
         self.subscriptionstatus = subscriptionstatus
 
     # get all subscription status function
-    async def list(self, skip: int = 0, limit: int = 100) -> List[SubscriptionStatusModel]:
-        return self.subscriptionstatus.list(skip=skip, limit=limit)
+    async def list(self, start: int = 0, size: int = 100) -> List[SubscriptionStatusModel]:
+        return self.subscriptionstatus.list(start=start, size=size)
 
     # get subscription status by id function
     async def get(self, id: int) -> SubscriptionStatusModel:

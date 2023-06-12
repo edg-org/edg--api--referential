@@ -11,7 +11,8 @@ from api.electrical.schemas.ElectricMeterSchema import (
     ElectricMeterInput,
     CreateElectricMeter,
     ElectricMeterUpdate,
-    ElectricMeterSchema
+    ElectricMeterSchema,
+    ElectricMeterPagination
 )
 
 router_path = env.api_routers_prefix + env.api_version
@@ -27,14 +28,21 @@ meterRouter = APIRouter(
     "/",
     summary="Getting router for all electric meters",
     description="This router allows to get all electric meters",
-    response_model=List[ElectricMeterSchema]
+    response_model=ElectricMeterPagination
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     meterService: ElectricMeterService = Depends(),
 ):
-    return await meterService.list(skip, limit)
+    count, meters = await meterService.list(start, size)
+    return {
+        "results": [meter for meter in meters],
+        "total": len(meters),
+        "count": count,
+        "page_size": size,
+        "start_index": start
+    }
 
 
 # get transformer route

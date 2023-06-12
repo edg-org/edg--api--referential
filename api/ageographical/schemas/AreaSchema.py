@@ -1,6 +1,6 @@
-from typing import Optional
 from pydantic import Field
 from datetime import datetime
+from typing import List, Optional
 from api.configs.BaseModel import BaseSchema
 from api.ageographical.schemas.AgencySchema import AgencySchema
 
@@ -81,3 +81,11 @@ class AreaUpdate(BaseSchema):
 #
 class AreaItemSchema(AreaSchema):
     agencies: list[AgencySchema] = []
+    
+#
+class AreaPagination(BaseSchema):
+    count: int
+    total: int
+    page_size: int
+    start_index: int
+    results: List[AreaSchema] = []

@@ -17,19 +17,13 @@ class ContactTypeRepo:
 
     # get max code
     def maxcode(self) -> int:
-        codemax = self.db.query(
-            func.max(ContactTypeModel.code)
-        ).one()[0]
+        codemax = self.db.query(func.max(ContactTypeModel.code)).one()[0]
         return 0 if codemax is None else codemax
 
     # get all contact types function
-    def list(self, skip: int = 0, limit: int = 100) -> List[ContactTypeModel]:
-        return (
-            self.db.query(ContactTypeModel)
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
+    def list(self, start: int = 0, size: int = 100) -> List[ContactTypeModel]:
+        query = self.db.query(ContactTypeModel)
+        return query.count(), query.offset(start).limit(size).all()
 
     # get contact type by id function
     def get(self, id: int) -> ContactTypeModel:

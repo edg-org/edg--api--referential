@@ -31,11 +31,11 @@ metertypeRouter = APIRouter(
     response_model=List[MeterTypeSchema],
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     metertypeService: MeterTypeService = Depends(),
 ):
-    return await metertypeService.list(skip, limit)
+    return await metertypeService.list(start, size)
 
 
 # get meter type route

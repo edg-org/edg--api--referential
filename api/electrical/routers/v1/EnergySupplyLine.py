@@ -11,7 +11,8 @@ from api.electrical.schemas.EnergySupplyLineSchema import (
     EnergySupplyLineInput,
     CreateEnergySupplyLine,
     EnergySupplyLineSchema,
-    EnergySupplyLineUpdate
+    EnergySupplyLineUpdate,
+    ElectricSupplyLinePagination
 )
 
 router_path = env.api_routers_prefix + env.api_version
@@ -27,14 +28,21 @@ energysupplyRouter = APIRouter(
     "/",
     summary="Getting router for all energy supply lines",
     description="This router allows to get all energy supply line lines",
-    response_model=List[EnergySupplyLineSchema],
+    response_model=ElectricSupplyLinePagination,
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
-    energysupplyService: EnergySupplyLineService = Depends(),
+    start: int = 0,
+    size: int = 100,
+    lineService: EnergySupplyLineService = Depends(),
 ):
-    return await energysupplyService.list(skip, limit)
+    count, lines = await lineService.list(start, size)
+    return {
+        "results": [line for line in lines],
+        "total": len(lines),
+        "count": count,
+        "page_size": size,
+        "start_index": start
+    }
 
 
 # get energy supply line route
@@ -46,9 +54,9 @@ async def list(
 )
 async def get(
     code: int,
-    energysupplyService: EnergySupplyLineService = Depends(),
+    lineService: EnergySupplyLineService = Depends(),
 ):
-    energysupply = await energysupplyService.getbycode(code=code)
+    energysupply = await lineService.getbycode(code=code)
     if energysupply is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -65,9 +73,9 @@ async def get(
 )
 async def create(
     data: List[EnergySupplyLineInput],
-    energysupplyService: EnergySupplyLineService = Depends(),
+    lineService: EnergySupplyLineService = Depends(),
 ):
-    return await energysupplyService.create(data=data)
+    return await lineService.create(data=data)
 
 # update energy supply line route
 @energysupplyRouter.put(
@@ -79,7 +87,7 @@ async def create(
 async def update(
     code: int,
     data: EnergySupplyLineUpdate,
-    energysupplyService: EnergySupplyLineService = Depends(),
+    lineService: EnergySupplyLineService = Depends(),
     tokendata: dict = Depends(JWTBearer())
 ):
-    return await energysupplyService.update(code=code, tokendata=tokendata, data=data)
+    return await lineService.update(code=code, tokendata=tokendata, data=data)

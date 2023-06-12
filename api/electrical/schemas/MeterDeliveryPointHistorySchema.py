@@ -1,3 +1,4 @@
+from typing import List
 from datetime import datetime, date
 from api.configs.BaseModel import BaseSchema
 
@@ -24,3 +25,11 @@ class MeterHistoryCreate(MeterHistorySchema):
 #
 class MeterHistoryInput(MeterHistoryCreate):
     pass
+
+#
+class MeterHistoryPagination(BaseSchema):
+    count: int
+    total: int
+    page_size: int
+    start_index: int
+    results: List[MeterHistorySchema] = []

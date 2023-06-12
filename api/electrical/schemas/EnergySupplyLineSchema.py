@@ -64,3 +64,11 @@ class EnergySupplyLineInput(CreateEnergySupplyLine):
     
 class EnergySupplyLineUpdate(EnergySupplyLineInput):
     pass
+
+#
+class ElectricSupplyLinePagination(BaseSchema):
+    count: int
+    total: int
+    page_size: int
+    start_index: int
+    results: List[EnergySupplyLineSchema] = []

@@ -31,11 +31,18 @@ poleRouter = APIRouter(
     response_model=List[ConnectionPoleSchema],
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
-    poleService: ConnectionPoleService = Depends(),
+    pageSize: int = 100,
+    startIndex: int = 0,
+    poleService: ConnectionPoleService = Depends()
 ):
-    return await poleService.list(skip, limit)
+    count, poles = await poleService.list(startIndex, pageSize)
+    return {
+        "results": [pole.normalize() for pole in poles],
+        "total": len(poles),
+        "count": count,
+        "page_size": pageSize,
+        "start_index": startIndex
+    } 
 
 # get transformer route
 @poleRouter.get(

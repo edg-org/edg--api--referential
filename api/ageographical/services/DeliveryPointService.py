@@ -49,12 +49,8 @@ class DeliveryPointService:
         self.connectionpole = connectionpole
 
     # get all delivery points function
-    async def list(
-        self, 
-        skip: int = 0, 
-        limit: int = 100
-    ) -> List[DeliveryPointModel]:
-        return self.deliverypoint.list(skip=skip, limit=limit)
+    async def list(self, start: int = 0, size: int = 100) -> (int, List[DeliveryPointModel]):
+        return self.deliverypoint.list(start=start, size=size)
 
     # get delivery point by id function
     async def get(self, id: int) -> DeliveryPointModel:

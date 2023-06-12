@@ -30,11 +30,11 @@ invoicestatusRouter = APIRouter(
     response_model=List[InvoiceStatusSchema],
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     statusService: InvoiceStatusService = Depends(),
 ):
-    return await statusService.list(skip, limit)
+    return await statusService.list(start, size)
 
 
 # get invoice status route

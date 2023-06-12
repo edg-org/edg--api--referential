@@ -35,3 +35,11 @@ class CreatePricingHistory(PricingHistorySchema):
         
 class PricingHistoryInput(CreatePricingHistory):
      pass
+ 
+#
+class PrincingHistoryPagination(BaseSchema):
+    count: int
+    total: int
+    page_size: int
+    start_index: int
+    results: List[PricingHistorySchema] = []

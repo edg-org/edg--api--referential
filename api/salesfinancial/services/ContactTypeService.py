@@ -20,8 +20,8 @@ class ContactTypeService:
         self.contacttype = contacttype
 
     # get all contact types function
-    async def list(self, skip: int = 0, limit: int = 100) -> List[ContactTypeModel]:
-        return self.contacttype.list(skip=skip, limit=limit)
+    async def list(self, start: int = 0, size: int = 100) -> List[ContactTypeModel]:
+        return self.contacttype.list(start=start, size=size)
 
     # get contact type by id function
     async def get(self, id: int) -> ContactTypeModel:

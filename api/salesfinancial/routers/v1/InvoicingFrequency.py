@@ -30,11 +30,11 @@ invoicingRouter = APIRouter(
     response_model=List[InvoicingFrequencySchema],
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     frequencyService: InvoicingFrequencyService = Depends(),
 ):
-    return await frequencyService.list(skip, limit)
+    return await frequencyService.list(start, size)
 
 
 # get invoicing frequency route

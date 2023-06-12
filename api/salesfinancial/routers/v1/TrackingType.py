@@ -29,11 +29,11 @@ trackingRouter = APIRouter(
     response_model=List[TrackingTypeSchema]
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     typeService: TrackingTypeService = Depends(),
 ):
-    return await typeService.list(skip, limit)
+    return await typeService.list(start, size)
 
 # get tracking type route
 @trackingRouter.get(

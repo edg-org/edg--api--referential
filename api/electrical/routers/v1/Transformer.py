@@ -1,3 +1,4 @@
+
 from typing import List
 from api.tools.JWTBearer import JWTBearer, env
 from fastapi import (
@@ -12,7 +13,8 @@ from api.electrical.schemas.TransformerSchema import (
     CreateTransformer,
     TransformerSchema,
     TransformerUpdate,
-    TransformerItemSchema
+    TransformerItemSchema,
+    TransformerPagination
 )
 
 router_path = env.api_routers_prefix + env.api_version
@@ -28,14 +30,21 @@ transformerRouter = APIRouter(
     "/",
     summary="Getting router for all transformers",
     description="This router allows to get all transformers",
-    response_model=List[TransformerSchema]
+    response_model=TransformerPagination
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     transformerService: TransformerService = Depends(),
 ):
-    return await transformerService.list(skip, limit)
+    count, transformers = await transformerService.list(start, size)
+    return {
+        "results": [transformer for transformer in transformers],
+        "total": len(transformers),
+        "count": count,
+        "page_size": size,
+        "start_index": start
+    }
 
 
 # get transformer route

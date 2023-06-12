@@ -30,11 +30,11 @@ citytypeRouter = APIRouter(
     response_model=List[CityTypeSchema],
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     typeService: CityTypeService = Depends(),
 ):
-    return await typeService.list(skip, limit)
+    return await typeService.list(start, size)
 
 # get city type route
 @citytypeRouter.get(

@@ -21,13 +21,9 @@ class DeliveryPointRepo:
         return 0 if codemax is None else codemax
 
     # get all delivery points function
-    def list(self, skip: int = 0, limit: int = 100) -> List[DeliveryPointModel]:
-        return (
-            self.db.query(DeliveryPointModel)
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
+    def list(self, start: int = 0, size: int = 100) -> (int, List[DeliveryPointModel]):
+        query = self.db.query(DeliveryPointModel)
+        return query.count(), query.offset(start).limit(size).all()
 
     # get delivery point by id function
     def get(self, id: int) -> DeliveryPointModel:

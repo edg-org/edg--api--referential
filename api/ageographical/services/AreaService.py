@@ -29,12 +29,8 @@ class AreaService:
         self.area = area
 
     # get all areas function
-    async def list(
-        self, 
-        skip: int = 0, 
-        limit: int = 100
-    ) -> List[AreaModel]:
-        return self.area.list(skip=skip, limit=limit)
+    async def list(self, start: int = 0, size: int = 100) -> (int, List[AreaModel]):
+        return self.area.list(start=start, size=size)
 
     # get area by id function
     async def get(self, id: int) -> AreaModel:

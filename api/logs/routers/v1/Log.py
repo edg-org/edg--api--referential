@@ -10,7 +10,8 @@ from fastapi import (
 from api.logs.schemas.LogSchema import (
     LogInput,
     LogSchema,
-    CreateLog
+    CreateLog,
+    LogPagination
 )
 
 router_path = env.api_routers_prefix+env.api_version
@@ -26,10 +27,17 @@ logRouter = APIRouter(
     "/",
     summary="Getting router for all logs",
     description="This router allows to get all logs",
-    response_model=List[LogSchema]
+    response_model=LogPagination
 )
-async def list(skip: int=0, limit: int=100, logService: LogService = Depends()):
-    return await logService.list(skip=skip, limit=limit)
+async def list(start: int=0, size: int=100, logService: LogService = Depends()):
+    count, logs = await logService.list(start, size)
+    return {
+        "results": [log for log in logs],
+        "total": len(logs),
+        "count": count,
+        "page_size": size,
+        "start_index": start
+    }
 
 #get city route
 @logRouter.get(

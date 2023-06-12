@@ -14,8 +14,8 @@ class PricingHistoryService:
         self.pricinghistory = pricinghistory
 
     # get all pricing histories function
-    async def list(self, skip: int = 0, limit: int = 100) -> List[PricingHistoryModel]:
-        return self.pricinghistory.list(skip=skip, limit=limit)
+    async def list(self, start: int = 0, size: int = 100) -> (int, List[PricingHistoryModel]):
+        return self.pricinghistory.list(start=start, size=size)
 
     # get pricing history by id function
     async def get(self, id: int) -> PricingHistoryModel:

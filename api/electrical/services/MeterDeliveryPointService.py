@@ -18,12 +18,8 @@ class MeterDeliveryPointService:
         self.meterdelivery = meterdelivery
 
     # get all meter delivery points function
-    async def list(
-        self, 
-        skip: int = 0, 
-        limit: int = 100
-    ) -> List[MeterDeliveryPointModel]:
-        return self.meterdelivery.list(skip=skip, limit=limit)
+    async def list(self, start: int = 0, size: int = 100) -> (int, List[MeterDeliveryPointModel]):
+        return self.meterdelivery.list(start=start, size=size)
 
     # get meter delivery point by id function
     async def get(self, id: int) -> MeterDeliveryPointModel:

@@ -21,8 +21,8 @@ class CityTypeService:
         self.citytype = citytype
 
     # get all city types function
-    async def list(self, skip: int = 0, limit: int = 100) -> List[CityTypeModel]:
-        return self.citytype.list(skip=skip, limit=limit)
+    async def list(self, start: int = 0, size: int = 100) -> List[CityTypeModel]:
+        return self.citytype.list(start=start, size=size)
 
     # get city type by id function
     async def get(self, id: int) -> CityTypeModel:

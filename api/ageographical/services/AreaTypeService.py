@@ -21,8 +21,8 @@ class AreaTypeService:
         self.areatype = areatype
 
     # get all area types function
-    async def list(self, skip: int = 0, limit: int = 100) -> List[AreaTypeModel]:
-        return self.areatype.list(skip=skip, limit=limit)
+    async def list(self, start: int = 0, size: int = 100) -> List[AreaTypeModel]:
+        return self.areatype.list(start=start, size=size)
 
     # get area type by id function
     async def get(self, id: int) -> AreaTypeModel:

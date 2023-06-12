@@ -20,8 +20,8 @@ class InvoiceStatusService:
         self.invoicestatus = invoicestatus
 
     # get all invoice statuss function
-    async def list(self, skip: int = 0, limit: int = 100) -> List[InvoiceStatusModel]:
-        return self.invoicestatus.list(skip=skip, limit=limit)
+    async def list(self, start: int = 0, size: int = 100) -> List[InvoiceStatusModel]:
+        return self.invoicestatus.list(start=start, size=size)
 
     # get invoice status by id function
     async def get(self, id: int) -> InvoiceStatusModel:

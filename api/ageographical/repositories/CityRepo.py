@@ -76,13 +76,9 @@ class CityRepo:
         )
 
     # get all cities function
-    def list(self, skip: int = 0, limit: int = 100) -> List[CityModel]:
-        return (
-            self.db.query(CityModel)
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
+    def list(self, start: int = 0, size: int = 100) -> (int, List[CityModel]):
+        query = self.db.query(CityModel)
+        return query.count(), query.offset(start).limit(size).all()
 
     # get city by id function
     def get(self, id: int) -> CityModel:

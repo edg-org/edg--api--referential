@@ -27,8 +27,8 @@ class RegionService:
         self.region = region
 
     # get all regions function
-    async def list(self, skip: int = 0, limit: int = 100) -> List[RegionModel]:
-        return self.region.list(skip=skip, limit=limit)
+    async def list(self, start: int = 0, size: int = 100) -> List[RegionModel]:
+        return self.region.list(start=start, size=size)
 
     # get region by id function
     async def get(self, id: int) -> RegionModel:

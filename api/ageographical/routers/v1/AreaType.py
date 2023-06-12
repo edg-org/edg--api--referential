@@ -30,11 +30,11 @@ areatypeRouter = APIRouter(
     response_model=List[AreaTypeSchema],
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     typeService: AreaTypeService = Depends()
 ):
-    return await typeService.list(skip, limit)
+    return await typeService.list(start, size)
 
 # get area type route
 @areatypeRouter.get(

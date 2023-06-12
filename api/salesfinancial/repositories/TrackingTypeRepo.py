@@ -17,19 +17,13 @@ class TrackingTypeRepo:
 
     # get max code
     def maxcode(self) -> int:
-        codemax = self.db.query(
-            func.max(TrackingTypeModel.code)
-        ).one()[0]
+        codemax = self.db.query(func.max(TrackingTypeModel.code)).one()[0]
         return 0 if codemax is None else codemax
 
     # get all tracking types function
-    def list(self, skip: int = 0, limit: int = 100) -> List[TrackingTypeModel]:
-        return (
-            self.db.query(TrackingTypeModel)
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
+    def list(self, start: int = 0, size: int = 100) -> List[TrackingTypeModel]:
+        query = self.db.query(TrackingTypeModel)
+        return query.offset(start).limit(size).all()
 
     # get tracking type by id function
     def get(self, id: int) -> TrackingTypeModel:
@@ -51,10 +45,7 @@ class TrackingTypeRepo:
     def getbyname(self, name: str) -> TrackingTypeModel:
         return (
             self.db.query(TrackingTypeModel)
-            .where(
-                func.lower(TrackingTypeModel.name)
-                == name.lower()
-            )
+            .where(func.lower(TrackingTypeModel.name) == name.lower())
             .first()
         )
 

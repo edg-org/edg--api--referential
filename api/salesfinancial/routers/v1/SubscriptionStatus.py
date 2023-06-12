@@ -29,11 +29,11 @@ subscriptionstatusRouter = APIRouter(
     response_model=List[SubscriptionStatusSchema],
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     statusService: SubscriptionStatusService = Depends(),
 ):
-    return await statusService.list(skip, limit)
+    return await statusService.list(start, size)
 
 # get subscription status route
 @subscriptionstatusRouter.get(

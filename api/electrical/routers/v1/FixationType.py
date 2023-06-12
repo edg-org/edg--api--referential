@@ -30,11 +30,11 @@ fixationtypeRouter = APIRouter(
     response_model=List[FixationTypeSchema],
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     fixationtypeService: FixationTypeService = Depends(),
 ):
-    return await fixationtypeService.list(skip, limit)
+    return await fixationtypeService.list(start, size)
 
 # get fixation type route
 @fixationtypeRouter.get(

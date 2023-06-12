@@ -31,11 +31,11 @@ regionRouter = APIRouter(
     response_model=list[RegionSchema],
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     regionService: RegionService = Depends(),
 ):
-    return await regionService.list(skip, limit)
+    return await regionService.list(start, size)
 
 # get administrative region route
 @regionRouter.get(

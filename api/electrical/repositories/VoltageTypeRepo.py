@@ -15,11 +15,11 @@ class VoltageTypeRepo:
         self.db = db
 
     # get all voltage types function
-    def list(self, skip: int = 0, limit: int = 100) -> List[VoltageTypeModel]:
+    def list(self, start: int = 0, size: int = 100) -> List[VoltageTypeModel]:
         return (
             self.db.query(VoltageTypeModel)
-            .offset(skip)
-            .limit(limit)
+            .offset(start)
+            .limit(size)
             .all()
         )
 

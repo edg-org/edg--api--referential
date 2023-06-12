@@ -29,11 +29,11 @@ subscriptionlevelRouter = APIRouter(
     response_model=List[SubscriptionLevelSchema],
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     levelService: SubscriptionLevelService = Depends(),
 ):
-    return await levelService.list(skip, limit)
+    return await levelService.list(start, size)
 
 # get subscription level route
 @subscriptionlevelRouter.get(

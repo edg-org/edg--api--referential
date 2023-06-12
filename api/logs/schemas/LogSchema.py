@@ -1,5 +1,5 @@
-from typing import Any, Dict
 from datetime import datetime
+from typing import List, Any, Dict
 from api.configs.BaseModel import BaseSchema
 
 class InfosSchema(BaseSchema):
@@ -27,3 +27,11 @@ class CreateLog(LogSchema):
 
 class LogInput(CreateLog):
     pass
+
+#
+class LogPagination(BaseSchema):
+    count: int
+    total: int
+    page_size: int
+    start_index: int
+    results: List[LogSchema] = []

@@ -20,8 +20,8 @@ class TrackingTypeService:
         self.trackingtype = trackingtype
 
     # get all tracking types function
-    async def list(self, skip: int = 0, limit: int = 100) -> List[TrackingTypeModel]:
-        return self.trackingtype.list(skip=skip, limit=limit)
+    async def list(self, start: int = 0, size: int = 100) -> List[TrackingTypeModel]:
+        return self.trackingtype.list(start=start, size=size)
 
     # get tracking type by id function
     async def get(self, id: int) -> TrackingTypeModel:
