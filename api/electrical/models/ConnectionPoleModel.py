@@ -1,10 +1,7 @@
 from datetime import datetime
 from sqlalchemy.orm import relationship
 from api.configs.BaseModel import EntityMeta
-from sqlalchemy.dialects.mysql import (
-    MEDIUMINT,
-    BIGINT,
-)
+from sqlalchemy.dialects.mysql import MEDIUMINT
 from sqlalchemy import (
     Column,
     DateTime,
@@ -16,6 +13,7 @@ from sqlalchemy import (
 
 #
 class ConnectionPoleModel(EntityMeta):
+    
     __tablename__ = "connection_poles"
 
     id = Column(MEDIUMINT(unsigned=True), primary_key=True, index=True)
