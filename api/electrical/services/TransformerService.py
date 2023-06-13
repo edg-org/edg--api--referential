@@ -22,10 +22,12 @@ class TransformerService:
     def __init__(
         self,
         logo: LogRepo = Depends(),
-        transformer: TransformerRepo = Depends()
+        transformer: TransformerRepo = Depends(),
+        arearepo: AreaRepo = Depends()
     ) -> None:
         self.logo = logo
         self.transformer = transformer
+        self.arearepo = arearepo
 
     # get all transformers function
     async def list(self, skip: int = 0, limit: int = 100) -> List[TransformerModel]:
@@ -49,12 +51,12 @@ class TransformerService:
         transformerlist = []
         for item in data:
             multiple = 100
-            input_code = item.infos.city_code
+            input_code = item.infos.area_code
             count = self.transformer.checktransformername(place_code = input_code, name=item.infos.name)
             if count > 0:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Transformer already registered with name {item.infos.name} in the city whose code is {item.infos.city_code}",
+                    detail=f"Transformer already registered with name {item.infos.name} in the city whose code is {item.infos.area_code}",
                 )
             
             #area_id = None
@@ -81,7 +83,7 @@ class TransformerService:
                 step += 1
                 result = generate_code(
                     init_codebase=transformer_basecode(input_code, multiple),
-                    maxcode=self.transformer.maxcodebycity(item.infos.city_code),
+                    maxcode=self.transformer.maxcodebycity(item.infos.area_code),
                     step=step
                 )
                 step = result["step"]
@@ -95,16 +97,78 @@ class TransformerService:
 
                 transformer = CreateTransformer(
                     transformer_code = transformer_code,
-                    area_id = AreaRepo.getidbycode(self.transformer, item.infos.area_code),
-                    fixation_type_id = CityRepo.getidbycode(self.transformer, item.infos.city_code),
+                    area_id=self.arearepo.getidbycode(item.infos.area_code),
+                    fixation_type_id = 1,
                     infos = item.infos,
                     energy_supply_lines = item.energy_supply_lines
                 )
                 transformerlist.append(transformer)
-
+                # print("------------------------------------------------------------------", transformerlist)
         return self.transformer.create(data=transformerlist)
+        # return []
 
-    # update transformer function
+    # create transformer function
+    # async def create(self, data: List[CreateTransformer]) -> List[CreateTransformer]:
+    #     step = 0
+    #     transformerlist = []
+    #     for item in data:
+    #         multiple = 100
+    #         input_code = item.infos.city_code
+    #         count = self.transformer.checktransformername(place_code = input_code, name=item.infos.name)
+    #         if count > 0:
+    #             raise HTTPException(
+    #                 status_code=status.HTTP_400_BAD_REQUEST,
+    #                 detail=f"Transformer already registered with name {item.infos.name} in the city whose code is {item.infos.city_code}",
+    #             )
+    #         
+    #         #area_id = None
+    #         if (hasattr(item.infos, "area_code") and item.infos.area_code is not None):
+    #             multiple = 10
+    #             area_id = AreaRepo.getidbycode(self.transformer, item.infos.area_code)
+    #             input_code = item.infos.area_code
+    #             count = self.transformer.checktransformername(place_code = input_code, name=item.infos.name)
+    #             if count > 0:
+    #                 raise HTTPException(
+    #                     status_code=status.HTTP_400_BAD_REQUEST,
+    #                     detail=f"Transformer already registered with name {item.infos.name} in the area whose code is {item.infos.area_code}",
+    #                 )
+    #         
+    #         if (hasattr(item.infos, "tranformer_serie_number") and item.infos.tranformer_serie_number is not None):
+    #             transformer_code = item.infos.tranformer_serie_number
+    #             count = self.transformer.countbynumber(number=item.transformer_code)
+    #             if count > 0:
+    #                 raise HTTPException(
+    #                     status_code=status.HTTP_400_BAD_REQUEST,
+    #                     detail=f"Transformer already registered with number {item.transformer_code}",
+    #                 )
+    #         else:
+    #             step += 1
+    #             result = generate_code(
+    #                 init_codebase=transformer_basecode(input_code, multiple),
+    #                 maxcode=self.transformer.maxcodebycity(item.infos.city_code),
+    #                 step=step
+    #             )
+    #             step = result["step"]
+    #             transformer_code = result["code"]
+    #             count = self.transformer.countbycode(code=transformer_code)
+    #             if count > 0:
+    #                 raise HTTPException(
+    #                     status_code=status.HTTP_400_BAD_REQUEST,
+    #                     detail=f"Transformer already registered with code {transformer_code}",
+    #                 )
+    # 
+    #             transformer = CreateTransformer(
+    #                 transformer_code = transformer_code,
+    #                 area_id = AreaRepo.getidbycode(self.transformer, item.infos.area_code),
+    #                 fixation_type_id = CityRepo.getidbycode(self.transformer, item.infos.city_code),
+    #                 infos = item.infos,
+    #                 energy_supply_lines = item.energy_supply_lines
+    #             )
+    #             transformerlist.append(transformer)
+    # 
+    #     return self.transformer.create(data=transformerlist)
+    # 
+    # # update transformer function
     async def update(self, code: int, data: TransformerUpdate) -> TransformerModel:
         old_data = jsonable_encoder(self.supply.getbycode(code=code))
         if old_data is None:

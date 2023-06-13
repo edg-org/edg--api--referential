@@ -78,7 +78,7 @@ class SupplyModeRepo:
             .values(**data)
         )
         self.db.commit()
-        return self.getbycode(code=code)
+        return self.getbycode(code=data['code'])
 
     # delete supply mode function
     def delete(self, meter: SupplyModeModel) -> None:

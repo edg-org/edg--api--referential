@@ -69,8 +69,8 @@ class FixationTypeService:
             )
 
         current_data = jsonable_encoder(self.fixationtype.update(code=code, data=data.dict()))
-        logs = [build_log(f"/fixationtypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
-        await self.log.create(logs)
+        logs = [await build_log(f"/fixationtypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        self.log.create(logs)
         return current_data
 
     # delete fixation type function

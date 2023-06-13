@@ -13,7 +13,6 @@ from api.electrical.schemas.ConnectionPoleSchema import (
     CreateConnectionPole
 )
 
-#
 class ConnectionPoleService:
     log: LogRepo
     pole: ConnectionPoleRepo
@@ -48,7 +47,7 @@ class ConnectionPoleService:
 
     # create connection pole function
     async def create(self, data: List[ConnectionPoleUpdate]) -> List[CreateConnectionPole]:
-        #step = 0
+        step = 0
         area_code = None
         polelist = []
         for item in data:
@@ -57,11 +56,11 @@ class ConnectionPoleService:
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="You should only have the list of connection poles for one area at a time"
                 )
-                
+            step += 1
             result = generate_code(
-                init_codebase=pole_basecode(item.infos.area_code),
-                maxcode=self.pole.maxnumberbyarea(item.infos.area_code),
-                step=item.infos.number
+                init_codebase=pole_basecode(item.infos.transformer_code),
+                maxcode=int(self.pole.maxnumberbyarea(item.infos.area_code)),
+                step=step
             )
             pole_number = result["code"]
 
@@ -82,6 +81,41 @@ class ConnectionPoleService:
             area_code = item.infos.area_code
             
         return self.pole.create(data=polelist)
+ # async def create(self, data: List[ConnectionPoleUpdate]) -> List[CreateConnectionPole]:
+ #        #step = 0
+ #        area_code = None
+ #        polelist = []
+ #        for item in data:
+ #            if (area_code is not None) and  (area_code != item.infos.area_code):
+ #                raise HTTPException(
+ #                    status_code=status.HTTP_400_BAD_REQUEST,
+ #                    detail="You should only have the list of connection poles for one area at a time"
+ #                )
+ #
+ #            result = generate_code(
+ #                init_codebase=pole_basecode(item.infos.area_code),
+ #                maxcode=self.pole.maxnumberbyarea(item.infos.area_code),
+ #                step=item.infos.number
+ #            )
+ #            pole_number = result["code"]
+ #
+ #            count = self.pole.countbynumber(number=pole_number)
+ #            if count > 0:
+ #                raise HTTPException(
+ #                    status_code=status.HTTP_400_BAD_REQUEST,
+ #                    detail="Connection Pole already registered with code " + str(pole_number),
+ #                )
+ #
+ #            pole = CreateConnectionPole(
+ #                pole_number = str(pole_number),
+ #                area_id = AreaRepo.getidbycode(self.pole, item.infos.area_code),
+ #                transformer_id = TransformerRepo.getidbycode(self.pole, item.infos.transformer_code),
+ #                infos = item.infos
+ #            )
+ #            polelist.append(pole)
+ #            area_code = item.infos.area_code
+ #
+ #        return self.pole.create(data=polelist)
 
     # update connection pole function
     async def update(self, number: int, data: ConnectionPoleModel) -> ConnectionPoleModel:

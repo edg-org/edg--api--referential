@@ -1,19 +1,19 @@
 from typing import Any, Dict
 from datetime import datetime
 from api.configs.BaseModel import BaseSchema
-
+from typing import Optional
 class InfosSchema(BaseSchema):
-    microservice_name: str
-    endpoint: str
-    verb: str
-    user_email: str
-    previous_metadata: Dict[str, Any]
-    current_metadata: Dict[str, Any]
+    microservice_name: Optional[str]
+    endpoint: Optional[str]
+    verb: Optional[str]
+    user_email: Optional[str]
+    previous_metadata: Optional[Dict[str, Any]]
+    current_metadata: Optional[Dict[str, Any]]
     
 class LogSchema(BaseSchema):
-    id: int
-    created_at: datetime
-    infos: InfosSchema
+    id: Optional[int]
+    created_at: Optional[datetime]
+    infos: Optional[InfosSchema]
     
     class Config:
         orm_mode = True

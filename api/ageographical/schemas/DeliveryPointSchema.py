@@ -8,24 +8,24 @@ class DeliveryCoordinates(BaseSchema):
     longitude: float
 
 class DeliveryInfos(BaseSchema):
-    number: int
-    area_code: int
-    electrical_code: int
-    pole_number: int
-    address: str
+    number: Optional[int]
+    area_code: Optional[int]
+    electrical_code: Optional[int]
+    pole_number: Optional[int]
+    address: Optional[str]
     coordinates: Optional[DeliveryCoordinates]
 
 class ConnectionPole(BaseSchema):
-    electrical_code: int
-    activation_date: date
+    electrical_code: Optional[int]
+    activation_date: Optional[date]
     desactivation_date: Optional[date]=None
-    is_actived: bool
+    is_actived: bool = False
     
 class DeliveryPointSchema(BaseSchema):
     id: int
-    delivery_point_number: int
+    delivery_point_number: Optional[int]
     infos: DeliveryInfos
-    connection_poles: List[ConnectionPole]
+    connection_poles: Optional[List[ConnectionPole]]
     area_id: int
     pole_id: int
     is_activated: bool
@@ -55,11 +55,9 @@ class DeliveryPointInput(CreateDeliveryPoint):
             "pole_id",
             "delivery_point_number"
         }
- 
- #   
+
 class DeliveryPointUpdate(DeliveryPointInput):
  pass
-
 
 class DeliveryPointDetails(CreateDeliveryPoint):
     details: Dict

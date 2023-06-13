@@ -1,0 +1,56 @@
+[
+  {
+    "code": 100,
+    "name": "Basse Tension Domestique Monophasé",
+    "subscription_type_code": 100,
+    "start_date": "2023-06-10",
+    "end_date": "2023-06-10",
+    "infos": {
+      "subscription_fee": 10,
+      "slices": [
+        {
+          "name": "studio",
+          "unit_price": 0,
+          "lower_index": 0,
+          "upper_index": 0
+        }
+      ]
+    }
+  },
+  {
+    "code": 101,
+    "name": "Basse Tension Domestique Triphasé",
+    "subscription_type_code": 101,
+    "start_date": "2023-06-10",
+    "end_date": "2023-06-10",
+    "infos": {
+      "subscription_fee": 10,
+      "slices": [
+        {
+          "name": "studio",
+          "unit_price": 0,
+          "lower_index": 0,
+          "upper_index": 0
+        }
+      ]
+    }
+  },
+  {
+    "code": 102,
+    "name": "Basse Tension Professionnel Monophasé",
+    "subscription_type_code": 102,
+    "start_date": "2023-06-10",
+    "end_date": "2023-06-10",
+    "infos": {
+      "subscription_fee": 10,
+      "slices": [
+        {
+          "name": "studio",
+          "unit_price": 0,
+          "lower_index": 0,
+          "upper_index": 0
+        }
+      ]
+    }
+  }
+]

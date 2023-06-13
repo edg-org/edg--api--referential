@@ -80,16 +80,26 @@ class EnergySupplyLineRepo:
         )
 
     # check energy supply line name in the city function
-    def checklinename(self, departure_city_code: int, name: str) -> int:
+    def checklinename(self, code: int, name: str) -> int:
         return (
             self.db.query(func.count(EnergySupplyLineModel.id))
             .where(
                 and_(
-                    EnergySupplyLineModel.infos["departure_city_code"] == departure_city_code,
+                    EnergySupplyLineModel.infos["departure_area_code"] == code,
                     func.lower(func.json_unquote(EnergySupplyLineModel.infos["name"])) == name.lower()
                 )
             ).one()[0]
         )
+   # def checklinename(self, departure_city_code: int, name: str) -> int:
+   #      return (
+   #          self.db.query(func.count(EnergySupplyLineModel.id))
+   #          .where(
+   #              and_(
+   #                  EnergySupplyLineModel.infos["departure_city_code"] == departure_city_code,
+   #                  func.lower(func.json_unquote(EnergySupplyLineModel.infos["name"])) == name.lower()
+   #              )
+   #          ).one()[0]
+   #      )
 
     # create energy supply line function
     def create(self, data: List[CreateEnergySupplyLine]) -> List[CreateEnergySupplyLine]:

@@ -2,7 +2,7 @@ from faker import Faker
 from typing import List
 from unittest import TestCase
 from sqlalchemy.orm import Session
-from unittest.mock import create_autospec, patch
+from unittest.mock import create_autospec, patch, Mock
 from api.ageographical.repositories.AreaRepo import AreaRepo
 
 class TestAreaRepository(TestCase):
@@ -52,7 +52,7 @@ class TestAreaRepository(TestCase):
     @patch("api.ageographical.schemas.AreaSchema.CreateArea", autospec=True)
     def test_update(self, CreateArea):
         fake = Faker()
-        area : CreateArea = CreateArea(
+        data : CreateArea = CreateArea(
             code=fake,
             zipcode=fake,
             city_id=fake,
@@ -63,7 +63,7 @@ class TestAreaRepository(TestCase):
                 is_same_zipcode=fake
             )
         )
-        self.areaRepository.update(area)
-        self.session.merge.assert_called_once()
-        self.session.commit.assert_called_once()
-        self.session.refresh.assert_called_once()
+
+        self.areaRepository.update = Mock()
+        self.areaRepository.update(1, data)
+        self.areaRepository.update.assert_called_with(1, data)

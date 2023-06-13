@@ -5,6 +5,9 @@ from api.tools.Helper import agency_basecode, generate_code
 from api.ageographical.repositories.CityRepo import CityRepo
 from api.ageographical.models.AgencyModel import AgencyModel
 from api.ageographical.repositories.AgencyRepo import AgencyRepo
+from fastapi.encoders import jsonable_encoder
+from api.logs.services.LogService import LogService
+from api.tools.Helper import build_log
 from api.ageographical.schemas.AgencySchema import (
     AgencyInput,
     AgencyUpdate,
@@ -13,12 +16,12 @@ from api.ageographical.schemas.AgencySchema import (
 
 #
 class AgencyService:
-    log: LogRepo
+    log: LogService
     agency: AgencyRepo
 
     def __init__(
         self, 
-        log: LogRepo = Depends(),
+        log: LogService = Depends(),
         agency: AgencyRepo = Depends()
     ) -> None:
         self.log = log
@@ -83,23 +86,42 @@ class AgencyService:
         return self.agency.create(data=agencylist)
 
     # update agency function
+    # async def update(self, code: int, data: AgencyUpdate) -> AgencyModel:
+    #     count = self.agency.countbycode(code=code)
+    #     if count == 0:
+    #         raise HTTPException(
+    #             status_code=status.HTTP_404_NOT_FOUND,
+    #             detail="Agency not found",
+    #         )
+    #
+    #     agency = CreateAgency(
+    #         code = code,
+    #         city_id = CityRepo.getidbycode(self.agency, data.infos.city_code),
+    #         infos = data.infos
+    #     )
+    #     agencydict = agency.dict(exclude_unset=True)
+    #     for key, val in agencydict.items():
+    #         setattr(agency, key, val)
+    #     return self.agency.update(agency)
+
     async def update(self, code: int, data: AgencyUpdate) -> AgencyModel:
-        count = self.agency.countbycode(code=code)
-        if count == 0:
+        old_data = jsonable_encoder(self.agency.getbycode(code=code))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Agency not found",
             )
 
-        agency = CreateAgency(
-            code = code,
-            city_id = CityRepo.getidbycode(self.agency, data.infos.city_code),
-            infos = data.infos
-        )
-        agencydict = agency.dict(exclude_unset=True)
-        for key, val in agencydict.items():
-            setattr(agency, key, val)
-        return self.agency.update(agency)
+        # if (hasattr(data.infos, "city_type") and data.infos.city_type is not None):
+        #     data.city_type_id = CityTypeRepo.getbyname(self.agency, data.infos.city_type).id
+        #
+        # if (hasattr(data.infos, "city_level") and data.infos.city_level is not None):
+        #     data.city_level_id = CityLevelRepo.getbyname(self.agency, data.infos.city_level).id
+
+        current_data = jsonable_encoder(self.agency.update(code=code, data=data.dict()))
+        logs = [await build_log(f"/agency/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        await self.log.create(logs)
+        return current_data
 
     # delete agency function
     async def delete(self, code: int) -> None:

@@ -9,20 +9,18 @@ class ZoneSearchParams(BaseSchema):
     code: int = Field(description="Field of the natural region code")
     name: str | None = Field(description="Field of the natural region name")
 
-#
 class ZoneCoordinates(BaseSchema):
-    altitude: float
-    latitude: float
-    longitude: float
+    altitude: Optional[float]
+    latitude: Optional[float]
+    longitude: Optional[float]
 
-#
 class ZoneSchema(BaseSchema):
     id: int
     code: int
     name: str
     coordinates: Optional[ZoneCoordinates]
-    is_activated: bool
-    created_at: datetime
+    is_activated: Optional[bool]
+    created_at: Optional[datetime]
     updated_at: Optional[datetime]
     deleted_at: Optional[datetime]
 
@@ -46,7 +44,7 @@ class ZoneInput(CreateZone):
         fields_to_hide = {"code"}
 
 #
-class ZoneUpdate(ZoneInput):
+class ZoneUpdate(CreateZone):
     pass
 
 #

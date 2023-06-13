@@ -3,14 +3,18 @@ from fastapi import Depends, HTTPException, status
 from api.salesfinancial.models.ContactTypeModel import ContactTypeModel
 from api.salesfinancial.repositories.ContactTypeRepo import ContactTypeRepo
 from api.salesfinancial.schemas.ContactTypeSchema import CreateContactType
+from fastapi.encoders import jsonable_encoder
+from api.tools.Helper import build_log
+from api.logs.repositories.LogRepo import LogRepo
 
 class ContactTypeService:
     contacttype: ContactTypeRepo
-
+    log: LogRepo
     def __init__(
-        self, contacttype: ContactTypeRepo = Depends()
+        self, contacttype: ContactTypeRepo = Depends(), log: LogRepo = Depends(),
     ) -> None:
         self.contacttype = contacttype
+        self.log = log
 
     # get all contact types function
     async def list(
@@ -51,22 +55,36 @@ class ContactTypeService:
 
         return self.contacttype.create(data=data)
 
-    # update contact type function
+    # # update contact type function
+    # async def update(self, code: int, data: CreateContactType) -> ContactTypeModel:
+    #     contacttype = self.contacttype.getbycode(code=code)
+    #     if contacttype is None:
+    #         raise HTTPException(
+    #             status_code=status.HTTP_404_NOT_FOUND,
+    #             detail="Contact Type not found",
+    #         )
+    #
+    #     typedict = data.dict(exclude_unset=True)
+    #     for key, val in typedict.items():
+    #         setattr(contacttype, key, val)
+    #     return self.contacttype.update(contacttype)
+
     async def update(self, code: int, data: CreateContactType) -> ContactTypeModel:
-        contacttype = self.contacttype.getbycode(code=code)
-        if contacttype is None:
+        old_data = jsonable_encoder(self.contacttype.getbycode(code=code))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Contact Type not found",
             )
 
-        typedict = data.dict(exclude_unset=True)
-        for key, val in typedict.items():
-            setattr(contacttype, key, val)
-        return self.contacttype.update(contacttype)
+        current_data = jsonable_encoder(self.contacttype.update(code=code, data=data.dict()))
+        logs = [await build_log(f"/contacttype/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        self.log.create(logs)
+        return current_data
 
     # delete contact type %function
     async def delete(self, contact: ContactTypeModel) -> None:
+        code = ""  #
         contacttype = self.contacttype.getbycode(code=code)
         if contacttype is None:
             raise HTTPException(

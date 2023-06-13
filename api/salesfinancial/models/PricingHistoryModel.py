@@ -8,7 +8,7 @@ class PricingHistoryModel(EntityMeta):
 
     id = Column(TINYINT(unsigned=True), primary_key=True, index=True)
     code = Column(TINYINT(unsigned=True), index=True, unique=True, nullable=False)
-    name = Column(String(20), index=True, unique=True, nullable=False)
+    name = Column(String(100), index=True, unique=True, nullable=False)
     start_date = Column(Date, nullable=False)
     end_date = Column(Date, nullable=False)
     subscription_type_code = Column(TINYINT(unsigned=True), index=True, nullable=False)

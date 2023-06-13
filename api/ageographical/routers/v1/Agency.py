@@ -72,7 +72,7 @@ async def create(
     "/{code}",
     summary="Update router a agency",
     description="This router allows to update a agency",
-    response_model=AgencySchema,
+    # response_model=AgencySchema,
 )
 async def update(
     code: int,
@@ -80,3 +80,4 @@ async def update(
     agencyService: AgencyService = Depends(),
 ):
     return await agencyService.update(code=code, data=data)
+    # return data

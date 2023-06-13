@@ -25,9 +25,9 @@ class CityRepo:
         return 0 if codemax is None else codemax
 
     # get max zipcode of city by prefecture
-    def maxzipcodebypref(self, prefecture_id: int) -> int:
+    def maxzipcodebypref(self, prefecture_id: int) -> str:
         codemax = (
-            self.db.query(func.max(int(CityModel.zipcode)))
+            self.db.query(func.max(CityModel.zipcode))
             .where(CityModel.prefecture_id == prefecture_id)
             .one()[0]
         )
@@ -76,6 +76,7 @@ class CityRepo:
             .where(CityModel.code == code)
             .one()[0]
         )
+
 
     # get all cities function
     def list(

@@ -115,8 +115,8 @@ async def create(
     response_model=CitySchema,
 )
 async def update(
-    id: int,
+    code: int,
     data: CityUpdate,
     cityService: CityService = Depends(),
 ):
-    return await cityService.update(id=id, data=data)
+    return await cityService.update(code=code, data=data)

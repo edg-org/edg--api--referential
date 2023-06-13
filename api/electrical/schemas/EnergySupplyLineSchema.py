@@ -24,7 +24,7 @@ class SupplyInfos(BaseSchema):
     maximum_power: float
     power_measurement_unit: str
     departure_area_code: int
-    departure_address: str
+    # departure_address: str
     is_owner : bool = True
     areas_served: Optional[List[AreasServed]] = None
     agencies_served: Optional[List[AgenciesServed]] = None

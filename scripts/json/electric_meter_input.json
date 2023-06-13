@@ -2,11 +2,31 @@
     {
         "infos": {
             "brand": "Scheneider",
-            "meter_type": "communicant",
-            "power_mode": "monophasé",
-            "index_reading": 0,
+            "meter_type": "Non Communicant",
+            "supply_mode": "monophasé",
+            "index_reading": 15,
             "manufacturing_country": "Allemagne"
         },
         "meter_number": "3456UYH8900234"
+    },
+    {
+        "infos": {
+            "brand": "Scheneider",
+            "meter_type": "Non Communicant",
+            "supply_mode": "Triphasé",
+            "index_reading": 10,
+            "manufacturing_country": "Allemagne"
+        },
+        "meter_number": "3456UYH8900235"
+    },
+    {
+        "infos": {
+            "brand": "Scheneider",
+            "meter_type": "communicant",
+            "supply_mode": "Triphasé",
+            "index_reading": 20,
+            "manufacturing_country": "Allemagne"
+        },
+        "meter_number": "3456UYH8900236"
     }
 ]

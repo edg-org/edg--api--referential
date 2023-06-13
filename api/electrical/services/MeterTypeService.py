@@ -65,6 +65,7 @@ class MeterTypeService:
 
     # update meter type function
     async def update(self, code: int, data: MeterTypeUpdate) -> MeterTypeUpdate:
+        current_data = {}
         old_data = jsonable_encoder(self.metertype.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
@@ -73,8 +74,8 @@ class MeterTypeService:
             )
 
         current_data = jsonable_encoder(self.metertype.update(code=code, data=data.dict()))
-        logs = [build_log(f"/metertypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
-        await self.log.create(logs)
+        logs = [await build_log(f"/metertypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        self.log.create(logs)
         return current_data
 
     # delete meter type function

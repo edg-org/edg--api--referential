@@ -38,7 +38,7 @@ class MeterTypeRepo:
         )
 
     # get meter type code function
-    def getbycode(self, code: str) -> MeterTypeModel:
+    def getbycode(self, code: int) -> MeterTypeModel:
         return (
             self.db.query(MeterTypeModel)
             .where(MeterTypeModel.code == code)
@@ -70,7 +70,8 @@ class MeterTypeRepo:
             .values(**data)
         )
         self.db.commit()
-        return self.getbycode(code=code)
+
+        return self.getbycode(code=data['code'])
 
     # delete meter type function
     def delete(self, type: MeterTypeModel) -> None:

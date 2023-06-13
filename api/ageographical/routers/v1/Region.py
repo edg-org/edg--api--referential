@@ -83,6 +83,7 @@ async def get_region_item(
     response_model=List[CreateRegion],
 )
 async def create(
+    # data: List[CreateRegion],
     data: List[RegionInput],
     regionService: RegionService = Depends(),
 ):

@@ -1,0 +1,32 @@
+[
+  {
+    "infos": {
+      "microservice_name": "referential-geographique",
+      "endpoint": "http://",
+      "verb": "post",
+      "user_email": "diatas2@gmail.com",
+      "previous_metadata": {},
+      "current_metadata": {}
+    }
+  },
+  {
+    "infos": {
+      "microservice_name": "referential-geographique",
+      "endpoint": "http://",
+      "verb": "post",
+      "user_email": "diatas2@gmail.com",
+      "previous_metadata": {},
+      "current_metadata": {}
+    }
+  },
+  {
+    "infos": {
+      "microservice_name": "referential-geographique",
+      "endpoint": "http://",
+      "verb": "post",
+      "user_email": "diatas2@gmail.com",
+      "previous_metadata": {},
+      "current_metadata": {}
+    }
+  }
+]

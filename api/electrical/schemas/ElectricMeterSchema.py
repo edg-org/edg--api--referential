@@ -4,19 +4,21 @@ from api.configs.BaseModel import BaseSchema
 
 #
 class ElectricMeterInfos(BaseSchema):
-    brand: str
-    meter_type: str
-    supply_mode: str
-    index_reading: float
-    manufacturing_country: str
+    brand: Optional[str]
+    meter_type: Optional[str]
+    supply_mode: Optional[str]
+    index_reading: Optional[float]
+    manufacturing_country: Optional[str]
 
 #
 class ElectricMeterSchema(BaseSchema):
-    id: int
-    meter_number: str
-    infos: ElectricMeterInfos
-    is_activated: bool
-    created_at: datetime
+    id: Optional[int]
+    meter_number: Optional[str]
+    supply_mode_id: Optional[int]
+    meter_type_id: Optional[int]
+    infos: Optional[ElectricMeterInfos]
+    is_activated: bool = True
+    created_at: Optional[datetime]
     updated_at: Optional[datetime]
     deleted_at: Optional[datetime]
     
@@ -35,9 +37,9 @@ class CreateElectricMeter(ElectricMeterSchema):
         }
 
 #
-class ElectricMeterInput(ElectricMeterSchema):
+class ElectricMeterInput(CreateElectricMeter):
     class Config:
-        fields_to_hide = {"meter_number"}
+        fields_to_hide = {"supply_mode_id","meter_type_id"}
 
 #
 class ElectricMeterUpdate(ElectricMeterInput):

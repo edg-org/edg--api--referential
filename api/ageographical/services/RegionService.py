@@ -56,7 +56,7 @@ class RegionService:
                     detail=f"Administrative Region already registered with name {item.name}",
                 )
 
-            if (zone_name is not None) and  (zone_name != item.infos.natural_zone):
+            if (zone_name is not None) and (zone_name != item.infos.natural_zone):
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="You should only have the list of administrative regions for one natural region at a time"
@@ -70,7 +70,7 @@ class RegionService:
                 step=step
             )
             step = result["step"]
-            region_code = result["code"]       
+            region_code = result["code"]
             region = self.region.getbycode(region_code)
             if region:
                 raise HTTPException(
@@ -84,6 +84,7 @@ class RegionService:
                 zone_id = natural_zone.id,
                 infos = item.infos
             )
+
             regionlist.append(region)
             zone_name = item.infos.natural_zone
 
@@ -99,7 +100,7 @@ class RegionService:
             )
 
         current_data = jsonable_encoder(self.region.update(code, data=data.dict()))
-        logs = [build_log(f"/regions/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [await build_log(f"/regions/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return current_data
 

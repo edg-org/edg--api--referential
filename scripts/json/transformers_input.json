@@ -6,18 +6,93 @@
             "power": 70,
             "power_mesurement_unit": "kWh",
             "fixation_type": "Poste Cabine",
-            "area_code": 3011910102301,
+            "area_code": 102020801,
             "electrical_code": "011001001",
             "manufacturing_country": "Allemagne"
         },
         "energy_supply_lines": [
             {
-                "electrical_code": "011001",
+                "electrical_code": "102020801201",
                 "activation_date": "2023-05-10",
                 "is_actived": true
             },
             {
-                "electrical_code": "011002",
+                "electrical_code": "102020801102",
+                "activation_date": "2021-05-10",
+                "desactivation_date": "2023-05-10",
+                "is_actived": false
+            }
+        ]
+    },
+    {
+        "infos": {
+            "name": "Poste Teminetaye",
+            "brand": "schneider",
+            "power": 70,
+            "power_mesurement_unit": "kWh",
+            "fixation_type": "Poste Cabine",
+            "area_code": 102020801,
+            "electrical_code": "011001001",
+            "manufacturing_country": "Allemagne"
+        },
+        "energy_supply_lines": [
+            {
+                "electrical_code": "102020801201",
+                "activation_date": "2023-05-10",
+                "is_actived": true
+            },
+            {
+                "electrical_code": "102020801102",
+                "activation_date": "2021-05-10",
+                "desactivation_date": "2023-05-10",
+                "is_actived": false
+            }
+        ]
+    },
+    {
+        "infos": {
+            "name": "Poste Teminetaye",
+            "brand": "schneider",
+            "power": 70,
+            "power_mesurement_unit": "kWh",
+            "fixation_type": "Poste Cabine",
+            "area_code": 102020802,
+            "electrical_code": "011001001",
+            "manufacturing_country": "Allemagne"
+        },
+        "energy_supply_lines": [
+            {
+                "electrical_code": "102020801201",
+                "activation_date": "2023-05-10",
+                "is_actived": true
+            },
+            {
+                "electrical_code": "102020801102",
+                "activation_date": "2021-05-10",
+                "desactivation_date": "2023-05-10",
+                "is_actived": false
+            }
+        ]
+    },
+    {
+        "infos": {
+            "name": "Poste Teminetaye",
+            "brand": "schneider",
+            "power": 70,
+            "power_mesurement_unit": "kWh",
+            "fixation_type": "Poste Cabine",
+            "area_code": 102020802,
+            "electrical_code": "011001001",
+            "manufacturing_country": "Allemagne"
+        },
+        "energy_supply_lines": [
+            {
+                "electrical_code": "102020801201",
+                "activation_date": "2023-05-10",
+                "is_actived": true
+            },
+            {
+                "electrical_code": "102020801102",
                 "activation_date": "2021-05-10",
                 "desactivation_date": "2023-05-10",
                 "is_actived": false

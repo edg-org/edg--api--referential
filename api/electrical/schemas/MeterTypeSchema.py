@@ -4,10 +4,10 @@ from api.configs.BaseModel import BaseSchema
 
 #
 class MeterTypeSchema(BaseSchema):
-    id: int
-    code: int
-    name: str
-    created_at: datetime
+    id: Optional[int]
+    code: Optional[int]
+    name: Optional[str]
+    created_at: Optional[datetime]
     updated_at: Optional[datetime]
     
     class Config:
@@ -24,8 +24,7 @@ class CreateMeterType(MeterTypeSchema):
 
 #
 class MeterTypeInput(CreateMeterType):
-    class Config:
-        fields_to_hide = {"code"}
+    pass
 
 #
 class MeterTypeUpdate(MeterTypeInput):

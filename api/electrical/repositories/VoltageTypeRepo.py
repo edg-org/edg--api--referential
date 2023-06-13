@@ -32,7 +32,8 @@ class VoltageTypeRepo:
         )
 
     # get voltage type code function
-    def getbycode(self, code: str) -> VoltageTypeModel:
+    def getbycode(self, code: int) -> VoltageTypeModel:
+        print("---------------------------------------code voltage----------------------------------", code)
         return (
             self.db.query(VoltageTypeModel)
             .where(VoltageTypeModel.code == code)

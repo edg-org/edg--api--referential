@@ -68,7 +68,7 @@ class VoltageTypeService:
 
     # update voltage type function
     async def update(self, code: int, data: VoltageTypeUpdate) -> VoltageTypeUpdate:
-        old_data = self.voltagetype.getbycode(code=code)
+        old_data = jsonable_encoder(self.voltagetype.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -76,7 +76,7 @@ class VoltageTypeService:
             )
         
         current_data = jsonable_encoder(self.voltagetype.update(code=code, data=data.dict()))
-        logs = [build_log(f"/voltagetypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [await build_log(f"/voltagetypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return current_data
     

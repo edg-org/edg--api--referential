@@ -44,15 +44,15 @@ async def list(
     response_model=VoltageTypeSchema,
 )
 async def get(
-    code: int, supplylineService: VoltageTypeService = Depends()
+    code: str, supplylineService: VoltageTypeService = Depends()
 ):
-    supplyline = await supplylineService.getbycode(code=code)
+    supplylinetype = await supplylineService.getbycode(code=code)
     if supplylinetype is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Supply Line Voltage Type not found",
         )
-    return supplyline
+    return supplylinetype
 
 
 # post voltage type route

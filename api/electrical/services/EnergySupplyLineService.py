@@ -4,6 +4,7 @@ from fastapi.encoders import jsonable_encoder
 from api.logs.repositories.LogRepo import LogRepo
 from fastapi import Depends, HTTPException, status
 from api.ageographical.repositories.CityRepo import CityRepo
+from api.ageographical.repositories.AreaRepo import AreaRepo
 from api.tools.Helper import generate_code, energy_supply_basecode, build_log
 from api.electrical.repositories.SupplyLineTypeRepo import SupplyLineTypeRepo
 from api.electrical.models.EnergySupplyLineModel import EnergySupplyLineModel
@@ -21,10 +22,14 @@ class EnergySupplyLineService:
     def __init__(
         self, 
         log: LogRepo = Depends(),
-        energysupply: EnergySupplyLineRepo = Depends()
+        energysupply: EnergySupplyLineRepo = Depends(),
+        cityrepo: CityRepo = Depends(),
+        arearepo: AreaRepo = Depends()
     ) -> None:
         self.log = log
         self.energysupply = energysupply
+        self.cityrepo = cityrepo
+        self.arearepo = arearepo
 
     # get all energy supplies function
     async def list(
@@ -49,29 +54,30 @@ class EnergySupplyLineService:
     # create energy supply line function
     async def create(self, data: List[EnergySupplyLineInput]) -> List[CreateEnergySupplyLine]:
         step = 0
-        city_code = None
+        area_code = None
         energysupplylist = []
-        departure_city_code = 0
+        departure_area_code = 0
         for item in data:
-            count = self.energysupply.checklinename(departure_city_code = item.infos.departure_city_code, name=item.infos.name)
+            count = self.energysupply.checklinename(code = item.infos.departure_area_code, name=item.infos.name)
             if count > 0:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail=f"Energy Departure already registered with name {item.infos.name}",
                 )
 
-            if (city_code is not None) and  (city_code != item.infos.departure_city_code):
+            if (area_code is not None) and  (area_code != item.infos.departure_area_code):
                 step = 0
-                
+
             step += 1
             line_type_id = SupplyLineTypeRepo.getbyname(self.energysupply, item.infos.line_type).id
-            departure_city_code = item.infos.departure_city_code
-            suffix = (departure_city_code*10)+line_type_id
+            departure_area_code = item.infos.departure_area_code
+            suffix = (departure_area_code*10)+line_type_id
             result = generate_code(
                 init_codebase=energy_supply_basecode(suffix),
-                maxcode=self.energysupply.maxcodebycitylinetype(departure_city_code, line_type_id),
+                maxcode=self.energysupply.maxcodebycitylinetype(departure_area_code, line_type_id),
                 step=step
             )
+
             step = result["step"]
             energy_supply_code = result["code"]
             count = self.energysupply.countbycode(code=energy_supply_code)
@@ -80,17 +86,77 @@ class EnergySupplyLineService:
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail=f"Energy Departure already registered with code {energy_supply_code}",
                 )
-            
+
             energy_supply = CreateEnergySupplyLine(
                 code = energy_supply_code,
-                departure_city_id =  CityRepo.getidbycode(self.energysupply, item.infos.departure_city_code),
                 line_type_id = line_type_id,
+                departure_area_id =  self.arearepo.getidbycode(item.infos.departure_area_code),
+                voltage_type_id = 1,
                 infos = item.infos
             )
             energysupplylist.append(energy_supply)
-            city_code = item.infos.departure_city_code
-        
+            area_code = item.infos.departure_area_code
+
         return self.energysupply.create(data=energysupplylist)
+
+    # # create energy supply line function
+    # async def create(self, data: List[EnergySupplyLineInput]) -> List[CreateEnergySupplyLine]:
+    #     step = 0
+    #     city_code = None
+    #     area_code = None
+    #     energysupplylist = []
+    #     departure_city_code = 0
+    #     for item in data:
+    #         count = self.energysupply.checklinename(code = item.infos.departure_area_code, name=item.infos.name)
+    #         # count = self.energysupply.checklinename(departure_city_code = item.infos.departure_city_code, name=item.infos.name)
+    #         if count > 0:
+    #             raise HTTPException(
+    #                 status_code=status.HTTP_400_BAD_REQUEST,
+    #                 detail=f"Energy Departure already registered with name {item.infos.name}",
+    #             )
+    #
+    #         if (area_code is not None) and  (area_code != item.infos.departure_area_code):
+    #             step = 0
+    #
+    #         # if (city_code is not None) and  (city_code != item.infos.departure_city_code):
+    #         #     step = 0
+    #
+    #         step += 1
+    #         line_type_id = SupplyLineTypeRepo.getbyname(self.energysupply, item.infos.line_type).id
+    #         departure_city_code = item.infos.departure_city_code
+    #         suffix = (departure_city_code*10)+line_type_id
+    #         result = generate_code(
+    #             init_codebase=energy_supply_basecode(suffix),
+    #             maxcode=self.energysupply.maxcodebycitylinetype(departure_city_code, line_type_id),
+    #             step=step
+    #         )
+    #
+    #         step = result["step"]
+    #         energy_supply_code = result["code"]
+    #         count = self.energysupply.countbycode(code=energy_supply_code)
+    #         if count > 0:
+    #             raise HTTPException(
+    #                 status_code=status.HTTP_400_BAD_REQUEST,
+    #                 detail=f"Energy Departure already registered with code {energy_supply_code}",
+    #             )
+    #
+    #
+    #         energy_supply = CreateEnergySupplyLine(
+    #             code = energy_supply_code,
+    #             # departure_city_id =  CityRepo.getidbycode(self.energysupply, item.infos.departure_city_code),
+    #             departure_city_id = self.cityrepo.getidbycode(item.infos.departure_city_code),
+    #             line_type_id = line_type_id,
+    #             departure_area_id =  self.arearepo.getidbycode(item.infos.departure_area_code),
+    #             # departure_area_id = 9,
+    #             voltage_type_id = 1,
+    #             infos = item.infos
+    #         )
+    #         energysupplylist.append(energy_supply)
+    #         city_code = item.infos.departure_city_code
+    #         area_code = item.infos.departure_area_code
+    #
+    #     return self.energysupply.create(data=energysupplylist)
+    #     # return []
 
     # update energy supply line function
     async def update(self, code: int, data: EnergySupplyLineModel) -> EnergySupplyLineModel:

@@ -7,8 +7,6 @@ from api.electrical.models.SupplyModeModel import SupplyModeModel
 from api.electrical.schemas.SupplyModeSchema import CreateSupplyMode
 from api.electrical.repositories.SupplyModeRepo import SupplyModeRepo
 
-#
-
 class SupplyModeService:
     log: LogRepo
     supplymode: SupplyModeRepo
@@ -68,8 +66,8 @@ class SupplyModeService:
             )
     
         current_data = jsonable_encoder(self.supplymode.update(code=code, data=data.dict()))
-        logs = [build_log(f"/supplymodes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
-        await self.log.create(logs)
+        logs = [await build_log(f"/supplymodes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        self.log.create(logs)
         return current_data
 
     # delete supply mode function

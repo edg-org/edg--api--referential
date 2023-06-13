@@ -88,10 +88,11 @@ class PrefectureService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Prefecture not found",
             )
-        
-        data.region_id = RegionRepo.getidbyname(self.prefecture, data.infos.region)
+
+        # if (hasattr(data.infos, "region") and data.infos.region is not None):
+        #     pass
         current_data = jsonable_encoder(self.prefecture.update(code=code, data=data.dict()))
-        logs = [build_log(f"/prefectures/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [await build_log(f"/prefectures/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return current_data
 

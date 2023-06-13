@@ -5,7 +5,7 @@ from fastapi import Depends, encoders
 from api.configs.Database import get_db
 from api.salesfinancial.models.SubscriptionTypeModel import SubscriptionTypeModel
 from api.salesfinancial.schemas.SubscriptionTypeSchema import CreateSubscriptionType
-
+from sqlalchemy import insert, func, update
 class SubscriptionTypeRepo:
     db: Session
 
@@ -67,11 +67,15 @@ class SubscriptionTypeRepo:
         return data
 
     # update subscription type function
-    def update(self, data: CreateSubscriptionType) -> SubscriptionTypeModel:
-        self.db.merge(data)
+
+    def update(self, code: str, data: CreateSubscriptionType) -> SubscriptionTypeModel:
+        self.db.execute(
+            update(SubscriptionTypeModel)
+            .where(SubscriptionTypeModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete subscription type function
     def delete(self, subscription: SubscriptionTypeModel) -> None:

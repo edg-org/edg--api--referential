@@ -1,6 +1,6 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
+from sqlalchemy import insert, update, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
 from api.ageographical.models.CityLevelModel import CityLevelModel
@@ -42,7 +42,7 @@ class CityLevelRepo:
         )
 
     # get city level code function
-    def getbycode(self, code: str) -> CityLevelModel:
+    def getbycode(self, code: int) -> CityLevelModel:
         return (
             self.db.query(CityLevelModel)
             .where(CityLevelModel.code == code)
@@ -70,11 +70,14 @@ class CityLevelRepo:
         return data
 
     # update city level function
-    def update(self, data: CityLevelUpdate) -> CityLevelModel:
-        self.db.merge(data)
+    def update(self, code: int, data: dict) -> CityLevelModel:
+        self.db.execute(
+            update(CityLevelModel)
+            .where(CityLevelModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete city level function
     def delete(self, city: CityLevelModel) -> None:

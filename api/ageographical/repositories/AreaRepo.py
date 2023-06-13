@@ -2,7 +2,7 @@ from typing import List
 from sqlalchemy.orm import Session
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from sqlalchemy import insert, func, and_
+from sqlalchemy import insert, update, func, and_
 from api.ageographical.models.AreaModel import AreaModel
 from api.ageographical.schemas.AreaSchema import CreateArea
 
@@ -30,9 +30,9 @@ class AreaRepo:
         return 0 if codemax is None else codemax
     
     # get max zipcode of area by city
-    def maxzipcodebycity(self, city_id: int) -> int:
+    def maxzipcodebycity(self, city_id: int) -> str:
         codemax = (
-            self.db.query(func.max(int(AreaModel.zipcode)))
+            self.db.query(func.max(AreaModel.zipcode))
             .where(AreaModel.city_id == city_id)
             .one()[0]
         )
@@ -169,11 +169,14 @@ class AreaRepo:
         return data
 
     # update area function
-    def update(self, data: CreateArea) -> AreaModel:
-        self.db.merge(data)
+    def update(self, code: int, data: dict) -> AreaModel:
+        self.db.execute(
+            update(AreaModel)
+            .where(AreaModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete area function
     def delete(self, area: AreaModel) -> None:

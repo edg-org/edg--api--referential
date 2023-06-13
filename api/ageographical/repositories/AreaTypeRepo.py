@@ -1,6 +1,6 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
+from sqlalchemy import insert, update, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
 from api.ageographical.models.AreaTypeModel import AreaTypeModel
@@ -70,11 +70,14 @@ class AreaTypeRepo:
         return data
 
     # update area type function
-    def update(self, data: AreaTypeUpdate) -> AreaTypeModel:
-        self.db.merge(data)
+    def update(self, code: int, data: dict) -> AreaTypeModel:
+        self.db.execute(
+            update(AreaTypeModel)
+            .where(AreaTypeModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete area type function
     def delete(self, area: AreaTypeModel) -> None:

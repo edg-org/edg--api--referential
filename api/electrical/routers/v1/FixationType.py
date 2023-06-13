@@ -46,13 +46,13 @@ async def list(
 async def get(
     code: int, supplylineService: FixationTypeService = Depends()
 ):
-    supplyline = await supplylineService.getbycode(code=code)
+    supplylinetype = await supplylineService.getbycode(code=code)
     if supplylinetype is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Transformer Fixation Type not found",
         )
-    return supplyline
+    return supplylinetype
 
 
 # post fixation type route

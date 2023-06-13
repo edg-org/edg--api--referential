@@ -8,9 +8,9 @@ class AgencySearchParams(BaseSchema):
     name: str | None = Field(description="Field of the agency name")
 
 class AgencyCoordinates(BaseSchema):
-    altitude: str
-    latitude: str
-    longitude: str
+    altitude: float
+    latitude: float
+    longitude: float
 
 class AgencyInfos(BaseSchema):
     name: str
@@ -21,12 +21,33 @@ class AgencyInfos(BaseSchema):
     coordinates: Optional[AgencyCoordinates]
 
 class AgencyUpdateInfos(AgencyInfos):
-    class Config:
-        fields_to_hide = {
-            "city_code",
-            "coordinates"
-        }
-    
+    pass
+    # class Config:
+    #     fields_to_hide = {
+    #         "city_code",
+    #         # "coordinates"
+    #     }
+
+#
+# {
+#   "id": 14,
+#   "code": 102020110,
+#   "city_id": 1,
+#   "infos": {
+#     "name": "Agence Kankan 1",
+#     "email": "kankan1@edg.gn.com",
+#     "telephone": "+224-630-34-56-78",
+#     "address": "quartier korialen",
+#     "city_code": 1020201,
+#     "coordinates": null
+#   },
+#   "is_activated": true,
+#   "created_at": "2023-06-07T14:18:10",
+#   "updated_at": null,
+#   "deleted_at": null
+# }
+
+
 #
 class AgencySchema(BaseSchema):
     id: int

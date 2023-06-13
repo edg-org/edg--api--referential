@@ -4,18 +4,15 @@ from datetime import datetime
 from api.configs.BaseModel import BaseSchema
 from api.ageographical.schemas.CitySchema import CitySchema
 
-#
 class PrefectureSearchParams(BaseSchema):
     code: int = Field(description="Field of the prefecture code")
     name: str | None = Field(description="Field of the prefecture name")
 
-#
 class PrefectureCoordinates(BaseSchema):
     altitude: float
     latitude: float
     longitude: float
 
-#
 class PrefectureInfos(BaseSchema):
     region: str
     coordinates: Optional[PrefectureCoordinates]
@@ -23,17 +20,16 @@ class PrefectureInfos(BaseSchema):
 class PrefectureUpdateInfos(BaseSchema):
     region: str
 
-#
 class PrefectureSchema(BaseSchema):
-    id: int
-    name: str
-    is_capital: bool
-    code: int
-    region_id: int
-    prefecture_number: str
-    infos: PrefectureInfos
-    is_activated: bool
-    created_at: datetime
+    id: Optional[int]
+    name: Optional[str]
+    is_capital: Optional[bool]
+    code: Optional[int]
+    region_id: Optional[int]
+    prefecture_number: Optional[str]
+    infos: Optional[PrefectureInfos]
+    is_activated: Optional[bool]
+    created_at: Optional[datetime]
     updated_at: Optional[datetime]
     deleted_at: Optional[datetime]
 
@@ -62,9 +58,9 @@ class PrefectureInput(CreatePrefecture):
 
 #
 class PrefectureUpdate(BaseSchema):
-    name: str
-    is_captital: bool
-    infos: PrefectureUpdateInfos
+    name: Optional[str]
+    is_capital: Optional[bool]
+    infos: Optional[PrefectureUpdateInfos]
 
 #
 class PrefectureItemSchema(PrefectureSchema):

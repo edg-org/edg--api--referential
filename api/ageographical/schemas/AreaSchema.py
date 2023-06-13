@@ -32,12 +32,12 @@ class AreaUpdateInfos(BaseSchema):
     is_same_zipcode: bool = False
     agency_code: Optional[int] = None
     hierarchical_area_code: Optional[int] = None
-    
-#
+    coordinates: Optional[AreaCoordinates]
+
 class AreaSchema(BaseSchema):
     id: int
     code: int
-    zipcode: int
+    zipcode: str
     city_id: int
     area_type_id: int
     agency_id: Optional[int] = None
@@ -55,7 +55,7 @@ class AreaSchema(BaseSchema):
 class CreateArea(AreaSchema):
     class Config:
         fields_to_hide = {
-            "id", 
+            "id",
             "is_activated",
             "created_at",
             "updated_at",
@@ -66,11 +66,12 @@ class CreateArea(AreaSchema):
 class AreaInput(CreateArea):    
     class Config:
         fields_to_hide = {
-            "code", 
+            "code",
             "zipcode",
-            "city_type_id",
-            "city_level_id",
-            "prefecture_id"
+            "city_id",
+            "area_type_id",
+            "agency_id",
+            "hierarchical_area_id"
         }
 
 #

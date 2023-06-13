@@ -24,8 +24,9 @@ class CreateContactType(ContactTypeSchema):
 
 #
 class ContactTypeInput(CreateContactType):
-    class Config:
-        fields_to_hide = {"code"}
+    pass
+    # class Config:
+    #     fields_to_hide = {"code"}
 
 #
 class ContactTypeUpdate(ContactTypeInput):

@@ -45,26 +45,26 @@ class MeterDeliveryPointService:
         self, 
         data: List[CreateMeterDeliveryPoint]
     ) -> List[CreateMeterDeliveryPoint]:
-        for item in data:
-            meterdelivery = self.meterdelivery.getbycode(
-                code=item.code
-            )
-            if meterdelivery:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Meter Delivery Point already registered with code "
-                    + str(item.code),
-                )
-
-            meterdelivery = self.meterdelivery.getbyname(
-                name=item.name
-            )
-            if meterdelivery:
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Meter Delivery Point already registered with name "
-                    + item.name,
-                )
+        # for item in data:
+        #     meterdelivery = self.meterdelivery.getbycode(
+        #         code=item.code
+        #     )
+        #     if meterdelivery:
+        #         raise HTTPException(
+        #             status_code=status.HTTP_400_BAD_REQUEST,
+        #             detail="Meter Delivery Point already registered with code "
+        #             + str(item.code),
+        #         )
+        #
+        #     meterdelivery = self.meterdelivery.getbyname(
+        #         name=item.name
+        #     )
+        #     if meterdelivery:
+        #         raise HTTPException(
+        #             status_code=status.HTTP_400_BAD_REQUEST,
+        #             detail="Meter Delivery Point already registered with name "
+        #             + item.name,
+        #         )
 
         return self.meterdelivery.create(data=data)
 

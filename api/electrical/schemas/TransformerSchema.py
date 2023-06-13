@@ -2,6 +2,7 @@ from typing import Optional, List
 from datetime import date, datetime
 from api.configs.BaseModel import BaseSchema
 from api.electrical.schemas.ConnectionPoleSchema import ConnectionPoleSchema
+from sqlalchemy.sql import func
 
 #
 class TransformerCoordinates(BaseSchema):
@@ -11,10 +12,11 @@ class TransformerCoordinates(BaseSchema):
 
 #
 class EnergySupplyLines(BaseSchema):
-    electrical_code: int
-    is_activated: bool
-    activation_dated: date
-    desactivation_date: Optional[date]=None
+    electrical_code: int = 0
+    is_activated: bool = False
+    activation_date: Optional[date]
+    # activation_date: date = func.now()
+    desactivation_date: Optional[date] = None
 
 #
 class TransformerInfos(BaseSchema):
@@ -27,7 +29,6 @@ class TransformerInfos(BaseSchema):
     electrical_code: int
     tranformer_serial_number: Optional[str]
     manufacturing_country: Optional[str] = None
-    energy_supply_lines: List[EnergySupplyLines]
     address: Optional[str]
     coordinates: Optional[TransformerCoordinates] = None
 
@@ -38,6 +39,7 @@ class TransformerSchema(BaseSchema):
     area_id: int
     fixation_type_id: int
     infos: TransformerInfos
+    energy_supply_lines: Optional[List[EnergySupplyLines]]
     is_activated: bool
     created_at: datetime
     updated_at: Optional[datetime]

@@ -9,10 +9,10 @@
             "voltage_measurement_unit": "kV",
             "maximum_power": 200,
             "power_measurement_unit": "kWh",
-            "departure_area_code": 30119201,
+            "departure_area_code": 102020801,
             "area_served": [
-                30119201,
-                30119201
+                102020801,
+                102020801
             ],
             "is_owner": true,
             "color": "red",
@@ -29,14 +29,74 @@
             "voltage_measurement_unit": "kV",
             "maximum_power": 100,
             "power_measurement_unit": "kWh",
-            "departure_area_code": 30119211,
+            "departure_area_code": 102020801,
             "departure_address": {},
             "area_served": [
-                30119201,
-                30119201
+                102020801,
+                102020801
             ],
             "is_owner": false,
             "color": "yellow",
+            "agencies_served": []
+        }
+    },
+    {
+        "infos": {
+            "name": "Ligne Kissosso",
+            "electrical_code": "011001",
+            "voltage_type": "Départ Moyenne Tension",
+            "line_type": "sous-terraine",
+            "real_voltage": 20,
+            "voltage_measurement_unit": "kV",
+            "maximum_power": 200,
+            "power_measurement_unit": "kWh",
+            "departure_area_code": 102020801,
+            "area_served": [
+                102020801,
+                102020801
+            ],
+            "is_owner": true,
+            "color": "red",
+            "agencies_served": []
+        }
+    },
+    {
+        "infos": {
+            "name": "Ligne Matam",
+            "electrical_code": "011001",
+            "voltage_type": "Départ Moyenne Tension",
+            "line_type": "sous-terraine",
+            "real_voltage": 20,
+            "voltage_measurement_unit": "kV",
+            "maximum_power": 200,
+            "power_measurement_unit": "kWh",
+            "departure_area_code": 102020804,
+            "area_served": [
+                102020801,
+                102020801
+            ],
+            "is_owner": true,
+            "color": "red",
+            "agencies_served": []
+        }
+    },
+    {
+        "infos": {
+            "name": "Ligne Madina",
+            "electrical_code": "011001",
+            "voltage_type": "Départ Moyenne Tension",
+            "line_type": "sous-terraine",
+            "real_voltage": 20,
+            "voltage_measurement_unit": "kV",
+            "maximum_power": 200,
+            "power_measurement_unit": "kWh",
+            "departure_area_code": 102020804,
+            "area_served": [
+                102020801,
+                102020801
+            ],
+            "is_owner": true,
+            "color": "red",
             "agencies_served": []
         }
     }

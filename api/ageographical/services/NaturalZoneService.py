@@ -2,7 +2,7 @@ from typing import List
 from datetime import datetime
 from fastapi.encoders import jsonable_encoder
 from fastapi import Depends, HTTPException, status
-from api.logs.services.LogService import LogService
+from api.logs.repositories.LogRepo import LogRepo
 from api.tools.Helper import build_log, generate_zone_code
 from api.ageographical.models.NaturalZoneModel import ZoneModel
 from api.ageographical.repositories.NaturalZoneRepo import ZoneRepo
@@ -15,12 +15,12 @@ from api.ageographical.schemas.NaturalZoneSchema import (
 #
 class ZoneService:
     zone: ZoneRepo
-    log: LogService
+    log: LogRepo
 
     def __init__(
         self, 
         zone: ZoneRepo = Depends(),
-        log: LogService = Depends()
+        log: LogRepo = Depends()
     ) -> None:
         self.log = log
         self.zone = zone
@@ -78,8 +78,8 @@ class ZoneService:
             )
 
         current_data = jsonable_encoder(self.zone.update(code, data=data.dict()))
-        logs = [build_log(f"/naturalregions/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
-        await self.log.create(logs)
+        logs = [await build_log(f"/naturalregions/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        self.log.create(logs)
         return current_data
 
     # activate or desactivate natural region function

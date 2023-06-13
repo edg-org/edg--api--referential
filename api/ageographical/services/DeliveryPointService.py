@@ -93,17 +93,17 @@ class DeliveryPointService:
         area_code = None
         deliverypointlist = []
         for item in data:
-            if (area_code is not None) and  (area_code != item.infos.area_code):
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="You should only have the list of delivery point for one area or at a time"
-                )
-            
-            if (area_code is not None) and  (area_code != item.infos.area_code):
-                raise HTTPException(
-                    status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="You should only have the list of agencies for one city or at a time"
-                )
+            # if (area_code is not None) and  (area_code != item.infos.area_code):
+            #     raise HTTPException(
+            #         status_code=status.HTTP_400_BAD_REQUEST,
+            #         detail="You should only have the list of delivery point for one area or at a time"
+            #     )
+            #
+            # if (area_code is not None) and  (area_code != item.infos.area_code):
+            #     raise HTTPException(
+            #         status_code=status.HTTP_400_BAD_REQUEST,
+            #         detail="You should only have the list of agencies for one city or at a time"
+            #     )
 
             result = generate_code(
                 init_codebase=deliverypoint_basecode(item.infos.area_code),
@@ -123,7 +123,7 @@ class DeliveryPointService:
             deliverypoint = CreateDeliveryPoint(
                 delivery_point_number = delivery_point_number,
                 area_id = AreaRepo.getidbycode(self.deliverypoint, item.infos.area_code),
-                connection_point_id = ConnectionPoleRepo.getbynumber(self.deliverypoint, item.infos.connection_point_number).id,
+                pole_id = ConnectionPoleRepo.getbynumber(self.deliverypoint, item.infos.pole_number).id,
                 infos = item.infos
             )
             

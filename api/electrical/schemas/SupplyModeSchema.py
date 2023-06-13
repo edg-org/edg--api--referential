@@ -24,9 +24,7 @@ class CreateSupplyMode(SupplyModeSchema):
 
 #
 class SupplyModeInput(CreateSupplyMode):
-    class Config:
-        fields_to_hide = {"code"}
-
+    pass
 #
 class SupplyModeUpdate(SupplyModeInput):
     pass

@@ -7,6 +7,7 @@ from sqlalchemy import (
     Date,
     JSON,
     String,
+    null
 )
 
 class MeterDeliveryPointModel(EntityMeta):
@@ -16,5 +17,5 @@ class MeterDeliveryPointModel(EntityMeta):
     meter_number = Column(String(15), index=True, unique=True, nullable=False)
     delivery_point_number = Column(String(15), index=True, unique=True, nullable=False)
     installation_date = Column(Date, nullable=False)
-    infos = Column(JSON, nullable=False)
+    infos = Column(JSON, nullable=True, default = null())
     created_at = Column(DateTime(timezone=True), server_default=datetime.utcnow().isoformat(), nullable=False)

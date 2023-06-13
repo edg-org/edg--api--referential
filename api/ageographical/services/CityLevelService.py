@@ -64,9 +64,9 @@ class CityLevelService:
                 detail="City Level not found",
             )
 
-        current_data = jsonable_encoder(self.citytype.update(code=code, data=data.dict()))
-        logs = [build_log(f"/citylevels/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
-        await self.log.create(logs)
+        current_data = jsonable_encoder(self.citylevel.update(code=code, data=data.dict()))
+        logs = [await build_log(f"/citylevels/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        self.log.create(logs)
         return current_data
 
     # delete city level %function

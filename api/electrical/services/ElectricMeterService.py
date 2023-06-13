@@ -58,7 +58,8 @@ class ElectricMeterService:
             meter = CreateElectricMeter(
                 meter_number=item.meter_number,
                 meter_type_id=MeterTypeRepo.getbyname(self.meter, item.infos.meter_type).id,
-                power_mode_id=SupplyModeRepo.getbyname(self.meter, item.infos.power_mode).id,
+                # supply_mode_id=1,
+                supply_mode_id=SupplyModeRepo.getbyname(self.meter, item.infos.supply_mode).id,
                 infos=item.infos
             )
             metriclist.append(meter)

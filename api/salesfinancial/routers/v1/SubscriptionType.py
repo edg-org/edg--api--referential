@@ -46,12 +46,10 @@ async def list(
     response_model=SubscriptionTypeSchema,
 )
 async def get(
-    code: int,
+    code: str,
     typeService: SubscriptionTypeService = Depends(),
 ):
-    subscriptiontype = await typeService.getbycode(
-        code=code
-    )
+    subscriptiontype = await typeService.getbycode(code=code)
     if subscriptiontype is None:
         raise HTTPException(
             type_code=status.HTTP_404_NOT_FOUND,
@@ -82,7 +80,7 @@ async def create(
     response_model=SubscriptionTypeSchema,
 )
 async def update(
-    code: int,
+    code: str,
     data: SubscriptionTypeUpdate,
     typeService: SubscriptionTypeService = Depends(),
 ):

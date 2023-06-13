@@ -1,26 +1,46 @@
 [
-    {
-        "infos": {
-            "number": 1,
-            "area_code": 30119101102301,
-            "connection_point_number": 30119101102301001,
-            "address": "quartier banankoroda"
-        }
+  {
+    "infos": {
+      "number": 102220,
+      "area_code": 102020801,
+      "electrical_code": 1020208010,
+      "pole_number": 1020208012001,
+      "address": "Kipe",
+      "coordinates": {
+        "altitude": 0,
+        "latitude": 0,
+        "longitude": 0
+      }
     },
-    {
-        "infos": {
-            "number": 2,
-            "area_code": 30119101102301,
-            "connection_point_number": 30119101102301001,
-            "address": "quartier banankoroda"
-        }
+    "connection_poles": [
+      {
+        "electrical_code": 147800000002,
+        "activation_date": "2023-06-09",
+        "desactivation_date": "2023-06-09",
+        "is_actived": true
+      }
+    ]
+  },
+  {
+    "infos": {
+      "number": 102221,
+      "area_code": 102020802,
+      "electrical_code": 1020208011,
+      "pole_number": 1020208012001,
+      "address": "Kaporo",
+      "coordinates": {
+        "altitude": 0,
+        "latitude": 0,
+        "longitude": 0
+      }
     },
-    {
-        "infos": {
-            "number": 3,
-            "area_code": 30119101102301,
-            "connection_point_number": 30119101102301001,
-            "address": "quartier banankoroda"
-        }
-    }
+    "connection_poles": [
+      {
+        "electrical_code": 147800000003,
+        "activation_date": "2023-06-09",
+        "desactivation_date": "2023-06-09",
+        "is_actived": true
+      }
+    ]
+  }
 ]

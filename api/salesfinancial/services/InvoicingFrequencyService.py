@@ -3,15 +3,19 @@ from fastapi import Depends, HTTPException, status
 from api.salesfinancial.models.InvoicingFrequencyModel import InvoicingFrequencyModel
 from api.salesfinancial.repositories.InvoicingFrequencyRepo import InvoicingFrequencyRepo
 from api.salesfinancial.schemas.InvoicingFrequencySchema import CreateInvoicingFrequency
+from fastapi.encoders import jsonable_encoder
+from api.tools.Helper import build_log
+from api.logs.repositories.LogRepo import LogRepo
 
 class InvoicingFrequencyService:
     invoicingfrequency: InvoicingFrequencyRepo
-
+    log: LogRepo
     def __init__(
         self,
-        invoicingfrequency: InvoicingFrequencyRepo = Depends(),
+        invoicingfrequency: InvoicingFrequencyRepo = Depends(), log: LogRepo = Depends()
     ) -> None:
         self.invoicingfrequency = invoicingfrequency
+        self.log = log
 
     # get all invoicing frequencies function
     async def list(
@@ -59,23 +63,37 @@ class InvoicingFrequencyService:
         return self.invoicingfrequency.create(data=data)
 
     # update invoicing frequency function
+    # async def update(self, code: int, data: CreateInvoicingFrequency) -> InvoicingFrequencyModel:
+    #     invoicingfrequency = self.invoicingfrequency.getbycode(code=code)
+    #     if invoicingfrequency is None:
+    #         raise HTTPException(
+    #             status_code=status.HTTP_404_NOT_FOUND,
+    #             detail="Invoicing Frequency not found",
+    #         )
+    #
+    #     frequencydict = data.dict(exclude_unset=True)
+    #     for key, val in frequencydict.items():
+    #         setattr(invoicingfrequency, key, val)
+    #     return self.invoicingfrequency.update(
+    #         invoicingfrequency
+    #     )
+
     async def update(self, code: int, data: CreateInvoicingFrequency) -> InvoicingFrequencyModel:
-        invoicingfrequency = self.invoicingfrequency.getbycode(code=code)
-        if invoicingfrequency is None:
+        old_data = jsonable_encoder(self.invoicingfrequency.getbycode(code=code))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Invoicing Frequency not found",
             )
 
-        frequencydict = data.dict(exclude_unset=True)
-        for key, val in frequencydict.items():
-            setattr(invoicingfrequency, key, val)
-        return self.invoicingfrequency.update(
-            invoicingfrequency
-        )
+        current_data = jsonable_encoder(self.invoicingfrequency.update(code=code, data=data.dict()))
+        logs = [await build_log(f"/invoicingfrequency/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        self.log.create(logs)
+        return current_data
 
     # delete invoicing frequency %function
     async def delete(self, invoicing: InvoicingFrequencyModel) -> None:
+        code = ""
         invoicingfrequency = self.invoicingfrequency.getbycode(code=code)
         if invoicingfrequency is None:
             raise HTTPException(

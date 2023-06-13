@@ -17,18 +17,19 @@ class CityCoordinates(BaseSchema):
 
 #
 class CityInfos(BaseSchema):
-    name: str
-    city_type: str
-    city_level: str
-    prefecture: str
+    name: Optional[str]
+    city_type: Optional[str]
+    city_level: Optional[str]
+    prefecture: Optional[str]
     coordinates: Optional[CityCoordinates]
 
 #
-class CityUpdateInfos(BaseSchema):
-    name: str
-    city_type: str
-    city_level: str
-#
+class CityUpdateInfos(CityInfos):
+    pass
+#     name: str
+#     city_type: str
+#     city_level: str
+# #
 class CitySchema(BaseSchema):
     id: int
     code: int
@@ -38,7 +39,7 @@ class CitySchema(BaseSchema):
     prefecture_id: int
     infos: CityInfos
     is_activated: bool
-    created_at: datetime
+    created_at: Optional[datetime]
     updated_at: Optional[datetime]
     deleted_at: Optional[datetime]
     
@@ -70,7 +71,20 @@ class CityInput(CreateCity):
 #
 class CityUpdate(BaseSchema):
     infos: CityUpdateInfos
-
+# {
+#    "infos":{
+#       "code":1020201,
+#       "name":"boké",
+#       "city_type":"Commune Urbaine",
+#       "city_level":"Préfecture",
+#       "prefecture":"boké",
+#       "coordinates":{
+#          "altitude":0,
+#          "latitude":0,
+#          "longitude":0
+#       }
+#    }
+# }
 #
 class CityItemSchema(CitySchema):
     areas: list[AreaSchema] = []

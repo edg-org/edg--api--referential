@@ -4,8 +4,6 @@ from fastapi import Depends
 from api.logs.models.LogModel import LogModel
 from api.logs.schemas.LogSchema import CreateLog
 from api.logs.repositories.LogRepo import LogRepo
-
-
 class LogService:
     logs: LogRepo
     

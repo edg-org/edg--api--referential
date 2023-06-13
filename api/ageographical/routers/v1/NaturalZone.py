@@ -15,12 +15,24 @@ from api.ageographical.schemas.NaturalZoneSchema import (
     ZoneItemSchema,
 )
 
+from api.tools.JWTBearer import JWTBearer
+
+
 env = get_env_var()
 router_path = env.api_routers_prefix + env.api_version
+
+
+# contractRouter = APIRouter(
+#     prefix=router_path + "/subscriptions",
+#     tags=["Subscription"],
+#     dependencies=[Depends(JWTBearer())]
+# )
+
 
 zoneRouter = APIRouter(
     prefix=router_path + "/naturalregions",
     tags=["Natural Regions"],
+    # dependencies=[Depends(JWTBearer())]
 )
 
 # post natural region route
@@ -93,7 +105,7 @@ async def get_zone_item(
     "/{code}",
     summary="Update router a natural region",
     description="This router allows to update a natural region",
-    response_model=ZoneSchema,
+    # response_model=ZoneSchema,
 )
 async def update(
     code: int,
@@ -101,3 +113,4 @@ async def update(
     zoneService: ZoneService = Depends(),
 ):
     return await zoneService.update(code=code, data=data)
+    # return data

@@ -6,17 +6,13 @@ from api.logs.services.LogService import LogService
 from api.ageographical.models.CityTypeModel import CityTypeModel
 from api.ageographical.repositories.CityTypeRepo import CityTypeRepo
 from api.ageographical.schemas.CityTypeSchema import CreateCityType
-
+from api.logs.repositories.LogRepo import LogRepo
 #
 class CityTypeService:
-    log: LogService
+    log: LogRepo
     citytype: CityTypeRepo
 
-    def __init__(
-        self, 
-        log: LogService = Depends(),
-        citytype: CityTypeRepo = Depends()
-    ) -> None:
+    def __init__(self, citytype: CityTypeRepo = Depends(), log: LogRepo = Depends()) -> None:
         self.log = log
         self.citytype = citytype
 
@@ -29,7 +25,7 @@ class CityTypeService:
         return self.citytype.get(id=id)
 
     # get city type by code function
-    async def getbycode(self, code: str) -> CityTypeModel:
+    async def getbycode(self, code: int) -> CityTypeModel:
         return self.citytype.getbycode(code=code)
 
     # get city type by name function
@@ -65,8 +61,8 @@ class CityTypeService:
             )
 
         current_data = jsonable_encoder(self.citytype.update(code, data=data.dict()))
-        logs = [build_log(f"/citytypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
-        await self.log.create(logs)
+        logs = [await build_log(f"/citytypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        self.log.create(logs)
         return current_data
 
     # delete city type function

@@ -121,7 +121,7 @@ class CityService:
                 city_type_id = CityTypeRepo.getbyname(self.city, item.infos.city_type).id,
                 city_level_id = CityLevelRepo.getbyname(self.city, item.infos.city_level).id,
                 prefecture_id = prefecture.id,
-                zipcode = zipcode,
+                zipcode = str(zipcode),
                 infos = item.infos
             )
             citylist.append(city)
@@ -138,10 +138,14 @@ class CityService:
                 detail="City not found",
             )
 
-        data.city_type_id = CityTypeRepo.getbyname(self.city, data.infos.city_type).id
-        data.city_level_id = CityLevelRepo.getbyname(self.city, data.infos.city_level).id
+        # if (hasattr(data.infos, "city_type") and data.infos.city_type is not None):
+        #     data.city_type_id = CityTypeRepo.getbyname(self.city, data.infos.city_type).id
+        #
+        # if (hasattr(data.infos, "city_level") and data.infos.city_level is not None):
+        #     data.city_level_id = CityLevelRepo.getbyname(self.city, data.infos.city_level).id
+
         current_data = jsonable_encoder(self.city.update(code=code, data=data.dict()))
-        logs = [build_log(f"/cities/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [await build_log(f"/cities/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return current_data
 

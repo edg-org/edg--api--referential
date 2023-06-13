@@ -5,7 +5,7 @@ from api.configs.Database import get_db
 from sqlalchemy import insert, update, func
 from api.electrical.models.ConnectionPoleModel import ConnectionPoleModel
 from api.electrical.schemas.ConnectionPoleSchema import CreateConnectionPole
-
+from sqlalchemy import select, insert, update, delete, and_, or_
 
 class ConnectionPoleRepo:
     db: Session
@@ -23,12 +23,31 @@ class ConnectionPoleRepo:
         return 0 if codemax is None else codemax
     
     # get max number of connection area by area
+    # def maxnumberbyarea(
+    #     self,
+    #     area_code: int
+    # ) -> int:
+    #
+    #     # codemax = self.db.execute(select(func.count(ConnectionPoleModel.pole_number))).scalar()
+    #     codemax = self.db.execute(select(func.max(ConnectionPoleModel.pole_number))).scalar()
+    #
+    #     # codemax = (
+    #     #     self.db.query(func.max(ConnectionPoleModel.pole_number))
+    #     #     .where(ConnectionPoleModel.infos["area_code"] == area_code)
+    #     #     .one()[0]
+    #     # )
+    #
+    #     print("--------------------------codemax---------------------------------", codemax)
+    #
+    #     return 0 if codemax is None else codemax
+    #
+    # # get max number of connection area by area
     def maxnumberbyarea(
-        self, 
+        self,
         area_code: int
     ) -> int:
         codemax = (
-            self.db.query(func.max(ConnectionPoleModel.connection_pole_number))
+            self.db.query(func.max(ConnectionPoleModel.pole_number))
             .where(ConnectionPoleModel.infos["area_code"] == area_code)
             .one()[0]
         )
@@ -62,7 +81,7 @@ class ConnectionPoleRepo:
     ) -> ConnectionPoleModel:
         return (
             self.db.query(ConnectionPoleModel)
-            .where(ConnectionPoleModel.connection_pole_number == number)
+            .where(ConnectionPoleModel.pole_number == number)
             .first()
         )
 
@@ -78,7 +97,7 @@ class ConnectionPoleRepo:
     def countbynumber(self, number: int) -> int:
         return (
             self.db.query(ConnectionPoleModel)
-            .where(ConnectionPoleModel.connection_pole_number == number)
+            .where(ConnectionPoleModel.pole_number == number)
             .count()
         )
 

@@ -47,13 +47,13 @@ async def list(
 async def get(
     code: int, supplylineService: SupplyLineTypeService = Depends()
 ):
-    supplyline = await supplylineService.getbycode(code=code)
+    supplylinetype = await supplylineService.getbycode(code=code)
     if supplylinetype is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Supply Line Type not found",
         )
-    return supplyline
+    return supplylinetype
 
 
 # post supplyline type route
@@ -75,7 +75,7 @@ async def create(
     "/{code}",
     summary="Update router a supply line type",
     description="This router allows to update a supply line type",
-    response_model=SupplyLineTypeSchema,
+    # response_model=SupplyLineTypeSchema,
 )
 async def update(
     code: int,
@@ -83,3 +83,5 @@ async def update(
     supplylineService: SupplyLineTypeService = Depends(),
 ):
     return await supplylineService.update(code=code, data=data)
+
+

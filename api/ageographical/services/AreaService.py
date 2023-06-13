@@ -137,10 +137,16 @@ class AreaService:
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail=f"Area already registered with code {area_code}"
                 )
-                
+
+            base_zipcode = int(zipcode)
             if item.infos.is_same_zipcode == False:
                 step_zipcode +=1
-                zipcode = generate_zipcode(int(zipcode), step_zipcode)
+                maxzipcode = self.area.maxzipcodebycity(city_id)
+
+                if int(maxzipcode)  > 0 :
+                    base_zipcode = int(maxzipcode)
+
+                zipcode = generate_zipcode(base_zipcode, step_zipcode)
 
             agency_id = None
             if (
@@ -178,57 +184,58 @@ class AreaService:
     # update area function
     async def update(self, code: int, data: AreaUpdate) -> AreaModel:
         old_data = jsonable_encoder(self.area.getbycode(code=code))
-        if old_data is None:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Area not found",
-            )
-        no_hirearchical_areas = ['district', 'secteur', 'village']
+        # step_zipcode = 0
+        # if old_data is None:
+        #     raise HTTPException(
+        #         status_code=status.HTTP_404_NOT_FOUND,
+        #         detail="Area not found",
+        #     )
+        # no_hirearchical_areas = ['district', 'secteur', 'village']
+        #
+        # if (hasattr(data.infos, "agency_code") and data.infos.agency_code is not None):
+        #     data.agency_id = AgencyRepo.getidbycode(self.area, data.infos.agency_code)
+        #
+        # area_type = AreaTypeRepo.get(self.area, old_data["area_type_id"]).name
+        #
+        # if (hasattr(data.infos, "area_type") and data.infos.area_type is not None):
+        #     area_type_id = AreaTypeRepo.getbyname(self.area, data.infos.area_type).id
+        #     area_type = data.infos.area_type
+        #     if area_type_id != old_data["area_type_id"]:
+        #         data.area_type_id = area_type_id
+        #
+        # if (hasattr(data.infos, "hierarchical_area_code")
+        #     and data.infos.hierarchical_area_code is not None
+        #     and str(area_type).lower() not in no_hirearchical_areas
+        # ):
+        #     raise HTTPException(
+        #         status_code=status.HTTP_400_BAD_REQUEST,
+        #         detail=f"The area type must be in {no_hirearchical_areas}"
+        #     )
+        #
+        # if (hasattr(data.infos, "hierarchical_area_code")
+        #     and data.infos.hierarchical_area_code is not None
+        #     and str(area_type).lower() in no_hirearchical_areas
+        # ):
+        #     hierachical_area = self.area.getbycode(code=data.infos.hierarchical_area_code)
+        #     hierarchical_area_id = hierachical_area.id
+        #     if hierarchical_area_id != old_data["hierarchical_area_id"]:
+        #         data.hierarchical_area_id = hierarchical_area_id
+        #         data.zipcode = hierachical_area.zipcode
+        #
+        # if (hasattr(data.infos, "city_code") and data.infos.city_code is not None):
+        #     city_id = CityRepo.getidbycode(self.area, data.infos.city_code)
+        #     if (data.city_id != old_data["city_id"] and hasattr(data.infos, "is_same_zipcode")):
+        #         data.city_id = city_id
+        #         if data.infos.is_same_zipcode == True:
+        #             data.zipcode = CityRepo.get(self.area, data.city_id ).zipcode
+        #         else:
+        #             step_zipcode +=1
+        #             maxzipcode = AreaRepo.maxzipcodebycity(city_id=city_id).zipcode
+        #             data.zipcode = generate_zipcode(maxzipcode, step_zipcode)
         
-        if (hasattr(data.infos, "agency_code") and data.infos.agency_code is not None):
-            data.agency_id = AgencyRepo.getidbycode(self.area, data.infos.agency_code)
-        
-        area_type = AreaTypeRepo.get(self.area, old_data["area_type_id"]).name
-        
-        if (hasattr(data.infos, "area_type") and data.infos.area_type is not None):
-            area_type_id = AreaTypeRepo.getbyname(self.area, data.infos.area_type).id
-            area_type = data.infos.area_type
-            if area_type_id != old_data["area_type_id"]:
-                data.area_type_id = area_type_id
-            
-        if (hasattr(data.infos, "hierarchical_area_code") 
-            and data.infos.hierarchical_area_code is not None
-            and str(area_type).lower() not in no_hirearchical_areas
-        ):
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"The area type must be in {no_hirearchical_areas}"
-            )
-        
-        if (hasattr(data.infos, "hierarchical_area_code") 
-            and data.infos.hierarchical_area_code is not None
-            and str(area_type).lower() in no_hirearchical_areas
-        ):
-            hierachical_area = self.area.getbycode(code=data.infos.hierarchical_area_code)
-            hierarchical_area_id = hierachical_area.id
-            if hierarchical_area_id != old_data["hierarchical_area_id"]:
-                data.hierarchical_area_id = hierarchical_area_id
-                data.zipcode = hierachical_area.zipcode
-        
-        if (hasattr(data.infos, "city_code") and data.infos.city_code is not None):
-            city_id = CityRepo.getidbycode(self.area, data.infos.city_code)
-            if (data.city_id != old_data["city_id"] and hasattr(data.infos, "is_same_zipcode")):
-                data.city_id = city_id
-                if data.infos.is_same_zipcode == True:
-                    data.zipcode = CityRepo.get(self.area, data.city_id ).zipcode
-                else:
-                    step_zipcode +=1
-                    maxzipcode = AreaRepo.maxzipcodebycity(city_id=city_id).zipcode
-                    data.zipcode = generate_zipcode(maxzipcode, step_zipcode)
-        
-        current_data = jsonable_encoder(self.areatype.update(code=code, data=data.dict()))
-        logs = [build_log(f"/areatypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
-        await self.log.create(logs)
+        current_data = jsonable_encoder(self.area.update(code=code, data=data.dict()))
+        logs = [await build_log(f"/areas/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        self.log.create(logs)
         return current_data
 
     # delete area function

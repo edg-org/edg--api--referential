@@ -1,34 +1,72 @@
 [
-    {
-        "infos": {
-            "number": 1,
-            "area_code": 30119101102301,
-            "transformer_code": 301191011023011,
-            "address": "quartier banankoroda"
+  {
+    "infos": {
+      "number": 10111,
+      "name": "Poteau 1",
+      "area_code": 102020801,
+      "electrical_code": 1110,
+      "transformer_code": 1020208012,
+      "address": "almamya",
+      "transformers": [
+        {
+          "electrical_code": 1020208012,
+          "activation_dated": "2023-06-09",
+          "desactivation_date": "2023-06-09",
+          "is_actived": true
         }
-    },
-    {
-        "infos": {
-            "number": 2,
-            "area_code": 30119101102301,
-            "transformer_code": 301191011023011,
-            "address": "quartier banankoroda"
-        }
-    },
-    {
-        "infos": {
-            "number": 3,
-            "area_code": 30119101102301,
-            "transformer_code": 301191011023011,
-            "address": "quartier banankoroda"
-        }
-    },
-    {
-        "infos": {
-            "number": 4,
-            "area_code": 30119101102301,
-            "transformer_code": 301191011023011,
-            "address": "quartier banankoroda"
-        }
+      ],
+      "coordinates": {
+        "altitude": 0,
+        "latitude": 0,
+        "longitude": 0
+      }
     }
+  },
+  {
+    "infos": {
+      "number": 10111,
+      "name": "Poteau 2",
+      "area_code": 102020801,
+      "electrical_code": 1110,
+      "transformer_code": 1020208012,
+      "address": "taouya",
+      "transformers": [
+        {
+          "electrical_code": 1020208012,
+          "activation_dated": "2023-06-09",
+          "desactivation_date": "2023-06-09",
+          "is_actived": true
+        }
+      ],
+      "coordinates": {
+        "altitude": 0,
+        "latitude": 0,
+        "longitude": 0
+      }
+    }
+  },
+  {
+    "infos": {
+      "number": 10111,
+      "name": "Poteau 3",
+      "area_code": 102020801,
+      "electrical_code": 1110,
+      "transformer_code": 1020208012,
+      "address": "kissosso",
+      "transformers": [
+        {
+          "electrical_code": 1020208012,
+          "activation_dated": "2023-06-09",
+          "desactivation_date": "2023-06-09",
+          "is_actived": true
+        }
+      ],
+      "coordinates": {
+        "altitude": 0,
+        "latitude": 0,
+        "longitude": 0
+      }
+    }
+  }
 ]
+

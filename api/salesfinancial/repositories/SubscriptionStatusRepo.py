@@ -5,6 +5,7 @@ from fastapi import Depends, encoders
 from api.configs.Database import get_db
 from api.salesfinancial.models.SubscriptionStatusModel import SubscriptionStatusModel
 from api.salesfinancial.schemas.SubscriptionStatusSchema import CreateSubscriptionStatus
+from sqlalchemy import insert, func, update
 
 class SubscriptionStatusRepo:
     db: Session
@@ -68,12 +69,14 @@ class SubscriptionStatusRepo:
         self.db.commit()
         return data
 
-    # update subscription status function
-    def update(self, data: CreateSubscriptionStatus) -> SubscriptionStatusModel:
-        self.db.merge(data)
+    def update(self, code: int, data: dict) -> SubscriptionStatusModel:
+        self.db.execute(
+            update(SubscriptionStatusModel)
+            .where(SubscriptionStatusModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete subscription status function
     def delete(self, subscription: SubscriptionStatusModel) -> None:

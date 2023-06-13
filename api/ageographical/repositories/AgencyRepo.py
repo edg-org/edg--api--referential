@@ -1,12 +1,13 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
+from sqlalchemy import insert, func, update
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
 from api.ageographical.models.AgencyModel import AgencyModel
 from api.ageographical.schemas.AgencySchema import CreateAgency, AgencyUpdate
+from fastapi.encoders import jsonable_encoder
+from fastapi import Depends, HTTPException, status
 
-#
 class AgencyRepo:
     db: Session
 
@@ -67,7 +68,7 @@ class AgencyRepo:
         )
 
     # get agency code function
-    def getbycode(self, code: str) -> AgencyModel:
+    def getbycode(self, code: int) -> AgencyModel:
         return (
             self.db.query(AgencyModel)
             .where(AgencyModel.code == code)
@@ -94,12 +95,14 @@ class AgencyRepo:
         self.db.commit()
         return data
 
-    # update agency function
-    def update(self, data: CreateAgency) -> AgencyModel:
-        self.db.merge(data)
+    def update(self, code: int,  data: dict) -> AgencyModel:
+        self.db.execute(
+            update(AgencyModel)
+            .where(AgencyModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete agency function
     def delete(self, agency: AgencyModel) -> None:

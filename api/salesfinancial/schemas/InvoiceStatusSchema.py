@@ -6,7 +6,7 @@ class InvoiceStatusSchema(BaseSchema):
     id: int
     code: int
     name: str
-    created_at: datetime
+    created_at: Optional[datetime]
     updated_at: Optional[datetime]
     
     class Config:
@@ -21,11 +21,10 @@ class CreateInvoiceStatus(InvoiceStatusSchema):
             "updated_at"
         }
 
-#
 class InvoiceStatusInput(CreateInvoiceStatus):
-    class Config:
-        fields_to_hide = {"code"}
+    pass
+    # class Config:
+    #     fields_to_hide = {"code"}
 
-#
 class InvoiceStatusUpdate(InvoiceStatusInput):
     pass

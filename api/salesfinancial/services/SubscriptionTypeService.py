@@ -10,15 +10,19 @@ from api.salesfinancial.repositories.TrackingTypeRepo import (
 from api.electrical.repositories.SupplyModeRepo import (
     SupplyModeRepo,
 )
+from fastapi.encoders import jsonable_encoder
+from api.tools.Helper import build_log
+from api.logs.repositories.LogRepo import LogRepo
 
 class SubscriptionTypeService:
     subscriptiontype: SubscriptionTypeRepo
-
+    log: LogRepo
     def __init__(
         self,
-        subscriptiontype: SubscriptionTypeRepo = Depends(),
+        subscriptiontype: SubscriptionTypeRepo = Depends(), log: LogRepo = Depends(),
     ) -> None:
         self.subscriptiontype = subscriptiontype
+        self.log = log
 
     # get all subscription types function
     async def list(self, skip: int = 0, limit: int = 100) -> List[SubscriptionTypeModel]:
@@ -73,30 +77,44 @@ class SubscriptionTypeService:
         return self.subscriptiontype.create(data=datalist)
 
     # update subscription type function
-    async def update(self, code: int, data: CreateSubscriptionType) -> SubscriptionTypeModel:
-        subscriptiontype = self.subscriptiontype.getbycode(code=code)
-        if subscriptiontype is None:
+    # async def update(self, code: int, data: CreateSubscriptionType) -> SubscriptionTypeModel:
+    #     subscriptiontype = self.subscriptiontype.getbycode(code=code)
+    #     if subscriptiontype is None:
+    #         raise HTTPException(
+    #             status_code=status.HTTP_404_NOT_FOUND,
+    #             detail="Subscription Type not found",
+    #         )
+    #
+    #     subscription = CreateSubscriptionType(
+    #         code = data.code,
+    #         name = data.name,
+    #         infos = data.infos,
+    #         pricing = data.pricing,
+    #         dunning = data.dunning,
+    #         supply_mode_id = SupplyModeRepo.getidbyname(self.subscriptiontype, data.infos.supply_mode),
+    #         tracking_type_id = TrackingTypeRepo.getidbyname(self.subscriptiontype, data.infos.tracking_type)
+    #     )
+    #     typedict = subscription.dict(exclude_unset=True)
+    #     for key, val in typedict.items():
+    #         setattr(subscriptiontype, key, val)
+    #     return self.subscriptiontype.update(subscriptiontype)
+
+    async def update(self, code: str, data: CreateSubscriptionType) -> SubscriptionTypeModel:
+        old_data = jsonable_encoder(self.subscriptiontype.getbycode(code=code))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Subscription Type not found",
             )
-            
-        subscription = CreateSubscriptionType(
-            code = data.code,
-            name = data.name,
-            infos = data.infos,
-            pricing = data.pricing,
-            dunning = data.dunning,
-            supply_mode_id = SupplyModeRepo.getidbyname(self.subscriptiontype, data.infos.supply_mode),
-            tracking_type_id = TrackingTypeRepo.getidbyname(self.subscriptiontype, data.infos.tracking_type)
-        )
-        typedict = subscription.dict(exclude_unset=True)
-        for key, val in typedict.items():
-            setattr(subscriptiontype, key, val)
-        return self.subscriptiontype.update(subscriptiontype)
+
+        current_data = jsonable_encoder(self.subscriptiontype.update(code=code, data=data.dict()))
+        logs = [await build_log(f"/subscriptiontype/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        self.log.create(logs)
+        return current_data
 
     # delete subscription type %function
     async def delete(self, subscription: SubscriptionTypeModel) -> None:
+        code = ""
         subscriptiontype = self.subscriptiontype.getbycode(code=code)
         if subscriptiontype is None:
             raise HTTPException(

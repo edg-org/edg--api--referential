@@ -24,7 +24,7 @@ class PrefectureRepo:
         return (
             self.db.query(PrefectureModel)
             .where(
-            func.lower(func.json_unquote(PrefectureModel.name)) == name.lower())
+            func.lower(PrefectureModel.name) == name.lower())
             .count()
         )
     

@@ -85,6 +85,4 @@ async def update(
     data: InvoicingFrequencyUpdate,
     frequencyService: InvoicingFrequencyService = Depends(),
 ):
-    return await frequencyService.update(
-        code=code, data=data
-    )
+    return await frequencyService.update(code=code, data=data)
