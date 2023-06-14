@@ -14,41 +14,41 @@ class TransformerCoordinates(BaseSchema):
 class EnergySupplyLines(BaseSchema):
     electrical_code: int = 0
     is_activated: bool = False
-    activation_date: Optional[date]
+    activation_date: Optional[str]
+    desactivation_date: Optional[str]
+    # activation_date: Optional[date]
     # activation_date: date = func.now()
-    desactivation_date: Optional[date] = None
+    # desactivation_date: Optional[date]
 
 #
 class TransformerInfos(BaseSchema):
-    name: str
+    name: Optional[str]
     brand: Optional[str]
-    power: float
-    power_mesurement_unit: str
-    fixation_type: str
-    area_code: int
-    electrical_code: int
+    power: Optional[float]
+    power_mesurement_unit: Optional[str]
+    fixation_type: Optional[str]
+    area_code: Optional[int]
+    electrical_code: Optional[int]
     tranformer_serial_number: Optional[str]
     manufacturing_country: Optional[str] = None
     address: Optional[str]
     coordinates: Optional[TransformerCoordinates] = None
 
-#
 class TransformerSchema(BaseSchema):
-    id: int
-    transformer_code: str
-    area_id: int
-    fixation_type_id: int
+    id: Optional[int]
+    transformer_code: Optional[str]
+    area_id: Optional[int]
+    fixation_type_id: Optional[int]
     infos: TransformerInfos
     energy_supply_lines: Optional[List[EnergySupplyLines]]
-    is_activated: bool
-    created_at: datetime
+    is_activated: Optional[bool]
+    created_at: Optional[datetime]
     updated_at: Optional[datetime]
     deleted_at: Optional[datetime]
 
     class Config:
         orm_mode = True
 
-#
 class CreateTransformer(TransformerSchema):
     class Config:
         fields_to_hide = {
@@ -68,7 +68,8 @@ class TransformerInput(CreateTransformer):
             "fixation_type_id"
         }
 
-#
+
+
 class TransformerUpdate(TransformerInput):
     pass
 

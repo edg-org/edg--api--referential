@@ -167,15 +167,15 @@ class EnergySupplyLineService:
                 detail="Energy Supply Line not found",
             )
         
-        if (hasattr(data.infos, "line_type") and data.infos.line_type is not None):
-            data.line_type_id = SupplyLineTypeRepo.getbyname(self.energysupply, data.infos.line_type).id
-        
-        if (hasattr(data.infos, "departure_city_code") and data.infos.departure_city_code is not None):
-            data.departure_city_id = CityRepo.getidbycode(self.energysupply, data.infos.departure_city_code)
+        # if (hasattr(data.infos, "line_type") and data.infos.line_type is not None):
+        #     data.line_type_id = SupplyLineTypeRepo.getbyname(self.energysupply, data.infos.line_type).id
+        #
+        # if (hasattr(data.infos, "departure_city_code") and data.infos.departure_city_code is not None):
+        #     data.departure_city_id = CityRepo.getidbycode(self.energysupply, data.infos.departure_city_code)
             
         current_data = jsonable_encoder(self.energysupply.update(code=code, data=data.dict()))
-        logs = [build_log(f"/supplylines/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
-        await self.log.create(logs)
+        logs = [await build_log(f"/supplylines/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        self.log.create(logs)
         return current_data
 
     # activate or desactivate energy supply line function

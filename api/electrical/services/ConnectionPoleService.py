@@ -126,15 +126,15 @@ class ConnectionPoleService:
                 detail="Electric Meter not found",
             )
         
-        if (hasattr(data.infos, "area_code") and data.infos.area_code is not None):
-            data.area_id = AreaRepo.getidbycode(self.pole, data.infos.area_code)
-        
-        if (hasattr(data.infos, "transformer_code") and data.infos.transformer_code is not None):
-            data.transformer_id = TransformerRepo.getidbycode(self.pole, data.infos.transformer_code)
+        # if (hasattr(data.infos, "area_code") and data.infos.area_code is not None):
+        #     data.area_id = AreaRepo.getidbycode(self.pole, data.infos.area_code)
+        #
+        # if (hasattr(data.infos, "transformer_code") and data.infos.transformer_code is not None):
+        #     data.transformer_id = TransformerRepo.getidbycode(self.pole, data.infos.transformer_code)
             
         current_data = jsonable_encoder(self.pole.update(number=number, data=data.dict()))
-        logs = [build_log(f"/connectionpoles/{number}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
-        await self.log.create(logs)
+        logs = [await build_log(f"/connectionpoles/{number}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        self.log.create(logs)
         return current_data
 
     # activate or desactivate connection pole function

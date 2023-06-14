@@ -21,11 +21,11 @@ class TransformerService:
 
     def __init__(
         self,
-        logo: LogRepo = Depends(),
+        log: LogRepo = Depends(),
         transformer: TransformerRepo = Depends(),
         arearepo: AreaRepo = Depends()
     ) -> None:
-        self.logo = logo
+        self.log = log
         self.transformer = transformer
         self.arearepo = arearepo
 
@@ -170,7 +170,7 @@ class TransformerService:
     # 
     # # update transformer function
     async def update(self, code: int, data: TransformerUpdate) -> TransformerModel:
-        old_data = jsonable_encoder(self.supply.getbycode(code=code))
+        old_data = jsonable_encoder(self.transformer.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -186,9 +186,8 @@ class TransformerService:
         #data.supply_line_id = EnergySupplyLineRepo.getbycode(self.transformer, data.infos.supply_line_code).id
     
         current_data = jsonable_encoder(self.transformer.update(code=code, data=data.dict()))
-        logs = [build_log(f"/transformers/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
-            
-        await self.log.create(logs)
+        logs = [await build_log(f"/transformers/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        self.log.create(logs)
         return current_data
     
     # activate or desactivate region function

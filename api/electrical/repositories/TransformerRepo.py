@@ -111,7 +111,7 @@ class TransformerRepo:
     def update(self, code: int, data: CreateTransformer) -> TransformerModel:
         self.db.execute(
             update(TransformerModel)
-            .where(TransformerModel.code == code)
+            .where(TransformerModel.transformer_code == code)
             .values(**data)
         )
         self.db.commit()

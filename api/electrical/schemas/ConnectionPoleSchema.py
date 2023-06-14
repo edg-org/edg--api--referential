@@ -10,8 +10,10 @@ class PoleCoordinates(BaseSchema):
 
 class Transformers(BaseSchema):
     electrical_code: int
-    activation_dated: date
-    desactivation_date: Optional[date]=None
+    activation_dated: str
+    # activation_dated: date
+    desactivation_date: Optional[str]
+    # desactivation_date: Optional[date]=None
     is_actived: bool
     
 class PoleInfos(BaseSchema):
@@ -23,7 +25,6 @@ class PoleInfos(BaseSchema):
     address: str
     transformers: List[Transformers]
     coordinates: Optional[PoleCoordinates]=None
-    
 
 class ConnectionPoleSchema(BaseSchema):
     id: int
