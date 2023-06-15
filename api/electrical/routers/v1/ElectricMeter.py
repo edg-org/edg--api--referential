@@ -46,7 +46,7 @@ async def list(
     response_model=ElectricMeterSchema,
 )
 async def get(
-    number: int,
+    number: str,
     meterService: ElectricMeterService = Depends(),
 ):
     supply = await meterService.getbynumber(
@@ -73,7 +73,6 @@ async def create(
 ):
     return await meterService.create(data=data)
 
-
 # update transformer route
 @meterRouter.put(
     "/{number}",
@@ -82,7 +81,7 @@ async def create(
     response_model=ElectricMeterSchema,
 )
 async def update(
-    number: int,
+    number: str,
     data: ElectricMeterUpdate,
     meterService: ElectricMeterService = Depends(),
 ):

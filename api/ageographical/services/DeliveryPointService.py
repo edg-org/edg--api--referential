@@ -66,25 +66,31 @@ class DeliveryPointService:
     # get details of delivery point by number function
     async def getdetails(self, number: int) -> DeliveryPointDetails:
         delivery = self.deliverypoint.getbynumber(number=number)
+        print("===================================== delivery ==============================", delivery.infos)
         
-        area = await self.area.getbycode(delivery.infos['area_code'])
-        city = await self.city.getbycode(area.infos["city_code"])
-        prefecture = await self.prefecture.getbycode(city.infos["prefecture_code"])
-        connectionpole = await self.connectionpole.getbynumber(delivery.infos["pole_number"])
-        transformer = await self.transformer.getbycode(connectionpole.infos["transformer_code"])
-
-        details = {
-            "area": {"code": area.code, "name": f"{area.infos['area_type']} {area.infos['name']}"},
-            "city": {"code": city.code, "name": f"{city.infos['city_type']} de {city.infos['name']}"},
-            "prefecture": {"code": prefecture.code, "name": prefecture.name},
-            "connection_point": {"number": connectionpole.pole_number},
-            "transformater": {"code": transformer.transformer_code, "energy_supply_lines": transformer.infos["energy_supply_lines"]}
-        }
-
+        # area = await self.area.getbycode(delivery.infos['area_code'])
+        # city = await self.city.getbycode(area.infos["city_code"])
+        # prefecture = await self.prefecture.getbycode(city.infos["prefecture_code"])
+        # connectionpole = await self.connectionpole.getbynumber(delivery.infos["pole_number"])
+        # transformer = await self.transformer.getbycode(connectionpole.infos["transformer_code"])
+        #
+        # details = {
+        #     "area": {"code": area.code, "name": f"{area.infos['area_type']} {area.infos['name']}"},
+        #     "city": {"code": city.code, "name": f"{city.infos['city_type']} de {city.infos['name']}"},
+        #     "prefecture": {"code": prefecture.code, "name": prefecture.name},
+        #     "connection_point": {"number": connectionpole.pole_number},
+        #     "transformater": {"code": transformer.transformer_code, "energy_supply_lines": transformer.infos["energy_supply_lines"]}
+        # }
+        #
+        # deliverypoint = DeliveryPointDetails(
+        #     delivery_point_number = delivery.delivery_point_number,
+        #     infos = delivery.infos,
+        #     details = details
+        # )
         deliverypoint = DeliveryPointDetails(
             delivery_point_number = delivery.delivery_point_number,
             infos = delivery.infos,
-            details = details
+            details = {}
         )
         return deliverypoint
 
@@ -142,7 +148,7 @@ class DeliveryPointService:
             )
 
         current_data = jsonable_encoder(self.deliverypoint.update(number, data=data.dict()))
-        logs = [build_log(f"/deliverypoints/{number}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [await build_log(f"/deliverypoints/{number}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return current_data
 

@@ -17,8 +17,10 @@ class DeliveryInfos(BaseSchema):
 
 class ConnectionPole(BaseSchema):
     electrical_code: Optional[int]
-    activation_date: Optional[date]
-    desactivation_date: Optional[date]=None
+    activation_date: Optional[str]
+    desactivation_date: Optional[str]
+    # activation_date: Optional[date]
+    # desactivation_date: Optional[date]=None
     is_actived: bool = False
     
 class DeliveryPointSchema(BaseSchema):

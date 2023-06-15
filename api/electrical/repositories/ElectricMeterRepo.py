@@ -45,6 +45,13 @@ class ElectricMeterRepo:
             .first()
         )
 
+    def getbycode(self, number: str) -> ElectricMeterModel:
+        return (
+            self.db.query(ElectricMeterModel)
+            .where(ElectricMeterModel.meter_number == number)
+            .first()
+        )
+
     # create electric meter function
     def create(self, data: List[CreateElectricMeter]) -> List[CreateElectricMeter]:
         self.db.execute(
@@ -55,14 +62,14 @@ class ElectricMeterRepo:
         return data
 
     # update electric meter function
-    def update(self, code: int, data: dict) -> ElectricMeterModel:
+    def update(self, number: str, data: dict) -> ElectricMeterModel:
         self.db.execute(
             update(ElectricMeterModel)
-            .where(ElectricMeterModel.code == code)
+            .where(ElectricMeterModel.meter_number == number)
             .values(**data)
         )
         self.db.commit()
-        return self.getbycode(code=code)
+        return self.getbycode(number=number)
 
     # delete electric meter function
     def delete(self, meter: ElectricMeterModel) -> None:

@@ -67,7 +67,7 @@ class ElectricMeterService:
         return self.meter.create(data=metriclist)
 
     # update electric meter function
-    async def update(self, number: int, data: ElectricMeterUpdate) -> ElectricMeterModel:
+    async def update(self, number: str, data: ElectricMeterUpdate) -> ElectricMeterModel:
         old_data = jsonable_encoder(self.meter.getbynumber(number=number))
         if old_data is None:
             raise HTTPException(
@@ -75,19 +75,19 @@ class ElectricMeterService:
                 detail="Electric Meter not found",
             )
         
-        if (hasattr(data.infos, "meter_type") and data.infos.meter_type is not None):
-            data.meter_type_id = MeterTypeRepo.getbyname(self.meter, data.infos.meter_type).id
-        
-        if (hasattr(data.infos, "power_mode") and data.infos.power_mode is not None):
-            data.power_mode_id = SupplyModeRepo.getbyname(self.meter, data.infos.power_mode).id
+        # if (hasattr(data.infos, "meter_type") and data.infos.meter_type is not None):
+        #     data.meter_type_id = MeterTypeRepo.getbyname(self.meter, data.infos.meter_type).id
+        #
+        # if (hasattr(data.infos, "power_mode") and data.infos.power_mode is not None):
+        #     data.power_mode_id = SupplyModeRepo.getbyname(self.meter, data.infos.power_mode).id
             
         current_data = jsonable_encoder(self.meter.update(number=number, data=data.dict()))
-        logs = [build_log(f"/meters/{number}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
-        await self.log.create(logs)
+        logs = [await build_log(f"/meters/{number}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        self.log.create(logs)
         return current_data
     
     # activate or desactivate electric meter function
-    async def activate_desactivate(self, number: int, flag: bool) -> None:
+    async def activate_desactivate(self, number: str, flag: bool) -> None:
         old_data = jsonable_encoder(self.meter.getbynumber(number=number))
         if old_data is None:
             raise HTTPException(
@@ -106,8 +106,8 @@ class ElectricMeterService:
             deleted_at = deleted_at
         )
         current_data = jsonable_encoder(self.meter.update(number=number, data=data))
-        logs = [build_log(f"/meters/{number}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
-        await self.log.create(logs)
+        logs = [await build_log(f"/meters/{number}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        self.log.create(logs)
         return HTTPException(status_code=status.HTTP_200_OK, detail=message)
 
     # delete electric meter function
