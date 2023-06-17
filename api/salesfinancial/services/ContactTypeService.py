@@ -77,6 +77,10 @@ class ContactTypeService:
                 detail="Contact Type not found",
             )
 
+        verif = self.contacttype.verif_duplicate(data.name, "ContactTypeModel.id != " + str(old_data['id']))
+        if len(verif) != 0:
+            raise HTTPException(status_code=405, detail={"msg": "Duplicates are not possible", "name": data.name})
+
         current_data = jsonable_encoder(self.contacttype.update(code=code, data=data.dict()))
         logs = [await build_log(f"/contacttype/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         self.log.create(logs)
@@ -84,7 +88,7 @@ class ContactTypeService:
 
     # delete contact type %function
     async def delete(self, contact: ContactTypeModel) -> None:
-        code = ""  #
+        code = 0
         contacttype = self.contacttype.getbycode(code=code)
         if contacttype is None:
             raise HTTPException(

@@ -16,7 +16,6 @@ class HousingTypeModel(EntityMeta):
     #updated_at = Column(DateTime(timezone=True), onupdate=datetime.utcnow().isoformat(), nullable=True)
     #deleted_at = Column(DateTime(timezone=True), nullable=True)
 
-
     id: Mapped[int] = mapped_column(primary_key=True)
     code: Mapped[int] = mapped_column(TINYINT(unsigned=True), index=True, unique=True, nullable=False)
     name: Mapped[str] = mapped_column(String(45), index=True, unique=True, nullable=False)

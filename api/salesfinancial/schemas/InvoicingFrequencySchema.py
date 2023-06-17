@@ -29,5 +29,5 @@ class InvoicingFrequencyInput(CreateInvoicingFrequency):
         fields_to_hide = {"code"}
 
 #
-class InvoicingFrequencyUpdate(InvoicingFrequencyInput):
+class InvoicingFrequencyUpdate(CreateInvoicingFrequency):
     pass

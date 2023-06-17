@@ -23,15 +23,12 @@ class CreateTrackingType(TrackingTypeSchema):
             "updated_at"
         }
 
-#
 class TrackingTypeInput(CreateTrackingType):
     class Config:
         fields_to_hide = {"code"}
 
-#
-class TrackingTypeUpdate(TrackingTypeInput):
+class TrackingTypeUpdate(CreateTrackingType):
     pass
 
-#
-class TrackingTypeItemSchema(TrackingTypeSchema):
+class TrackingTypeItemSchema(CreateTrackingType):
     sub: list[SubscriptionTypeSchema] = []

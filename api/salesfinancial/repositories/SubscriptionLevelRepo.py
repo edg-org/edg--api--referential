@@ -5,7 +5,7 @@ from fastapi import Depends, encoders
 from api.configs.Database import get_db
 from api.salesfinancial.models.SubscriptionLevelModel import SubscriptionLevelModel
 from api.salesfinancial.schemas.SubscriptionLevelSchema import CreateSubscriptionLevel
-from sqlalchemy import insert, func, update
+from sqlalchemy import insert, func, update, select
 
 class SubscriptionLevelRepo:
     db: Session
@@ -75,7 +75,7 @@ class SubscriptionLevelRepo:
             .values(**data)
         )
         self.db.commit()
-        return self.getbycode(code=code)
+        return self.getbycode(code=data['code'])
 
     # delete subscription level function
     def delete(
@@ -83,3 +83,10 @@ class SubscriptionLevelRepo:
     ) -> None:
         self.db.delete(subscription)
         self.db.commit()
+    def verif_duplicate(self, name: str, req: str = "True") -> [SubscriptionLevelModel]:
+        stmt = (
+            select(SubscriptionLevelModel)
+            .filter(SubscriptionLevelModel.name.ilike(name))
+            .filter(eval(req))
+        )
+        return self.db.scalars(stmt).all()

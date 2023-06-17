@@ -3,14 +3,19 @@ from fastapi import Depends, HTTPException, status
 from api.salesfinancial.models.TrackingTypeModel import TrackingTypeModel
 from api.salesfinancial.schemas.TrackingTypeSchema import CreateTrackingType
 from api.salesfinancial.repositories.TrackingTypeRepo import TrackingTypeRepo
+from fastapi.encoders import jsonable_encoder
+from api.tools.Helper import build_log
+from api.logs.repositories.LogRepo import LogRepo
 
 class TrackingTypeService:
     trackingtype: TrackingTypeRepo
+    log: LogRepo
 
     def __init__(
-        self, trackingtype: TrackingTypeRepo = Depends()
+        self, trackingtype: TrackingTypeRepo = Depends(), log: LogRepo = Depends()
     ) -> None:
         self.trackingtype = trackingtype
+        self.log = log
 
     # get all tracking types function
     async def list(self, skip: int = 0, limit: int = 100) -> List[TrackingTypeModel]:
@@ -23,7 +28,7 @@ class TrackingTypeService:
         return self.trackingtype.get(id=id)
 
     # get tracking type by code function
-    async def getbycode(self, code: str) -> TrackingTypeModel:
+    async def getbycode(self, code: int) -> TrackingTypeModel:
         return self.trackingtype.getbycode(code=code)
 
     # get tracking type by name function
@@ -52,21 +57,39 @@ class TrackingTypeService:
         return self.trackingtype.create(data=data)
 
     # update tracking type function
+    # async def update(self, code: int, data: CreateTrackingType) -> TrackingTypeModel:
+    #     trackingtype = self.trackingtype.getbycode(code=code)
+    #     if trackingtype is None:
+    #         raise HTTPException(
+    #             status_code=status.HTTP_404_NOT_FOUND,
+    #             detail="Tracking Type not found",
+    #         )
+    #
+    #     typedict = data.dict(exclude_unset=True)
+    #     for key, val in typedict.items():
+    #         setattr(trackingtype, key, val)
+    #     return self.trackingtype.update(trackingtype)
+
     async def update(self, code: int, data: CreateTrackingType) -> TrackingTypeModel:
-        trackingtype = self.trackingtype.getbycode(code=code)
-        if trackingtype is None:
+        old_data = jsonable_encoder(self.trackingtype.getbycode(code=code))
+        if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Tracking Type not found",
             )
 
-        typedict = data.dict(exclude_unset=True)
-        for key, val in typedict.items():
-            setattr(trackingtype, key, val)
-        return self.trackingtype.update(trackingtype)
+        verif = self.trackingtype.verif_duplicate(data.name, "TrackingTypeModel.id != " + str(old_data['id']))
+        if len(verif) != 0:
+            raise HTTPException(status_code=405, detail={"msg": "Duplicates are not possible", "name": data.name})
+
+        current_data = jsonable_encoder(self.trackingtype.update(code=code, data=data.dict()))
+        logs = [await build_log(f"/trackingtype/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        self.log.create(logs)
+        return current_data
 
     # delete tracking type %function
     async def delete(self, tracking: TrackingTypeModel) -> None:
+        code = 0
         trackingtype = self.trackingtype.getbycode(code=code)
         if trackingtype is None:
             raise HTTPException(

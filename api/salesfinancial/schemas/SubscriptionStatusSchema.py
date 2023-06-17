@@ -28,5 +28,5 @@ class SubscriptionStatusInput(CreateSubscriptionStatus):
         fields_to_hide = {"code"}
 
 #
-class SubscriptionStatusUpdate(SubscriptionStatusInput):
+class SubscriptionStatusUpdate(CreateSubscriptionStatus):
     pass

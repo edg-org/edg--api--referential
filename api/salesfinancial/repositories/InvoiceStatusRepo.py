@@ -5,7 +5,7 @@ from fastapi import Depends, encoders
 from api.configs.Database import get_db
 from api.salesfinancial.models.InvoiceStatusModel import InvoiceStatusModel
 from api.salesfinancial.schemas.InvoiceStatusSchema import CreateInvoiceStatus
-from sqlalchemy import insert, func, update
+from sqlalchemy import insert, func, update, select
 class InvoiceStatusRepo:
     db: Session
 
@@ -75,7 +75,7 @@ class InvoiceStatusRepo:
             .values(**data)
         )
         self.db.commit()
-        return self.getbycode(code=code)
+        return self.getbycode(code=data['code'])
 
     # delete subscription status function
     def delete(
@@ -83,3 +83,11 @@ class InvoiceStatusRepo:
     ) -> None:
         self.db.delete(subscription)
         self.db.commit()
+
+    def verif_duplicate(self, name: str, req: str = "True") -> [InvoiceStatusModel]:
+        stmt = (
+            select(InvoiceStatusModel)
+            .filter(InvoiceStatusModel.name.ilike(name))
+            .filter(eval(req))
+        )
+        return self.db.scalars(stmt).all()

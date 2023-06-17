@@ -64,6 +64,10 @@ class SubscriptionLevelService:
                 detail="Subscription Level not found",
             )
 
+        verif = self.subscriptionlevels.verif_duplicate(data.name, "SubscriptionLevelModel.id != " + str(old_data['id']))
+        if len(verif) != 0:
+            raise HTTPException(status_code=405, detail={"msg": "Duplicates are not possible", "name": data.name})
+
         current_data = jsonable_encoder(self.subscriptionlevels.update(code=code, data=data.dict()))
         logs = [await build_log(f"/subscriptionlevels/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         self.log.create(logs)

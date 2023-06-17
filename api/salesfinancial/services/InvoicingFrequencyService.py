@@ -86,6 +86,10 @@ class InvoicingFrequencyService:
                 detail="Invoicing Frequency not found",
             )
 
+        verif = self.invoicingfrequency.verif_duplicate(data.name, "InvoicingFrequencyModel.id != " + str(old_data['id']))
+        if len(verif) != 0:
+            raise HTTPException(status_code=405, detail={"msg": "Duplicates are not possible", "name": data.name})
+
         current_data = jsonable_encoder(self.invoicingfrequency.update(code=code, data=data.dict()))
         logs = [await build_log(f"/invoicingfrequency/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         self.log.create(logs)

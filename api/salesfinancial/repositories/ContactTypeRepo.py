@@ -5,7 +5,7 @@ from fastapi import Depends, encoders
 from api.configs.Database import get_db
 from api.salesfinancial.models.ContactTypeModel import ContactTypeModel
 from api.salesfinancial.schemas.ContactTypeSchema import CreateContactType
-from sqlalchemy import insert, func, update
+from sqlalchemy import insert, func, update, select
 
 class ContactTypeRepo:
     db: Session
@@ -40,7 +40,7 @@ class ContactTypeRepo:
         )
 
     # get contact type code function
-    def getbycode(self, code: str) -> ContactTypeModel:
+    def getbycode(self, code: int) -> ContactTypeModel:
         return (
             self.db.query(ContactTypeModel)
             .where(ContactTypeModel.code == code)
@@ -76,9 +76,17 @@ class ContactTypeRepo:
             .values(**data)
         )
         self.db.commit()
-        return self.getbycode(code=code)
+        return self.getbycode(code=data['code'])
 
     # delete contact type function
     def delete(self, contact: ContactTypeModel) -> None:
         self.db.delete(contact)
         self.db.commit()
+
+    def verif_duplicate(self, name: str, req: str = "True") -> [ContactTypeModel]:
+        stmt = (
+            select(ContactTypeModel)
+            .filter(ContactTypeModel.name.ilike(name))
+            .filter(eval(req))
+        )
+        return self.db.scalars(stmt).all()

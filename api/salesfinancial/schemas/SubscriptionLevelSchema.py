@@ -34,5 +34,5 @@ class SubscriptionLevelInput(CreateSubscriptionLevel):
         fields_to_hide = {"code"}
 
 #
-class SubscriptionLevelUpdate(SubscriptionLevelInput):
+class SubscriptionLevelUpdate(CreateSubscriptionLevel):
     pass

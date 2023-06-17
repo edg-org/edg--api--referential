@@ -81,11 +81,14 @@ class InvoiceStatusService:
                 detail="Subscription Type not found",
             )
 
+        verif = self.invoicestatus.verif_duplicate(data.name, "InvoiceStatusModel.id != " + str(old_data['id']))
+        if len(verif) != 0:
+            raise HTTPException(status_code=405, detail={"msg": "Duplicates are not possible", "name": data.name})
+
         current_data = jsonable_encoder(self.invoicestatus.update(code=code, data=data.dict()))
         logs = [await build_log(f"/invoicestatus/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         self.log.create(logs)
         return current_data
-
 
     # delete invoice status %function
     async def delete(self, invoice: InvoiceStatusModel) -> None:

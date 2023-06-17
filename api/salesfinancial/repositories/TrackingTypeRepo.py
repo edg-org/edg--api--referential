@@ -1,6 +1,6 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
+from sqlalchemy import insert, func, select, update
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
 from api.salesfinancial.models.TrackingTypeModel import TrackingTypeModel
@@ -40,7 +40,7 @@ class TrackingTypeRepo:
         )
 
     # get tracking type code function
-    def getbycode(self, code: str) -> TrackingTypeModel:
+    def getbycode(self, code: int) -> TrackingTypeModel:
         return (
             self.db.query(TrackingTypeModel)
             .where(TrackingTypeModel.code == code)
@@ -76,13 +76,25 @@ class TrackingTypeRepo:
         return data
 
     # update tracking type function
-    def update(self, data: CreateTrackingType) -> TrackingTypeModel:
-        self.db.merge(data)
+
+    def update(self, code: int, data: dict) -> TrackingTypeModel:
+        self.db.execute(
+            update(TrackingTypeModel)
+            .where(TrackingTypeModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=data['code'])
 
     # delete tracking type function
     def delete(self, tracking: TrackingTypeModel) -> None:
         self.db.delete(tracking)
         self.db.commit()
+
+    def verif_duplicate(self, name: str, req: str = "True") -> [TrackingTypeModel]:
+        stmt = (
+            select(TrackingTypeModel)
+            .filter(TrackingTypeModel.name.ilike(name))
+            .filter(eval(req))
+        )
+        return self.db.scalars(stmt).all()

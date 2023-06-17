@@ -5,7 +5,7 @@ from fastapi import Depends, encoders
 from api.configs.Database import get_db
 from api.salesfinancial.models.InvoicingFrequencyModel import InvoicingFrequencyModel
 from api.salesfinancial.schemas.InvoicingFrequencySchema import CreateInvoicingFrequency
-from sqlalchemy import insert, func, update
+from sqlalchemy import insert, func, update, select
 
 class InvoicingFrequencyRepo:
     db: Session
@@ -87,7 +87,7 @@ class InvoicingFrequencyRepo:
             .values(**data)
         )
         self.db.commit()
-        return self.getbycode(code=code)
+        return self.getbycode(code=data['code'])
 
     # delete invoicing frequency function
     def delete(
@@ -95,3 +95,11 @@ class InvoicingFrequencyRepo:
     ) -> None:
         self.db.delete(invoicing)
         self.db.commit()
+
+    def verif_duplicate(self, name: str, req: str = "True") -> [InvoicingFrequencyModel]:
+        stmt = (
+            select(InvoicingFrequencyModel)
+            .filter(InvoicingFrequencyModel.name.ilike(name))
+            .filter(eval(req))
+        )
+        return self.db.scalars(stmt).all()

@@ -5,7 +5,7 @@ from fastapi import Depends, encoders
 from api.configs.Database import get_db
 from api.salesfinancial.models.HousingTypeModel import HousingTypeModel
 from api.salesfinancial.schemas.HousingTypeSchema import CreateHousingType
-
+from sqlalchemy import insert, func, update, select
 
 class HousingTypeRepo:
     db: Session
@@ -74,13 +74,25 @@ class HousingTypeRepo:
         return data
 
     # update housing type function
-    def update(self, data: HousingTypeModel) -> HousingTypeModel:
-        self.db.merge(data)
+
+    def update(self, code: int, data: dict) -> HousingTypeModel:
+        self.db.execute(
+            update(HousingTypeModel)
+            .where(HousingTypeModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=data['code'])
 
     # delete housing type function
     def delete(self, housing: HousingTypeModel) -> None:
         self.db.delete(housing)
         self.db.commit()
+
+    def verif_duplicate(self, name: str, req: str = "True") -> [HousingTypeModel]:
+        stmt = (
+            select(HousingTypeModel)
+            .filter(HousingTypeModel.name.ilike(name))
+            .filter(eval(req))
+        )
+        return self.db.scalars(stmt).all()
