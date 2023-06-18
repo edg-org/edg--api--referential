@@ -124,3 +124,10 @@ class ConnectionPoleRepo:
     def delete(self, meter: ConnectionPoleModel) -> None:
         self.db.delete(meter)
         self.db.commit()
+    def verif_duplicate(self, name: str, req: str = "True") -> [ConnectionPoleModel]:
+        stmt = (
+            select(ConnectionPoleModel)
+            .filter(ConnectionPoleModel.name.ilike(name))
+            .filter(eval(req))
+        )
+        return self.db.scalars(stmt).all()

@@ -64,7 +64,11 @@ class SupplyModeService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Supply Mode not found"
             )
-    
+
+        verif = self.supplymode.verif_duplicate(data.name, "SupplyModeModel.id != " + str(old_data['id']))
+        if len(verif) != 0:
+            raise HTTPException(status_code=405, detail={"msg": "Duplicates are not possible", "name": data.name})
+
         current_data = jsonable_encoder(self.supplymode.update(code=code, data=data.dict()))
         logs = [await build_log(f"/supplymodes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         self.log.create(logs)

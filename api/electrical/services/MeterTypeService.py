@@ -64,7 +64,7 @@ class MeterTypeService:
         return self.metertype.create(data=data)
 
     # update meter type function
-    async def update(self, code: int, data: MeterTypeUpdate) -> MeterTypeUpdate:
+    async def update(self, code: int, data: MeterTypeUpdate) -> MeterTypeModel:
         current_data = {}
         old_data = jsonable_encoder(self.metertype.getbycode(code=code))
         if old_data is None:
@@ -72,6 +72,10 @@ class MeterTypeService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Meter Type not found",
             )
+
+        verif = self.metertype.verif_duplicate(data.name, "MeterTypeModel.id != " + str(old_data['id']))
+        if len(verif) != 0:
+            raise HTTPException(status_code=405, detail={"msg": "Duplicates are not possible", "name": data.name})
 
         current_data = jsonable_encoder(self.metertype.update(code=code, data=data.dict()))
         logs = [await build_log(f"/metertypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]

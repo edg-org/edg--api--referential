@@ -172,7 +172,10 @@ class EnergySupplyLineService:
         #
         # if (hasattr(data.infos, "departure_city_code") and data.infos.departure_city_code is not None):
         #     data.departure_city_id = CityRepo.getidbycode(self.energysupply, data.infos.departure_city_code)
-            
+        verif = self.energysupply.verif_duplicate(data.infos.name, "EnergySupplyLineModel.id != " + str(old_data['id']))
+        if len(verif) != 0:
+            raise HTTPException(status_code=405, detail={"msg": "Duplicates are not possible", "name": data.infos.name})
+
         current_data = jsonable_encoder(self.energysupply.update(code=code, data=data.dict()))
         logs = [await build_log(f"/supplylines/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         self.log.create(logs)

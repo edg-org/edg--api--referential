@@ -2,7 +2,7 @@ from typing import List
 from sqlalchemy.orm import Session
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from sqlalchemy import insert, update, func, or_, and_, null
+from sqlalchemy import insert, update, func, or_, and_, null, select
 from api.electrical.models.TransformerModel import TransformerModel
 from api.electrical.schemas.TransformerSchema import CreateTransformer
 
@@ -121,3 +121,10 @@ class TransformerRepo:
     def delete(self, meter: TransformerModel) -> None:
         self.db.delete(meter)
         self.db.commit()
+    def verif_duplicate(self, name: str, req: str = "True") -> [TransformerModel]:
+        stmt = (
+            select(TransformerModel)
+            .filter(TransformerModel.name.ilike(name))
+            .filter(eval(req))
+        )
+        return self.db.scalars(stmt).all()

@@ -1,7 +1,7 @@
 from typing import List
 from sqlalchemy.orm import Session
 from fastapi import Depends, encoders
-from sqlalchemy import insert, update
+from sqlalchemy import insert, update, select
 from api.configs.Database import get_db
 from api.electrical.models.ElectricMeterModel import ElectricMeterModel
 from api.electrical.schemas.ElectricMeterSchema import CreateElectricMeter
@@ -75,3 +75,10 @@ class ElectricMeterRepo:
     def delete(self, meter: ElectricMeterModel) -> None:
         self.db.delete(meter)
         self.db.commit()
+    def verif_duplicate(self, name: str, req: str = "True") -> [ElectricMeterModel]:
+        stmt = (
+            select(ElectricMeterModel)
+            .filter(ElectricMeterModel.name.ilike(name))
+            .filter(eval(req))
+        )
+        return self.db.scalars(stmt).all()

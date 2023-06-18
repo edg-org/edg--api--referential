@@ -2,7 +2,7 @@ from typing import List
 from sqlalchemy.orm import Session
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from sqlalchemy import insert, func, update
+from sqlalchemy import insert, func, update, select
 from api.electrical.models.SupplyModeModel import SupplyModeModel
 from api.electrical.schemas.SupplyModeSchema import CreateSupplyMode
 
@@ -38,7 +38,7 @@ class SupplyModeRepo:
         )
 
     # get supply mode code function
-    def getbycode(self, code: str) -> SupplyModeModel:
+    def getbycode(self, code: int) -> SupplyModeModel:
         return (
             self.db.query(SupplyModeModel)
             .where(SupplyModeModel.code == code)
@@ -84,3 +84,11 @@ class SupplyModeRepo:
     def delete(self, meter: SupplyModeModel) -> None:
         self.db.delete(meter)
         self.db.commit()
+
+    def verif_duplicate(self, name: str, req: str = "True") -> [SupplyModeModel]:
+        stmt = (
+            select(SupplyModeModel)
+            .filter(SupplyModeModel.name.ilike(name))
+            .filter(eval(req))
+        )
+        return self.db.scalars(stmt).all()

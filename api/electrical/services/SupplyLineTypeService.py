@@ -58,13 +58,17 @@ class SupplyLineTypeService:
         return self.supplytype.create(data=data)
 
     # update supply line type function
-    async def update(self, code: int, data: SupplyLineTypeUpdate) -> SupplyLineTypeUpdate:
+    async def update(self, code: int, data: SupplyLineTypeUpdate) -> SupplyLineTypeModel:
         old_data = jsonable_encoder(self.supplytype.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Supply Line Type not found",
             )
+
+        verif = self.supplytype.verif_duplicate(data.name, "SupplyLineTypeModel.id != " + str(old_data['id']))
+        if len(verif) != 0:
+            raise HTTPException(status_code=405, detail={"msg": "Duplicates are not possible", "name": data.name})
 
         current_data = jsonable_encoder(self.supplytype.update(code=code, data=data.dict()))
         logs = [await build_log(f"/supplytypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]

@@ -67,14 +67,18 @@ class VoltageTypeService:
         return self.voltagetype.create(data=data)
 
     # update voltage type function
-    async def update(self, code: int, data: VoltageTypeUpdate) -> VoltageTypeUpdate:
+    async def update(self, code: int, data: VoltageTypeUpdate) -> VoltageTypeModel:
         old_data = jsonable_encoder(self.voltagetype.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Voltage Type not found"
             )
-        
+
+        verif = self.voltagetype.verif_duplicate(data.name, "VoltageTypeModel.id != " + str(old_data['id']))
+        if len(verif) != 0:
+            raise HTTPException(status_code=405, detail={"msg": "Duplicates are not possible", "name": data.name})
+
         current_data = jsonable_encoder(self.voltagetype.update(code=code, data=data.dict()))
         logs = [await build_log(f"/voltagetypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)

@@ -2,7 +2,7 @@ from typing import List
 from sqlalchemy.orm import Session
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from sqlalchemy import insert, func, and_, update
+from sqlalchemy import insert, func, and_, update, select
 from api.electrical.models.EnergySupplyLineModel import EnergySupplyLineModel
 from api.electrical.schemas.EnergySupplyLineSchema import CreateEnergySupplyLine
 
@@ -124,3 +124,12 @@ class EnergySupplyLineRepo:
     def delete(self, meter: EnergySupplyLineModel) -> None:
         self.db.delete(meter)
         self.db.commit()
+    def verif_duplicate(self, name: str, req: str = "True") -> [EnergySupplyLineModel]:
+        stmt = (
+            select(EnergySupplyLineModel)
+            # .filter(EnergySupplyLineModel.name.ilike(name))
+            # .filter(EnergySupplyLineModel.name.as_string().ilike(name))
+            .filter(EnergySupplyLineModel.infos['name'].as_string().ilike(name))
+            .filter(eval(req))
+        )
+        return self.db.scalars(stmt).all()

@@ -2,7 +2,7 @@ from typing import List
 from sqlalchemy.orm import Session
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from sqlalchemy import insert, func, update
+from sqlalchemy import insert, func, update, select
 from api.electrical.models.FixationTypeModel import FixationTypeModel
 from api.electrical.schemas.FixationTypeSchema import CreateFixationType
 
@@ -32,7 +32,7 @@ class FixationTypeRepo:
         )
 
     # get fixation type code function
-    def getbycode(self, code: str) -> FixationTypeModel:
+    def getbycode(self, code: int) -> FixationTypeModel:
         return (
             self.db.query(FixationTypeModel)
             .where(FixationTypeModel.code == code)
@@ -70,3 +70,10 @@ class FixationTypeRepo:
     def delete(self, supplyline: FixationTypeModel) -> None:
         self.db.delete(supplyline)
         self.db.commit()
+    def verif_duplicate(self, name: str, req: str = "True") -> [FixationTypeModel]:
+        stmt = (
+            select(FixationTypeModel)
+            .filter(FixationTypeModel.name.ilike(name))
+            .filter(eval(req))
+        )
+        return self.db.scalars(stmt).all()

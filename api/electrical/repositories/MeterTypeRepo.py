@@ -2,7 +2,7 @@ from typing import List
 from sqlalchemy.orm import Session
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from sqlalchemy import insert, func, update
+from sqlalchemy import insert, func, update, select
 from api.electrical.models.MeterTypeModel import MeterTypeModel
 from api.electrical.schemas.MeterTypeSchema import CreateMeterType
 
@@ -77,3 +77,11 @@ class MeterTypeRepo:
     def delete(self, type: MeterTypeModel) -> None:
         self.db.delete(type)
         self.db.commit()
+
+    def verif_duplicate(self, name: str, req: str = "True") -> [MeterTypeModel]:
+        stmt = (
+            select(MeterTypeModel)
+            .filter(MeterTypeModel.name.ilike(name))
+            .filter(eval(req))
+        )
+        return self.db.scalars(stmt).all()

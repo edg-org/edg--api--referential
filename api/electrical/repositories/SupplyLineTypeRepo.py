@@ -2,7 +2,7 @@ from typing import List
 from sqlalchemy.orm import Session
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from sqlalchemy import insert, func, update
+from sqlalchemy import insert, func, update, select
 from api.electrical.models.SupplyLineTypeModel import SupplyLineTypeModel
 from api.electrical.schemas.SupplyLineTypeSchema import CreateSupplyLineType
 
@@ -32,7 +32,7 @@ class SupplyLineTypeRepo:
         )
 
     # get supply line type code function
-    def getbycode(self, code: str) -> SupplyLineTypeModel:
+    def getbycode(self, code: int) -> SupplyLineTypeModel:
         return (
             self.db.query(SupplyLineTypeModel)
             .where(SupplyLineTypeModel.code == code)
@@ -71,3 +71,10 @@ class SupplyLineTypeRepo:
     def delete(self, supplyline: SupplyLineTypeModel) -> None:
         self.db.delete(supplyline)
         self.db.commit()
+    def verif_duplicate(self, name: str, req: str = "True") -> [SupplyLineTypeModel]:
+        stmt = (
+            select(SupplyLineTypeModel)
+            .filter(SupplyLineTypeModel.name.ilike(name))
+            .filter(eval(req))
+        )
+        return self.db.scalars(stmt).all()

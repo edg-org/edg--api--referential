@@ -60,13 +60,17 @@ class FixationTypeService:
         return self.fixationtype.create(data=data)
 
     # update fixation type function
-    async def update(self, code: int, data: FixationTypeUpdate) -> FixationTypeUpdate:
+    async def update(self, code: int, data: FixationTypeUpdate) -> FixationTypeModel:
         old_data = jsonable_encoder(self.fixationtype.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Fixation Type not found",
             )
+
+        verif = self.fixationtype.verif_duplicate(data.name, "FixationTypeModel.id != " + str(old_data['id']))
+        if len(verif) != 0:
+            raise HTTPException(status_code=405, detail={"msg": "Duplicates are not possible", "name": data.name})
 
         current_data = jsonable_encoder(self.fixationtype.update(code=code, data=data.dict()))
         logs = [await build_log(f"/fixationtypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
