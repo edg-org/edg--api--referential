@@ -27,12 +27,8 @@ class ConnectionPoleService:
         self.pole = pole
 
     # get all connection poles function
-    async def list(
-        self, 
-        skip: int = 0, 
-        limit: int = 100
-    ) -> List[ConnectionPoleModel]:
-        return self.pole.list(skip=skip, limit=limit)
+    async def list(self, start: int = 0, size: int = 100) -> (int, List[ConnectionPoleModel]):
+        return self.pole.list(start=start, size=size)
 
     # get connection pole by id function
     async def get(self, id: int) -> ConnectionPoleModel:

@@ -1,8 +1,8 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
+from sqlalchemy import insert, update, func
 from api.salesfinancial.models.SubscriptionTypeModel import SubscriptionTypeModel
 from api.salesfinancial.schemas.SubscriptionTypeSchema import CreateSubscriptionType
 
@@ -16,19 +16,13 @@ class SubscriptionTypeRepo:
 
     # get max code
     def maxcode(self) -> int:
-        codemax = self.db.query(
-            func.max(SubscriptionTypeModel.code)
-        ).one()[0]
+        codemax = self.db.query(func.max(SubscriptionTypeModel.code)).one()[0]
         return 0 if codemax is None else codemax
 
     # get all subscription types function
-    def list(self, skip: int = 0, limit: int = 100) -> List[SubscriptionTypeModel]:
-        return (
-            self.db.query(SubscriptionTypeModel)
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
+    def list(self, start: int = 0, size: int = 100) -> (int, List[SubscriptionTypeModel]):
+        query = self.db.query(SubscriptionTypeModel)
+        return query.count(), query.offset(start).limit(size).all()
 
     # get subscription type by id function
     def get(self, id: int) -> SubscriptionTypeModel:
@@ -67,11 +61,14 @@ class SubscriptionTypeRepo:
         return data
 
     # update subscription type function
-    def update(self, data: CreateSubscriptionType) -> SubscriptionTypeModel:
-        self.db.merge(data)
+    def update(self, code: int, data: dict) -> SubscriptionTypeModel:
+        self.db.execute(
+            update(SubscriptionTypeModel)
+            .where(SubscriptionTypeModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete subscription type function
     def delete(self, subscription: SubscriptionTypeModel) -> None:

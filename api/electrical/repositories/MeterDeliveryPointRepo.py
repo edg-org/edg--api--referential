@@ -15,15 +15,9 @@ class MeterDeliveryPointRepo:
         self.db = db
 
     # get all meter meter delivery points function
-    def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[MeterDeliveryPointModel]:
-        return (
-            self.db.query(MeterDeliveryPointModel)
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
+    def list(self, start: int = 0, size: int = 100) -> (int ,List[MeterDeliveryPointModel]):
+        query = self.db.query(MeterDeliveryPointModel)
+        return query.count(), query.offset(start).limit(size).all()
 
     # get meter delivery point by id function
     def get(self, id: int) -> MeterDeliveryPointModel:

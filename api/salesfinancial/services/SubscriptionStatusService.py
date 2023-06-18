@@ -2,25 +2,27 @@ from typing import List
 from api.tools.Helper import Helper
 from fastapi.encoders import jsonable_encoder
 from fastapi import Depends, HTTPException, status
+from api.logs.services.LogService import LogService
 from api.salesfinancial.models.SubscriptionStatusModel import SubscriptionStatusModel
 from api.salesfinancial.schemas.SubscriptionStatusSchema import CreateSubscriptionStatus
 from api.salesfinancial.repositories.SubscriptionStatusRepo import SubscriptionStatusRepo
 
 
 class SubscriptionStatusService:
+    log: LogService
     subscriptionstatus: SubscriptionStatusRepo
 
     def __init__(
         self,
-        subscriptionstatus: SubscriptionStatusRepo = Depends(),
+        log: LogService = Depends(),
+        subscriptionstatus: SubscriptionStatusRepo = Depends()
     ) -> None:
+        self.log = log
         self.subscriptionstatus = subscriptionstatus
 
     # get all subscription status function
-    async def list(self, skip: int = 0, limit: int = 100) -> List[SubscriptionStatusModel]:
-        return self.subscriptionstatus.list(
-            skip=skip, limit=limit
-        )
+    async def list(self, start: int = 0, size: int = 100) -> List[SubscriptionStatusModel]:
+        return self.subscriptionstatus.list(start=start, size=size)
 
     # get subscription status by id function
     async def get(self, id: int) -> SubscriptionStatusModel:
@@ -56,7 +58,7 @@ class SubscriptionStatusService:
         return self.subscriptionstatus.create(data=data)
 
     # update subscription status function
-    async def update(self, code: int, data: CreateSubscriptionStatus) -> SubscriptionStatusModel:
+    async def update(self, code: int, tokendata: dict, data: CreateSubscriptionStatus) -> SubscriptionStatusModel:
         old_data = jsonable_encoder(self.subscriptionstatus.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
@@ -65,7 +67,7 @@ class SubscriptionStatusService:
             )
 
         current_data = jsonable_encoder(self.subscriptionstatus.update(code, data=data.dict()))
-        logs = [Helper.build_log(f"/subscriptionstatus/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [await Helper.build_log(f"/subscriptionstatus/{code}", "PUT", tokendata["email"], old_data, current_data)]
         await self.log.create(logs)
         return current_data
 

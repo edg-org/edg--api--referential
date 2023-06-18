@@ -73,3 +73,11 @@ class TransformerUpdate(TransformerInput):
 #
 class TransformerItemSchema(TransformerSchema):
     tranformers: list[ConnectionPoleSchema] = []
+    
+#
+class TransformerPagination(BaseSchema):
+    count: int
+    total: int
+    page_size: int
+    start_index: int
+    results: List[TransformerSchema] = []

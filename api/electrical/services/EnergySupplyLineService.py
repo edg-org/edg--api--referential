@@ -27,12 +27,8 @@ class EnergySupplyLineService:
         self.energysupply = energysupply
 
     # get all energy supplies function
-    async def list(
-        self, 
-        skip: int = 0, 
-        limit: int = 100
-    ) -> List[EnergySupplyLineModel]:
-        return self.energysupply.list(skip=skip, limit=limit)
+    async def list(self, start: int = 0, size: int = 100) -> (int, List[EnergySupplyLineModel]):
+        return self.energysupply.list(start=start, size=size)
 
     # get energy supply line by id function
     async def get(self, id: int) -> EnergySupplyLineModel:

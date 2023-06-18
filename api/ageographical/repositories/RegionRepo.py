@@ -48,13 +48,9 @@ class RegionRepo:
         )
 
     # get all regions function
-    def list(self, skip: int = 0, limit: int = 100) -> List[RegionModel]:
-        return (
-            self.db.query(RegionModel)
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
+    def list(self, start: int = 0, size: int = 100) -> List[RegionModel]:
+        query = self.db.query(RegionModel)
+        return query.offset(start).limit(size).all()
 
     # get administative region by id function
     def get(self, id: int) -> RegionModel:

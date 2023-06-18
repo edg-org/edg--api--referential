@@ -2,25 +2,26 @@ from typing import List
 from api.tools.Helper import Helper
 from fastapi.encoders import jsonable_encoder
 from fastapi import Depends, HTTPException, status
+from api.logs.services.LogService import LogService
 from api.salesfinancial.models.InvoiceStatusModel import InvoiceStatusModel
 from api.salesfinancial.repositories.InvoiceStatusRepo import InvoiceStatusRepo
 from api.salesfinancial.schemas.InvoiceStatusSchema import CreateInvoiceStatus
 
 class InvoiceStatusService:
+    log: LogService
     invoicestatus: InvoiceStatusRepo
 
     def __init__(
-        self, invoicestatus: InvoiceStatusRepo = Depends()
+        self, 
+        log: LogService = Depends(),
+        invoicestatus: InvoiceStatusRepo = Depends()
     ) -> None:
+        self.log = log
         self.invoicestatus = invoicestatus
 
     # get all invoice statuss function
-    async def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[InvoiceStatusModel]:
-        return self.invoicestatus.list(
-            skip=skip, limit=limit
-        )
+    async def list(self, start: int = 0, size: int = 100) -> List[InvoiceStatusModel]:
+        return self.invoicestatus.list(start=start, size=size)
 
     # get invoice status by id function
     async def get(self, id: int) -> InvoiceStatusModel:
@@ -56,7 +57,7 @@ class InvoiceStatusService:
         return self.invoicestatus.create(data=data)
 
     # update invoice status function
-    async def update(self, code: int, data: CreateInvoiceStatus) -> InvoiceStatusModel:
+    async def update(self, code: int, tokendata: dict, data: CreateInvoiceStatus) -> InvoiceStatusModel:
         old_data = jsonable_encoder(self.invoicestatus.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
@@ -65,7 +66,7 @@ class InvoiceStatusService:
             )
 
         current_data = jsonable_encoder(self.invoicestatus.update(code, data=data.dict()))
-        logs = [Helper.build_log(f"/invoicestatus/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [await Helper.build_log(f"/invoicestatus/{code}", "PUT", tokendata["email"], old_data, current_data)]
         await self.log.create(logs)
         return current_data
 

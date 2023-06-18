@@ -15,8 +15,9 @@ class LogRepo:
         self.db = db
 
     # get all area types function
-    def list(self, skip: int = 0, limit: int = 100) -> List[LogModel]:
-        return self.db.query(LogModel).offset(skip).limit(limit).all()
+    def list(self, start: int = 0, size: int = 100) -> (int, List[LogModel]):
+        query = self.db.query(LogModel)
+        return query.count(), query.offset(start).limit(size).all()
 
     # get area type by id function
     def get(self, id: int) -> LogModel:
@@ -24,6 +25,9 @@ class LogRepo:
     
     # create area type function
     def create(self, data: List[CreateLog]) -> List[CreateLog]:
-        self.db.execute(insert(LogModel), encoders.jsonable_encoder(data))
+        self.db.execute(
+            insert(LogModel),
+            encoders.jsonable_encoder(data)
+        )
         self.db.commit()
         return data

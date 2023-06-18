@@ -21,8 +21,8 @@ class CityTypeService:
         self.citytype = citytype
 
     # get all city types function
-    async def list(self, skip: int = 0, limit: int = 100) -> List[CityTypeModel]:
-        return self.citytype.list(skip=skip, limit=limit)
+    async def list(self, start: int = 0, size: int = 100) -> List[CityTypeModel]:
+        return self.citytype.list(start=start, size=size)
 
     # get city type by id function
     async def get(self, id: int) -> CityTypeModel:
@@ -56,7 +56,7 @@ class CityTypeService:
         return self.citytype.create(data=data)
 
     # update city type function
-    async def update(self, code: int, data: CreateCityType) -> CityTypeModel:
+    async def update(self, code: int, tokendata: dict, data: CreateCityType) -> CityTypeModel:
         old_data = jsonable_encoder(self.citytype.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
@@ -65,7 +65,7 @@ class CityTypeService:
             )
 
         current_data = jsonable_encoder(self.citytype.update(code, data=data.dict()))
-        logs = [Helper.build_log(f"/citytypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [await Helper.build_log(f"/citytypes/{code}", "PUT", tokendata["email"], old_data, current_data)]
         await self.log.create(logs)
         return current_data
 

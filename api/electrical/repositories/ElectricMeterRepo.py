@@ -21,13 +21,9 @@ class ElectricMeterRepo:
         ).count()
         
     # get all electric meters function
-    def list(self, skip: int = 0, limit: int = 100) -> List[ElectricMeterModel]:
-        return (
-            self.db.query(ElectricMeterModel)
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
+    def list(self, start: int = 0, size: int = 100) -> (int, List[ElectricMeterModel]):
+        query = self.db.query(ElectricMeterModel)
+        return query.count(), query.offset(start).limit(size).all()
 
     # get electric meter by id function
     def get(self, id: int) -> ElectricMeterModel:

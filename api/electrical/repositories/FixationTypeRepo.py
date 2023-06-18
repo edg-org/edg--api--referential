@@ -15,11 +15,11 @@ class FixationTypeRepo:
         self.db = db
 
     # get all fixation types function
-    def list(self, skip: int = 0, limit: int = 100) -> List[FixationTypeModel]:
+    def list(self, start: int = 0, size: int = 100) -> List[FixationTypeModel]:
         return (
             self.db.query(FixationTypeModel)
-            .offset(skip)
-            .limit(limit)
+            .offset(start)
+            .limit(size)
             .all()
         )
 

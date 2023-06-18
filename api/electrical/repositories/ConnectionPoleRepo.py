@@ -17,16 +17,11 @@ class ConnectionPoleRepo:
 
     # get max code
     def maxcode(self) -> int:
-        codemax = self.db.query(
-            func.max(ConnectionPoleModel.code)
-        ).one()[0]
+        codemax = self.db.query(func.max(ConnectionPoleModel.code)).one()[0]
         return 0 if codemax is None else codemax
     
     # get max number of connection area by area
-    def maxnumberbyarea(
-        self, 
-        area_code: int
-    ) -> int:
+    def maxnumberbyarea(self, area_code: int) -> int:
         codemax = (
             self.db.query(func.max(ConnectionPoleModel.connection_pole_number))
             .where(ConnectionPoleModel.infos["area_code"] == area_code)
@@ -35,17 +30,9 @@ class ConnectionPoleRepo:
         return 0 if codemax is None else codemax
 
     # get all connection poles function
-    def list(
-        self, 
-        skip: int = 0, 
-        limit: int = 100
-    ) -> List[ConnectionPoleModel]:
-        return (
-            self.db.query(ConnectionPoleModel)
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
+    def list(self, start: int = 0, size: int = 100) -> (int, List[ConnectionPoleModel]):
+        query = self.db.query(ConnectionPoleModel)
+        return query.count(), query.offset(start).limit(size).all()
 
     # get connection pole by id function
     def get(self, id: int) -> ConnectionPoleModel:
@@ -56,10 +43,7 @@ class ConnectionPoleRepo:
         )
 
     # get connection pole number function
-    def getbynumber(
-        self, 
-        number: int
-    ) -> ConnectionPoleModel:
+    def getbynumber(self, number: int) -> ConnectionPoleModel:
         return (
             self.db.query(ConnectionPoleModel)
             .where(ConnectionPoleModel.connection_pole_number == number)

@@ -24,9 +24,9 @@ class CreateSupplyLineType(SupplyLineTypeSchema):
 
 #
 class SupplyLineTypeInput(CreateSupplyLineType):
-    class Config:
-        fields_to_hide = {"code"}
+    pass
 
 #
 class SupplyLineTypeUpdate(SupplyLineTypeInput):
-    pass
+    class Config:
+        fields_to_hide = {"code"}

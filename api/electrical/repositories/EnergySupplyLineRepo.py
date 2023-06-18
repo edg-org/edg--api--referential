@@ -47,13 +47,9 @@ class EnergySupplyLineRepo:
         ).count()
 
     # get all energy supplies function
-    def list(self, skip: int = 0, limit: int = 100) -> List[EnergySupplyLineModel]:
-        return (
-            self.db.query(EnergySupplyLineModel)
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
+    def list(self, start: int = 0, size: int = 100) -> (int, List[EnergySupplyLineModel]):
+        query = self.db.query(EnergySupplyLineModel)
+        return query.count(), query.offset(start).limit(size).all()
 
     # get energy supply line by id function
     def get(self, id: int) -> EnergySupplyLineModel:

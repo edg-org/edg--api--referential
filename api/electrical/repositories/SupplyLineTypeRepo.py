@@ -15,11 +15,11 @@ class SupplyLineTypeRepo:
         self.db = db
 
     # get all supply line types function
-    def list(self, skip: int = 0, limit: int = 100) -> List[SupplyLineTypeModel]:
+    def list(self, start: int = 0, size: int = 100) -> List[SupplyLineTypeModel]:
         return (
             self.db.query(SupplyLineTypeModel)
-            .offset(skip)
-            .limit(limit)
+            .offset(start)
+            .limit(size)
             .all()
         )
 

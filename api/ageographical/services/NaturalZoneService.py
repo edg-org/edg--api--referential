@@ -26,8 +26,8 @@ class ZoneService:
         self.zone = zone
 
     # get all natural regions function
-    async def list(self, skip: int = 0, limit: int = 100) -> List[ZoneModel]:
-        return self.zone.list(skip=skip, limit=limit)
+    async def list(self, start: int = 0, size: int = 100) -> List[ZoneModel]:
+        return self.zone.list(start=start, size=size)
 
     # get natural region by id function
     async def get(self, id: int) -> ZoneModel:
@@ -69,7 +69,7 @@ class ZoneService:
         return self.zone.create(data=zonelist)
 
     # update natural region function
-    async def update(self, code: int, data: ZoneUpdate) -> ZoneModel:
+    async def update(self, code: int, tokendata: dict, data: ZoneUpdate) -> ZoneModel:
         old_data = jsonable_encoder(self.zone.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
@@ -78,12 +78,12 @@ class ZoneService:
             )
 
         current_data = jsonable_encoder(self.zone.update(code, data=data.dict()))
-        logs = [Helper.build_log(f"/naturalregions/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [await Helper.build_log(f"/naturalregions/{code}", "PUT", tokendata["email"], old_data, current_data)]
         await self.log.create(logs)
         return current_data
 
     # activate or desactivate natural region function
-    async def activate_desactivate(self, code: int, flag: bool) -> None:
+    async def activate_desactivate(self, code: int, flag: bool, tokendata: dict) -> None:
         old_data = jsonable_encoder(self.zone.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
@@ -102,6 +102,6 @@ class ZoneService:
             deleted_at = deleted_at
         )
         current_data = jsonable_encoder(self.zone.update(code=code, data=data))
-        logs = [Helper.build_log(f"/naturalregions/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [await Helper.build_log(f"/naturalregions/{code}", "PUT", tokendata["email"], old_data, current_data)]
         await self.log.create(logs)
         return HTTPException(status_code=status.HTTP_200_OK, detail=message)

@@ -19,7 +19,8 @@ router_path = env.api_routers_prefix + env.api_version
 
 poleRouter = APIRouter(
     tags=["Connection Poles"],
-    prefix=router_path + "/connectionpoles"
+    prefix=router_path + "/connectionpoles",
+    dependencies=[Depends(JWTBearer())]
 )
 
 # get all connection poles route
@@ -30,11 +31,18 @@ poleRouter = APIRouter(
     response_model=List[ConnectionPoleSchema],
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
-    poleService: ConnectionPoleService = Depends(),
+    pageSize: int = 100,
+    startIndex: int = 0,
+    poleService: ConnectionPoleService = Depends()
 ):
-    return await poleService.list(skip, limit)
+    count, poles = await poleService.list(startIndex, pageSize)
+    return {
+        "results": [pole.normalize() for pole in poles],
+        "total": len(poles),
+        "count": count,
+        "page_size": pageSize,
+        "start_index": startIndex
+    } 
 
 # get transformer route
 @poleRouter.get(
@@ -47,9 +55,7 @@ async def get(
     number: int,
     poleService: ConnectionPoleService = Depends(),
 ):
-    pole = await poleService.getbynumber(
-        number=number
-    )
+    pole = await poleService.getbynumber(number=number)
     if pole is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -68,9 +74,7 @@ async def get_tranformer_item(
     number: int,
     poleService: ConnectionPoleService = Depends(),
 ):
-    pole = await poleService.getbynumber(
-        number=number
-    )
+    pole = await poleService.getbynumber(number=number)
     if pole is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -83,8 +87,7 @@ async def get_tranformer_item(
     "/",
     summary="Creation router a connection pole",
     description="This router allows to create a connection pole",
-    response_model=List[CreateConnectionPole],
-    dependencies=[Depends(JWTBearer())]
+    response_model=List[CreateConnectionPole]
 )
 async def create(
     data: List[ConnectionPoleInput],
@@ -97,12 +100,12 @@ async def create(
     "/{number}",
     summary="Update router a connection pole",
     description="This router allows to update a connection pole",
-    response_model=ConnectionPoleSchema,
-    dependencies=[Depends(JWTBearer())]
+    response_model=ConnectionPoleSchema
 )
 async def update(
     number: int,
     data: ConnectionPoleUpdate,
     poleService: ConnectionPoleService = Depends(),
+    tokendata: dict = Depends(JWTBearer())
 ):
-    return await poleService.update(number=number, data=data)
+    return await poleService.update(number=number, tokendata=tokendata, data=data)

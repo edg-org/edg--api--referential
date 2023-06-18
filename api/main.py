@@ -47,7 +47,7 @@ app = FastAPI(
     description=env.app_desc,
     version="0.0." + env.api_version,
     openapi_tags=Tags,
-    root_path=env.api_root_path,
+    root_path=env.api_root_path
 )
 
 # Add Routers

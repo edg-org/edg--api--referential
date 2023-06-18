@@ -21,8 +21,8 @@ class AreaTypeService:
         self.areatype = areatype
 
     # get all area types function
-    async def list(self, skip: int = 0, limit: int = 100) -> List[AreaTypeModel]:
-        return self.areatype.list(skip=skip, limit=limit)
+    async def list(self, start: int = 0, size: int = 100) -> List[AreaTypeModel]:
+        return self.areatype.list(start=start, size=size)
 
     # get area type by id function
     async def get(self, id: int) -> AreaTypeModel:
@@ -43,29 +43,29 @@ class AreaTypeService:
             if areatype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Area Type already registered with code {item.code}",
+                    detail=f"Area Type already registered with code {item.code}"
                 )
 
             areatype = self.areatype.getbyname(name=item.name)
             if areatype:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"Area Type already registered with name {item.name}",
+                    detail=f"Area Type already registered with name {item.name}"
                 )
 
         return self.areatype.create(data=data)
 
     # update area type function
-    async def update(self, code: int, data: CreateAreaType) -> AreaTypeModel:
+    async def update(self, code: int, tokendata: dict, data: CreateAreaType) -> AreaTypeModel:
         old_data = jsonable_encoder(self.areatype.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail="Area Type not found",
+                detail="Area Type not found"
             )
 
         current_data = jsonable_encoder(self.areatype.update(code=code, data=data.dict()))
-        logs = [Helper.build_log(f"/areatypes/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        logs = [await Helper.build_log(f"/areatypes/{code}", "PUT", tokendata["email"], old_data, current_data)]
         await self.log.create(logs)
         return current_data
 

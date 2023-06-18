@@ -15,20 +15,13 @@ class CityLevelRepo:
 
     # get max code
     def maxcode(self) -> int:
-        codemax = (
-            self.db.query(func.max(CityLevelModel.code))
-            .one()[0]
-        )
+        codemax = self.db.query(func.max(CityLevelModel.code)).one()[0]
         return 0 if codemax is None else codemax
 
     # get all city levels function
-    def list(self, skip: int = 0, limit: int = 100) -> List[CityLevelModel]:
-        return (
-            self.db.query(CityLevelModel)
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
+    def list(self, start: int = 0, size: int = 100) -> List[CityLevelModel]:
+        query = self.db.query(CityLevelModel)
+        return query.offset(start).limit(size).all()
 
     # get city level by id function
     def get(self, id: int) -> CityLevelModel:

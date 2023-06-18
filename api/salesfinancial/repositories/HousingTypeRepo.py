@@ -1,8 +1,8 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
+from sqlalchemy import insert, func, update
 from api.salesfinancial.models.HousingTypeModel import HousingTypeModel
 from api.salesfinancial.schemas.HousingTypeSchema import CreateHousingType
 
@@ -16,13 +16,9 @@ class HousingTypeRepo:
         self.db = db
 
     # get all housing types function
-    def list(self, skip: int = 0, limit: int = 100) -> List[HousingTypeModel]:
-        return (
-            self.db.query(HousingTypeModel)
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
+    def list(self, start: int = 0, size: int = 100) -> (int, List[HousingTypeModel]):
+        query = self.db.query(HousingTypeModel)
+        return query.count(), query.offset(start).limit(size).all()
 
     # count total rows of transformer by code
     def countbycode(self, code: str) -> int:
@@ -74,11 +70,14 @@ class HousingTypeRepo:
         return data
 
     # update housing type function
-    def update(self, data: HousingTypeModel) -> HousingTypeModel:
-        self.db.merge(data)
+    def update(self, code: int, data: dict) -> HousingTypeModel:
+        self.db.execute(
+            update(HousingTypeModel)
+            .where(HousingTypeModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete housing type function
     def delete(self, housing: HousingTypeModel) -> None:

@@ -24,10 +24,8 @@ class VoltageTypeService:
         self.voltagetype = voltagetype
 
     # get all voltage types function
-    async def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[VoltageTypeModel]:
-        return self.voltagetype.list(skip=skip, limit=limit)
+    async def list(self, start: int = 0, size: int = 100) -> List[VoltageTypeModel]:
+        return self.voltagetype.list(start=start, size=size)
 
     # get voltage type by id function
     async def get(self, id: int) -> VoltageTypeModel:

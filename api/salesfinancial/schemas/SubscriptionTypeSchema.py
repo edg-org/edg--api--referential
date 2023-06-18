@@ -88,3 +88,11 @@ class SubscriptionTypeUpdate(SubscriptionTypeInput):
 #
 class SubscriptionTypeItemSchema(SubscriptionTypeSchema):
     pricing_histories: list[PricingHistorySchema] = []
+
+#
+class SubscriptionTypePagination(BaseSchema):
+    count: int
+    total: int
+    page_size: int
+    start_index: int
+    results: List[SubscriptionTypeSchema] = []

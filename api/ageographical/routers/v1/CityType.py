@@ -11,14 +11,15 @@ from api.ageographical.schemas.CityTypeSchema import (
     CityTypeInput,
     CreateCityType,
     CityTypeUpdate,
-    CityTypeSchema,
+    CityTypeSchema
 )
 
 router_path = env.api_routers_prefix + env.api_version
 
 citytypeRouter = APIRouter(
     tags=["City Types"],
-    prefix=router_path + "/citytypes"
+    prefix=router_path + "/citytypes",
+    dependencies=[Depends(JWTBearer())]
 )
 
 # get all city types route
@@ -29,11 +30,11 @@ citytypeRouter = APIRouter(
     response_model=List[CityTypeSchema],
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     typeService: CityTypeService = Depends(),
 ):
-    return await typeService.list(skip, limit)
+    return await typeService.list(start, size)
 
 # get city type route
 @citytypeRouter.get(
@@ -58,8 +59,7 @@ async def get(
     "/",
     summary="Creation router a city type",
     description="This router allows to create a city type",
-    response_model=List[CreateCityType],
-    dependencies=[Depends(JWTBearer())]
+    response_model=List[CreateCityType]
 )
 async def create(
     data: List[CityTypeInput],
@@ -72,12 +72,12 @@ async def create(
     "/{code}",
     summary="Update router a city type",
     description="This router allows to update a city type",
-    response_model=CityTypeSchema,
-    dependencies=[Depends(JWTBearer())]
+    response_model=CityTypeSchema
 )
 async def update(
     code: int,
     data: CityTypeUpdate,
     typeService: CityTypeService = Depends(),
+    tokendata: dict = Depends(JWTBearer())
 ):
-    return await typeService.update(code=code, data=data)
+    return await typeService.update(code=code, tokendata=tokendata, data=data)

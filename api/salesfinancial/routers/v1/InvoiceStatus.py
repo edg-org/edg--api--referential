@@ -17,7 +17,8 @@ router_path = env.api_routers_prefix + env.api_version
 
 invoicestatusRouter = APIRouter(
     tags=["Invoice Status"],
-    prefix=router_path + "/invoicestatus"
+    prefix=router_path + "/invoicestatus",
+    dependencies=[Depends(JWTBearer())]
 )
 
 
@@ -29,11 +30,11 @@ invoicestatusRouter = APIRouter(
     response_model=List[InvoiceStatusSchema],
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     statusService: InvoiceStatusService = Depends(),
 ):
-    return await statusService.list(skip, limit)
+    return await statusService.list(start, size)
 
 
 # get invoice status route
@@ -61,8 +62,7 @@ async def get(
     "/",
     summary="Creation router a invoice status",
     description="This router allows to create a invoice status",
-    response_model=List[CreateInvoiceStatus],
-    dependencies=[Depends(JWTBearer())]
+    response_model=List[CreateInvoiceStatus]
 )
 async def create(
     data: List[CreateInvoiceStatus],
@@ -76,12 +76,12 @@ async def create(
     "/{code}",
     summary="Update router a invoice status",
     description="This router allows to update a invoice status",
-    response_model=InvoiceStatusSchema,
-    dependencies=[Depends(JWTBearer())]
+    response_model=InvoiceStatusSchema
 )
 async def update(
     code: int,
     data: InvoiceStatusUpdate,
-    statusService: InvoiceStatusService = Depends()
+    statusService: InvoiceStatusService = Depends(),
+    tokendata: dict = Depends(JWTBearer())
 ):
-    return await statusService.update(code=code, data=data)
+    return await statusService.update(code=code, tokendata=tokendata, data=data)

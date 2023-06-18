@@ -23,9 +23,9 @@ class CreateInvoiceStatus(InvoiceStatusSchema):
 
 #
 class InvoiceStatusInput(CreateInvoiceStatus):
-    class Config:
-        fields_to_hide = {"code"}
+    pass
 
 #
 class InvoiceStatusUpdate(InvoiceStatusInput):
-    pass
+    class Config:
+        fields_to_hide = {"code"}

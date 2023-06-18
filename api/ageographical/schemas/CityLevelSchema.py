@@ -31,4 +31,5 @@ class CityLevelInput(CreateCityLevel):
 
 #
 class CityLevelUpdate(CityLevelInput):
-    pass
+    class Config:
+        fields_to_hide = {"code"}

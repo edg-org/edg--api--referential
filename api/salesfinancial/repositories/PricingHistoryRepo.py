@@ -16,19 +16,13 @@ class PricingHistoryRepo:
 
     # get max code
     def maxcode(self) -> int:
-        codemax = self.db.query(
-            func.max(PricingHistoryModel.code)
-        ).one()[0]
+        codemax = self.db.query(func.max(PricingHistoryModel.code)).one()[0]
         return 0 if codemax is None else codemax
 
     # get all pricing histories function
-    def list(self, skip: int = 0, limit: int = 100) -> List[PricingHistoryModel]:
-        return (
-            self.db.query(PricingHistoryModel)
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
+    def list(self, start: int = 0, size: int = 100) -> List[PricingHistoryModel]:
+        query = self.db.query(PricingHistoryModel)
+        return query.offset(start).limit(size).all()
 
     # get pricing history by id function
     def get(self, id: int) -> PricingHistoryModel:
@@ -50,10 +44,7 @@ class PricingHistoryRepo:
     def getbyname(self, name: str) -> PricingHistoryModel:
         return (
             self.db.query(PricingHistoryModel)
-            .where(
-                func.lower(PricingHistoryModel.name)
-                == name.lower()
-            )
+            .where(func.lower(PricingHistoryModel.name) == name.lower())
             .first()
         )
 

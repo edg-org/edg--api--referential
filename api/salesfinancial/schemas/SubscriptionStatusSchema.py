@@ -24,9 +24,9 @@ class CreateSubscriptionStatus(SubscriptionStatusSchema):
 
 #
 class SubscriptionStatusInput(CreateSubscriptionStatus):
-    class Config:
-        fields_to_hide = {"code"}
+    pass
 
 #
 class SubscriptionStatusUpdate(SubscriptionStatusInput):
-    pass
+    class Config:
+        fields_to_hide = {"code"}

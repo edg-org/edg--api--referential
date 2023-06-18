@@ -28,8 +28,8 @@ class TransformerService:
         self.transformer = transformer
 
     # get all transformers function
-    async def list(self, skip: int = 0, limit: int = 100) -> List[TransformerModel]:
-        return self.transformer.list(skip=skip, limit=limit)
+    async def list(self, start: int = 0, size: int = 100) -> (int, List[TransformerModel]):
+        return self.transformer.list(start=start, size=size)
 
     # get transformer by id function
     async def get(self, id: int) -> TransformerModel:

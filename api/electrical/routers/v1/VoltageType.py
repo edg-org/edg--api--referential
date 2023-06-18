@@ -18,7 +18,8 @@ router_path = env.api_routers_prefix + env.api_version
 
 voltagetypeRouter = APIRouter(
     tags=["Supply Line Voltage Types"],
-    prefix=router_path + "/voltagetypes"
+    prefix=router_path + "/voltagetypes",
+    dependencies=[Depends(JWTBearer())]
 )
 
 # get all voltage types route
@@ -29,12 +30,11 @@ voltagetypeRouter = APIRouter(
     response_model=List[VoltageTypeSchema],
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     voltagetypeService: VoltageTypeService = Depends(),
 ):
-    return await voltagetypeService.list(skip, limit)
-
+    return await voltagetypeService.list(start, size)
 
 # get voltage type route
 @voltagetypeRouter.get(
@@ -54,14 +54,12 @@ async def get(
         )
     return voltagetype
 
-
 # post voltage type route
 @voltagetypeRouter.post(
     "/",
     summary="Creation router a supply line voltage type",
     description="This router allows to create a supply line voltage type",
-    response_model=List[CreateVoltageType],
-    dependencies=[Depends(JWTBearer())]
+    response_model=List[CreateVoltageType]
 )
 async def create(
     data: List[VoltageTypeInput],
@@ -69,18 +67,17 @@ async def create(
 ):
     return await voltagetypeService.create(data=data)
 
-
 # update voltage type route
 @voltagetypeRouter.put(
     "/{code}",
     summary="Update router a supply line voltage type",
     description="This router allows to update a supply line voltage type",
-    response_model=VoltageTypeSchema,
-    dependencies=[Depends(JWTBearer())]
+    response_model=VoltageTypeSchema
 )
 async def update(
     code: int,
     data: VoltageTypeUpdate,
     voltagetypeService: VoltageTypeService = Depends(),
+    tokendata: dict = Depends(JWTBearer())
 ):
-    return await voltagetypeService.update(code=code, data=data)
+    return await voltagetypeService.update(code=code, tokendata=tokendata, data=data)

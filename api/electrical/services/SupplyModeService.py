@@ -22,10 +22,8 @@ class SupplyModeService:
         self.supplymode = supplymode
 
     # get all supply modes function
-    async def list(
-        self, skip: int = 0, limit: int = 100
-    ) -> List[SupplyModeModel]:
-        return self.supplymode.list(skip=skip, limit=limit)
+    async def list(self, start: int = 0, size: int = 100) -> List[SupplyModeModel]:
+        return self.supplymode.list(start=start, size=size)
 
     # get supply mode by id function
     async def get(self, id: int) -> SupplyModeModel:

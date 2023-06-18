@@ -19,7 +19,8 @@ router_path = env.api_routers_prefix + env.api_version
 
 zoneRouter = APIRouter(
     tags=["Natural Regions"],
-    prefix=router_path + "/naturalregions"
+    prefix=router_path + "/naturalregions",
+    dependencies=[Depends(JWTBearer())]
 )
 
 # post natural region route
@@ -27,8 +28,7 @@ zoneRouter = APIRouter(
     "/",
     summary="Creation router a natural region",
     description="This router allows to create a natural region",
-    response_model=List[CreateZone],
-    dependencies=[Depends(JWTBearer())]
+    response_model=List[CreateZone]
 )
 async def create(
     data: List[ZoneInput],
@@ -44,11 +44,11 @@ async def create(
     response_model=List[ZoneSchema],
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     zoneService: ZoneService = Depends(),
 ):
-    return await zoneService.list(skip, limit)
+    return await zoneService.list(start, size)
 
 # get natural region route
 @zoneRouter.get(
@@ -76,7 +76,7 @@ async def get_by_code(
     description="This router allows to get a natural region with items",
     response_model=ZoneItemSchema,
 )
-async def get_zone_item(
+async def get_zone_items(
     code: int, 
     zoneService: ZoneService = Depends()
 ):
@@ -93,12 +93,12 @@ async def get_zone_item(
     "/{code}",
     summary="Update router a natural region",
     description="This router allows to update a natural region",
-    response_model=ZoneSchema,
-    dependencies=[Depends(JWTBearer())]
+    response_model=ZoneSchema
 )
 async def update(
     code: int,
     data: ZoneUpdate,
     zoneService: ZoneService = Depends(),
+    tokendata: dict = Depends(JWTBearer())
 ):
-    return await zoneService.update(code=code, data=data)
+    return await zoneService.update(code=code, tokendata=tokendata, data=data)

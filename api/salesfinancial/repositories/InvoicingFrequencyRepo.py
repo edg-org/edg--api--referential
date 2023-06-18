@@ -1,8 +1,8 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
+from sqlalchemy import insert, update, func
 from api.salesfinancial.models.InvoicingFrequencyModel import InvoicingFrequencyModel
 from api.salesfinancial.schemas.InvoicingFrequencySchema import CreateInvoicingFrequency
 
@@ -17,19 +17,13 @@ class InvoicingFrequencyRepo:
 
     # get max code
     def maxcode(self) -> int:
-        codemax = self.db.query(
-            func.max(InvoicingFrequencyModel.code)
-        ).one()[0]
+        codemax = self.db.query(func.max(InvoicingFrequencyModel.code)).one()[0]
         return 0 if codemax is None else codemax
 
     # get all invoicing frequencies function
-    def list(self, skip: int = 0, limit: int = 100) -> List[InvoicingFrequencyModel]:
-        return (
-            self.db.query(InvoicingFrequencyModel)
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
+    def list(self, start: int = 0, size: int = 100) -> List[InvoicingFrequencyModel]:
+        query = self.db.query(InvoicingFrequencyModel)
+        return query.offset(start).limit(size).all()
 
     # get invoicing frequency by id function
     def get(self, id: int) -> InvoicingFrequencyModel:
@@ -81,11 +75,14 @@ class InvoicingFrequencyRepo:
         return data
 
     # update invoicing frequency function
-    def update(self, data: CreateInvoicingFrequency) -> InvoicingFrequencyModel:
-        self.db.merge(data)
+    def update(self, code: int, data: dict) -> InvoicingFrequencyModel:
+        self.db.execute(
+            update(InvoicingFrequencyModel)
+            .where(InvoicingFrequencyModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete invoicing frequency function
     def delete(

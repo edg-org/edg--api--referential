@@ -1,8 +1,8 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
+from sqlalchemy import insert, update, func
 from api.salesfinancial.models.SubscriptionLevelModel import SubscriptionLevelModel
 from api.salesfinancial.schemas.SubscriptionLevelSchema import CreateSubscriptionLevel
 
@@ -17,19 +17,13 @@ class SubscriptionLevelRepo:
 
     # get max code
     def maxcode(self) -> int:
-        codemax = self.db.query(
-            func.max(SubscriptionLevelModel.code)
-        ).one()[0]
+        codemax = self.db.query(func.max(SubscriptionLevelModel.code)).one()[0]
         return 0 if codemax is None else codemax
 
     # get all subscription levels function
-    def list(self, skip: int = 0, limit: int = 100) -> List[SubscriptionLevelModel]:
-        return (
-            self.db.query(SubscriptionLevelModel)
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
+    def list(self, start: int = 0, size: int = 100) -> List[SubscriptionLevelModel]:
+        query = self.db.query(SubscriptionLevelModel)
+        return query.offset(start).limit(size).all()
 
     # get subscription level by id function
     def get(self, id: int) -> SubscriptionLevelModel:
@@ -68,11 +62,14 @@ class SubscriptionLevelRepo:
         return data
 
     # update subscription level function
-    def update(self, data: CreateSubscriptionLevel) -> SubscriptionLevelModel:
-        self.db.merge(data)
+    def update(self, code: int, data: dict) -> SubscriptionLevelModel:
+        self.db.execute(
+            update(SubscriptionLevelModel)
+            .where(SubscriptionLevelModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete subscription level function
     def delete(

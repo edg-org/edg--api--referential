@@ -28,12 +28,8 @@ class ElectricMeterService:
         self.meter = meter
 
     # get all electric meters function
-    async def list(
-        self,
-        skip: int = 0,
-        limit: int = 100
-    ) -> List[ElectricMeterModel]:
-        return self.meter.list(skip=skip, limit=limit)
+    async def list(self,start: int = 0,size: int = 100) -> (int, List[ElectricMeterModel]):
+        return self.meter.list(start=start, size=size)
 
     # get electric meter by id function
     async def get(self, id: int) -> ElectricMeterModel:

@@ -13,13 +13,15 @@ from api.ageographical.schemas.AreaSchema import (
     AreaSchema,
     AreaUpdate,
     AreaItemSchema,
+    AreaPagination
 )
 
 router_path = env.api_routers_prefix + env.api_version
 
 areaRouter = APIRouter(
     tags=["Areas"],
-    prefix=router_path + "/areas"
+    prefix=router_path + "/areas",
+    dependencies=[Depends(JWTBearer())]
 )
 
 # get all areas route
@@ -27,14 +29,21 @@ areaRouter = APIRouter(
     "/",
     summary="Getting router for all areas",
     description="This router allows to get all areas",
-    response_model=List[AreaSchema]
+    response_model=AreaPagination
 )
 async def list(
-    skip: int = 0, 
-    limit: int = 100,
+    start: int = 0, 
+    size: int = 100,
     areaService: AreaService = Depends()
 ):
-    return await areaService.list(skip, limit)
+    count, areas = await areaService.list(start, size)
+    return {
+        "results": [area for area in areas],
+        "total": len(areas),
+        "count": count,
+        "page_size": size,
+        "start_index": start
+    }
 
 # get area route
 @areaRouter.get(
@@ -62,8 +71,9 @@ async def get(
     description="This router allows to get a area with items",
     response_model=AreaItemSchema,
 )
-async def get_area_item(
-    code: int, areaService: AreaService = Depends()
+async def get_area_items(
+    code: int, 
+    areaService: AreaService = Depends()
 ):
     area = await areaService.getbycode(code=code)
     if area is None:
@@ -78,8 +88,7 @@ async def get_area_item(
     "/",
     summary="Creation router a area",
     description="This router allows to create a area",
-    response_model=List[CreateArea],
-    dependencies=[Depends(JWTBearer())]
+    response_model=List[CreateArea]
 )
 async def create(
     data: List[AreaInput],
@@ -92,12 +101,12 @@ async def create(
     "/{code}",
     summary="Update router a area",
     description="This router allows to update a area",
-    response_model=AreaSchema,
-    dependencies=[Depends(JWTBearer())]
+    response_model=AreaSchema
 )
 async def update(
     code: int,
     data: AreaUpdate,
     areaService: AreaService = Depends(),
+    tokendata: dict = Depends(JWTBearer())
 ):
-    return await areaService.update(code=code, data=data)
+    return await areaService.update(code=code, tokendata=tokendata, data=data)

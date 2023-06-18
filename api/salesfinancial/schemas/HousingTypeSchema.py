@@ -1,5 +1,5 @@
-from typing import Optional
 from datetime import datetime
+from typing import Optional, List
 from api.configs.BaseModel import BaseSchema
 
 #
@@ -25,9 +25,16 @@ class CreateHousingType(HousingTypeSchema):
 
 #
 class HousingTypeInput(CreateHousingType):
-    class Config:
-        fields_to_hide = {"code"}
+    pass
 
 #
 class HousingTypeUpdate(HousingTypeInput):
-    pass
+    class Config:
+        fields_to_hide = {"code"}
+        
+class HousingTypePagination(BaseSchema):
+    count: int
+    total: int
+    page_size: int
+    start_index: int
+    results: List[HousingTypeSchema] = []

@@ -1,5 +1,5 @@
-from typing import Optional
 from datetime import datetime
+from typing import List, Optional
 from api.configs.BaseModel import BaseSchema
 
 #
@@ -42,3 +42,12 @@ class ElectricMeterInput(ElectricMeterSchema):
 #
 class ElectricMeterUpdate(ElectricMeterInput):
     pass
+
+
+#
+class ElectricMeterPagination(BaseSchema):
+    count: int
+    total: int
+    page_size: int
+    start_index: int
+    results: List[ElectricMeterSchema] = []

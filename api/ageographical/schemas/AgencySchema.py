@@ -1,5 +1,5 @@
-from typing import Optional
 from datetime import datetime
+from typing import List, Optional
 from pydantic import EmailStr, Field, constr
 from api.configs.BaseModel import BaseSchema
 
@@ -63,3 +63,11 @@ class AgencyInput(CreateAgency):
 #
 class AgencyUpdate(BaseSchema):
     infos: AgencyUpdateInfos
+    
+#
+class AgencyPagination(BaseSchema):
+    count: int
+    total: int
+    page_size: int
+    start_index: int
+    results: List[AgencySchema] = []

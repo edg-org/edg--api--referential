@@ -21,11 +21,11 @@ class MeterTypeRepo:
         ).one()[0]
 
     # get all meter types function
-    def list(self, skip: int = 0, limit: int = 100) -> List[MeterTypeModel]:
+    def list(self, start: int = 0, size: int = 100) -> List[MeterTypeModel]:
         return (
             self.db.query(MeterTypeModel)
-            .offset(skip)
-            .limit(limit)
+            .offset(start)
+            .limit(size)
             .all()
         )
 

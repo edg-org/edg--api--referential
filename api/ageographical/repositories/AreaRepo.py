@@ -114,13 +114,9 @@ class AreaRepo:
         )
 
     # get all areas function
-    def list(self, skip: int = 0, limit: int = 100) -> List[AreaModel]:
-        return (
-            self.db.query(AreaModel)
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
+    def list(self, start: int = 0, size: int = 100) -> (int, List[AreaModel]):
+        query = self.db.query(AreaModel)
+        return query.count(), query.offset(start).limit(size).all()
 
     # get area by id function
     def get(self, id: int) -> AreaModel:

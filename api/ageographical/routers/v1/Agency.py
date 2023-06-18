@@ -12,6 +12,7 @@ from api.ageographical.schemas.AgencySchema import (
     CreateAgency,
     AgencyUpdate,
     AgencySchema,
+    AgencyPagination
 )
 
 router_path = env.api_routers_prefix + env.api_version
@@ -19,6 +20,7 @@ router_path = env.api_routers_prefix + env.api_version
 agencyRouter = APIRouter(
     tags=["Agencies"],
     prefix=router_path + "/agencies",
+    dependencies=[Depends(JWTBearer())]
 )
 
 # get all agencies route
@@ -26,14 +28,21 @@ agencyRouter = APIRouter(
     "/",
     summary="Getting router for all agencies",
     description="This router allows to get all agencies",
-    response_model=List[AgencySchema],
+    response_model=AgencyPagination,
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     agencyService: AgencyService = Depends(),
 ):
-    return await agencyService.list(skip, limit)
+    count, agencies = await agencyService.list(start, size)
+    return {
+        "results": [agency for agency in agencies],
+        "total": len(agencies),
+        "count": count,
+        "page_size": size,
+        "start_index": start
+    }
 
 # get agency route
 @agencyRouter.get(
@@ -59,8 +68,7 @@ async def get(
     "/",
     summary="Creation router a agency",
     description="This router allows to create a agency",
-    response_model=List[CreateAgency],
-    dependencies=[Depends(JWTBearer())]
+    response_model=List[CreateAgency]
 )
 async def create(
     data: List[AgencyInput],
@@ -74,12 +82,12 @@ async def create(
     "/{code}",
     summary="Update router a agency",
     description="This router allows to update a agency",
-    response_model=AgencySchema,
-    dependencies=[Depends(JWTBearer())]
+    response_model=AgencySchema
 )
 async def update(
     code: int,
     data: AgencyUpdate,
     agencyService: AgencyService = Depends(),
+    tokendata: dict = Depends(JWTBearer())
 ):
-    return await agencyService.update(code=code, data=data)
+    return await agencyService.update(code=code, tokendata=tokendata, data=data)

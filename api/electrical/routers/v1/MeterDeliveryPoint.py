@@ -10,38 +10,45 @@ from api.electrical.services.MeterDeliveryPointService import MeterDeliveryPoint
 from api.electrical.schemas.MeterDeliveryPointSchema import (
     MeterDeliveryPointInput,
     CreateMeterDeliveryPoint,
-    MeterDeliveryPointSchema
+    MeterDeliveryPointSchema,
+    MeterDeliveryPointPagination
 )
 
 router_path = env.api_routers_prefix + env.api_version
 
 meterdeliveryRouter = APIRouter(
     tags=["Meter Delivery Points"],
-    prefix=router_path + "/meterdeliverypoints"
+    prefix=router_path + "/meterdeliverypoints",
+    dependencies=[Depends(JWTBearer())]
 )
-
 
 # get all meter delivery points route
 @meterdeliveryRouter.get(
     "/",
     summary="Getting router for all meter delivery points",
     description="This router allows to get all meter delivery points",
-    response_model=List[MeterDeliveryPointSchema],
+    response_model=MeterDeliveryPointPagination,
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     meterdeliveryService: MeterDeliveryPointService = Depends(),
 ):
-    return await meterdeliveryService.list(skip, limit)
-
+    count, meterdeliveries = await meterdeliveryService.list(start, size)
+    return {
+        "results": [meterdelivery for meterdelivery in meterdeliveries],
+        "total": len(meterdeliveries),
+        "count": count,
+        "page_size": size,
+        "start_index": start
+    }
 
 # get transformer route
 @meterdeliveryRouter.get(
     "/{number}",
     summary="Getting router a transformer without items",
     description="This router allows to get a meter delivery point without items",
-    response_model=MeterDeliveryPointSchema,
+    response_model=MeterDeliveryPointSchema
 )
 async def get(
     id: int,
@@ -55,14 +62,12 @@ async def get(
         )
     return supply
 
-
 # post transformer route
 @meterdeliveryRouter.post(
     "/",
     summary="Creation router a meter delivery point",
     description="This router allows to create a meter delivery point",
-    response_model=List[CreateMeterDeliveryPoint],
-    dependencies=[Depends(JWTBearer())]
+    response_model=List[CreateMeterDeliveryPoint]
 )
 async def create(
     data: List[MeterDeliveryPointInput],

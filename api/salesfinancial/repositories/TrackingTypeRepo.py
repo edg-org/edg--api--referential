@@ -1,8 +1,8 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
+from sqlalchemy import insert, func, update
 from api.salesfinancial.models.TrackingTypeModel import TrackingTypeModel
 from api.salesfinancial.schemas.TrackingTypeSchema import CreateTrackingType
 
@@ -17,19 +17,13 @@ class TrackingTypeRepo:
 
     # get max code
     def maxcode(self) -> int:
-        codemax = self.db.query(
-            func.max(TrackingTypeModel.code)
-        ).one()[0]
+        codemax = self.db.query(func.max(TrackingTypeModel.code)).one()[0]
         return 0 if codemax is None else codemax
 
     # get all tracking types function
-    def list(self, skip: int = 0, limit: int = 100) -> List[TrackingTypeModel]:
-        return (
-            self.db.query(TrackingTypeModel)
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
+    def list(self, start: int = 0, size: int = 100) -> List[TrackingTypeModel]:
+        query = self.db.query(TrackingTypeModel)
+        return query.offset(start).limit(size).all()
 
     # get tracking type by id function
     def get(self, id: int) -> TrackingTypeModel:
@@ -51,10 +45,7 @@ class TrackingTypeRepo:
     def getbyname(self, name: str) -> TrackingTypeModel:
         return (
             self.db.query(TrackingTypeModel)
-            .where(
-                func.lower(TrackingTypeModel.name)
-                == name.lower()
-            )
+            .where(func.lower(TrackingTypeModel.name) == name.lower())
             .first()
         )
 
@@ -76,11 +67,14 @@ class TrackingTypeRepo:
         return data
 
     # update tracking type function
-    def update(self, data: CreateTrackingType) -> TrackingTypeModel:
-        self.db.merge(data)
+    def update(self, code: int, data: dict) -> TrackingTypeModel:
+        self.db.execute(
+            update(TrackingTypeModel)
+            .where(TrackingTypeModel.code == code)
+            .values(**data)
+        )
         self.db.commit()
-        self.db.refresh(data)
-        return data
+        return self.getbycode(code=code)
 
     # delete tracking type function
     def delete(self, tracking: TrackingTypeModel) -> None:

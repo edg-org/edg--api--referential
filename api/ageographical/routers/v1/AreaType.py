@@ -17,8 +17,9 @@ from api.ageographical.schemas.AreaTypeSchema import (
 router_path = env.api_routers_prefix + env.api_version
 
 areatypeRouter = APIRouter(
+    tags=["Area Types"],
     prefix=router_path + "/areatypes", 
-    tags=["Area Types"]
+    dependencies=[Depends(JWTBearer())]
 )
 
 # get all area types route
@@ -29,11 +30,11 @@ areatypeRouter = APIRouter(
     response_model=List[AreaTypeSchema],
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     typeService: AreaTypeService = Depends()
 ):
-    return await typeService.list(skip, limit)
+    return await typeService.list(start, size)
 
 # get area type route
 @areatypeRouter.get(
@@ -59,8 +60,7 @@ async def get(
     "/",
     summary="Creation router a area type",
     description="This router allows to create a area type",
-    response_model=List[CreateAreaType],
-    dependencies=[Depends(JWTBearer())]
+    response_model=List[CreateAreaType]
 )
 async def create(
     data: List[AreaTypeInput],
@@ -73,12 +73,12 @@ async def create(
     "/{code}",
     summary="Update router a area type",
     description="This router allows to update a area type",
-    response_model=AreaTypeSchema,
-    dependencies=[Depends(JWTBearer())]
+    response_model=AreaTypeSchema
 )
 async def update(
     code: int,
     data: AreaTypeUpdate,
     typeService: AreaTypeService = Depends(),
+    tokendata: dict = Depends(JWTBearer())
 ):
-    return await typeService.update(code=code, data=data)
+    return await typeService.update(code=code, tokendata=tokendata, data=data)

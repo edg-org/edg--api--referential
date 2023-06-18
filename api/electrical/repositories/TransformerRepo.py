@@ -35,13 +35,9 @@ class TransformerRepo:
         return 0 if codemax is None else codemax
 
     # get all transformers function
-    def list(self, skip: int = 0, limit: int = 100) -> List[TransformerModel]:
-        return (
-            self.db.query(TransformerModel)
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
+    def list(self, start: int = 0, size: int = 100) -> (int, List[TransformerModel]):
+        query = self.db.query(TransformerModel)
+        return query.count(), query.offset(start).limit(size).all()
 
     # get transformer by id function
     def get(self, id: int) -> TransformerModel:
@@ -108,7 +104,7 @@ class TransformerRepo:
         return data
 
     # update transformer function
-    def update(self, code: int, data: CreateTransformer) -> TransformerModel:
+    def update(self, code: int, data: dict) -> TransformerModel:
         self.db.execute(
             update(TransformerModel)
             .where(TransformerModel.code == code)

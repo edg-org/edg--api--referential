@@ -2,81 +2,83 @@ from typing import List
 from api.tools.Helper import Helper
 from fastapi.encoders import jsonable_encoder
 from fastapi import Depends, HTTPException, status
+from api.logs.services.LogService import LogService
 from api.salesfinancial.models.SubscriptionLevelModel import SubscriptionLevelModel
 from api.salesfinancial.schemas.SubscriptionLevelSchema import CreateSubscriptionLevel
 from api.salesfinancial.repositories.SubscriptionLevelRepo import SubscriptionLevelRepo
 
 
 class SubscriptionLevelService:
-    invoicelevel: SubscriptionLevelRepo
+    log: LogService
+    subscriptionlevel: SubscriptionLevelRepo
 
     def __init__(
         self,
-        invoicelevel: SubscriptionLevelRepo = Depends(),
+        log: LogService = Depends(),
+        subscriptionlevel: SubscriptionLevelRepo = Depends()
     ) -> None:
-        self.invoicelevel = invoicelevel
+        self.log = log
+        self.subscriptionlevel = subscriptionlevel
 
     # get all invoice levels function
-    async def list(self, skip: int = 0, limit: int = 100) -> List[SubscriptionLevelModel]:
-        return self.invoicelevel.list(
-            skip=skip, limit=limit
-        )
+    async def list(self, start: int = 0, size: int = 100) -> List[SubscriptionLevelModel]:
+        return self.subscriptionlevel.list(start=start, size=size)
 
     # get invoice level by id function
     async def get(self, id: int) -> SubscriptionLevelModel:
-        return self.invoicelevel.get(id=id)
+        return self.subscriptionlevel.get(id=id)
 
     # get invoice level by code function
     async def getbycode(self, code: str) -> SubscriptionLevelModel:
-        return self.invoicelevel.getbycode(code=code)
+        return self.subscriptionlevel.getbycode(code=code)
 
     # get invoice level by name function
     async def getbyname(self, name: str) -> SubscriptionLevelModel:
-        return self.invoicelevel.getbyname(name=name)
+        return self.subscriptionlevel.getbyname(name=name)
 
     # create invoice level function
     async def create(self, data: List[CreateSubscriptionLevel]) -> List[CreateSubscriptionLevel]:
         for item in data:
-            invoicelevel = self.invoicelevel.getbycode(code=item.code)
-            if invoicelevel:
+            subscriptionlevel = self.subscriptionlevel.getbycode(code=item.code)
+            if subscriptionlevel:
                 raise HTTPException(
                     level_code=status.HTTP_400_BAD_REQUEST,
                     detail=f"Subscription Level already registered with code {item.code}"
                 )
 
-            invoicelevel = self.invoicelevel.getbyname(name=item.name)
-            if invoicelevel:
+            subscriptionlevel = self.subscriptionlevel.getbyname(name=item.name)
+            if subscriptionlevel:
                 raise HTTPException(
                     level_code=status.HTTP_400_BAD_REQUEST,
                     detail=f"Subscription Level already registered with name {item.name}"
                 )
 
-        return self.invoicelevel.create(data=data)
+        return self.subscriptionlevel.create(data=data)
 
     # update invoice level function
-    async def update(self, code: int, data: CreateSubscriptionLevel) -> SubscriptionLevelModel:
-        old_data = jsonable_encoder(self.subscriptionstatus.getbycode(code=code))
+    async def update(self, code: int, tokendata: dict, data: CreateSubscriptionLevel) -> SubscriptionLevelModel:
+        old_data = jsonable_encoder(self.subscriptionlevel.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Subscription Status not found",
             )
 
-        current_data = jsonable_encoder(self.subscriptionstatus.update(code, data=data.dict()))
-        logs = [Helper.build_log(f"/subscriptionstatus/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        current_data = jsonable_encoder(self.subscriptionlevel.update(code, data=data.dict()))
+        logs = [await Helper.build_log(f"/subscriptionlevels/{code}", "PUT", tokendata["email"], old_data, current_data)]
         await self.log.create(logs)
         return current_data
 
     # delete invoice level %function
     async def delete(self, code: int) -> None:
-        data = self.invoicelevel.getbycode(code=code)
+        data = self.subscriptionlevel.getbycode(code=code)
         if data is None:
             raise HTTPException(
                 level_code=status.HTTP_404_NOT_FOUND,
                 detail="Subscription Level not found",
             )
 
-        self.invoicelevel.delete(data)
+        self.subscriptionlevel.delete(data)
         return HTTPException(
             level_code=status.HTTP_200_OK,
             detail="Subscription Level deleted",

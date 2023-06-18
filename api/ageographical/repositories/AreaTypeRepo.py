@@ -15,19 +15,13 @@ class AreaTypeRepo:
 
     # get max code
     def maxcode(self) -> int:
-        codemax = self.db.query(
-            func.max(AreaTypeModel.code)
-        ).one()[0]
+        codemax = self.db.query(func.max(AreaTypeModel.code)).one()[0]
         return 0 if codemax is None else codemax
 
     # get all area types function
-    def list(self, skip: int = 0, limit: int = 100) -> List[AreaTypeModel]:
-        return (
-            self.db.query(AreaTypeModel)
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
+    def list(self, start: int = 0, size: int = 100) -> List[AreaTypeModel]:
+        query = self.db.query(AreaTypeModel)
+        return query.offset(start).limit(size).all()
 
     # get area type by id function
     def get(self, id: int) -> AreaTypeModel:

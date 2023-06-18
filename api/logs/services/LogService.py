@@ -9,14 +9,12 @@ from api.logs.repositories.LogRepo import LogRepo
 class LogService:
     logs: LogRepo
     
-    def __init__(
-        self, logs: LogRepo = Depends()
-    ) -> None:
+    def __init__(self, logs: LogRepo = Depends()) -> None:
         self.logs = logs
 
     # get all logs
-    async def list(self, skip: int = 0, limit: int = 100) -> List[LogModel]:
-        return self.logs.list(skip=skip, limit=limit)
+    async def list(self, start: int = 0, size: int = 100) -> (int, List[LogModel]):
+        return self.logs.list(start=start, size=size)
     
     # get log by id
     async def get(self, id: int) -> LogModel:

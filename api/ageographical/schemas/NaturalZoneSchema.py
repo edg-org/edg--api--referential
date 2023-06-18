@@ -1,6 +1,6 @@
 from pydantic import Field
-from typing import Optional
 from datetime import datetime
+from typing import List, Optional
 from api.configs.BaseModel import BaseSchema
 from api.ageographical.schemas.RegionSchema import RegionSchema
 
@@ -52,3 +52,11 @@ class ZoneUpdate(ZoneInput):
 #
 class ZoneItemSchema(ZoneSchema):
     regions: list[RegionSchema] = []
+    
+#
+class ZonePagination(BaseSchema):
+    count: int
+    total: int
+    page_size: int
+    start_index: int
+    results: List[ZoneSchema] = []

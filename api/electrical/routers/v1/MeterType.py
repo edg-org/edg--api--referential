@@ -18,7 +18,8 @@ router_path = env.api_routers_prefix + env.api_version
 
 metertypeRouter = APIRouter(
     tags=["Meter Types"],
-    prefix=router_path + "/metertypes"
+    prefix=router_path + "/metertypes",
+    dependencies=[Depends(JWTBearer())]
 )
 
 
@@ -30,11 +31,11 @@ metertypeRouter = APIRouter(
     response_model=List[MeterTypeSchema],
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     metertypeService: MeterTypeService = Depends(),
 ):
-    return await metertypeService.list(skip, limit)
+    return await metertypeService.list(start, size)
 
 
 # get meter type route
@@ -62,8 +63,7 @@ async def get(
     "/",
     summary="Creation router a meter type",
     description="This router allows to create a meter type",
-    response_model=List[CreateMeterType],
-    dependencies=[Depends(JWTBearer())]
+    response_model=List[CreateMeterType]
 )
 async def create(
     data: List[MeterTypeInput],
@@ -71,18 +71,17 @@ async def create(
 ):
     return await metertypeService.create(data=data)
 
-
 # update meter type route
 @metertypeRouter.put(
     "/{code}",
     summary="Update router a meter type",
     description="This router allows to update a meter type",
-    response_model=MeterTypeSchema,
-    dependencies=[Depends(JWTBearer())]
+    response_model=MeterTypeSchema
 )
 async def update(
     code: int,
     data: MeterTypeUpdate,
     metertypeService: MeterTypeService = Depends(),
+    tokendata: dict = Depends(JWTBearer())
 ):
-    return await metertypeService.update(code=code, data=data)
+    return await metertypeService.update(code=code, tokendata=tokendata, data=data)

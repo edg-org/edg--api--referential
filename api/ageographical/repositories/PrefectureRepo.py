@@ -60,13 +60,9 @@ class PrefectureRepo:
         )
 
     # get all prefectures function
-    def list(self, skip: int = 0, limit: int = 100) -> List[PrefectureModel]:
-        return (
-            self.db.query(PrefectureModel)
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
+    def list(self, start: int = 0, size: int = 100) -> (int, List[PrefectureModel]):
+        query = self.db.query(PrefectureModel)
+        return query.count(), query.offset(start).limit(size).all()
 
     # get prefecture by id function
     def get(self, id: int) -> PrefectureModel:

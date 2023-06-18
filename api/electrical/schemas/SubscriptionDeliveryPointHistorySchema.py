@@ -1,3 +1,4 @@
+from typing import List
 from datetime import datetime, date
 from api.configs.BaseModel import BaseSchema
 
@@ -21,3 +22,11 @@ class SubscriptionHistoryCreate(SubscriptionHistorySchema):
 
 class SubscriptionHistoryInput(SubscriptionHistoryCreate):
     pass
+
+#
+class SubscriptionHistoryPagination(BaseSchema):
+    count: int
+    total: int
+    page_size: int
+    start_index: int
+    results: List[SubscriptionHistorySchema] = []

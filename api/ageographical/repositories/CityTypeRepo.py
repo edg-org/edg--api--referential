@@ -15,19 +15,13 @@ class CityTypeRepo:
 
     # get max code of city type
     def maxcode(self) -> int:
-        codemax = self.db.query(
-            func.max(CityTypeModel.code)
-        ).one()[0]
+        codemax = self.db.query(func.max(CityTypeModel.code)).one()[0]
         return 0 if codemax is None else codemax
 
     # get all city types function
-    def list(self, skip: int = 0, limit: int = 100) -> List[CityTypeModel]:
-        return (
-            self.db.query(CityTypeModel)
-            .offset(skip)
-            .limit(limit)
-            .all()
-        )
+    def list(self, start: int = 0, size: int = 100) -> List[CityTypeModel]:
+        query = self.db.query(CityTypeModel)
+        return query.offset(start).limit(size).all()
 
     # get city type by id function
     def get(self, id: int) -> CityTypeModel:

@@ -25,12 +25,12 @@ class CreateTrackingType(TrackingTypeSchema):
 
 #
 class TrackingTypeInput(CreateTrackingType):
-    class Config:
-        fields_to_hide = {"code"}
+    pass
 
 #
 class TrackingTypeUpdate(TrackingTypeInput):
-    pass
+    class Config:
+        fields_to_hide = {"code"}
 
 #
 class TrackingTypeItemSchema(TrackingTypeSchema):

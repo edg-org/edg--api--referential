@@ -18,7 +18,8 @@ router_path = env.api_routers_prefix + env.api_version
 
 supplymodeRouter = APIRouter(
     tags=["Supply Modes"],
-    prefix=router_path + "/supplymodes"
+    prefix=router_path + "/supplymodes",
+    dependencies=[Depends(JWTBearer())]
 )
 
 # get all supply modes route
@@ -29,12 +30,11 @@ supplymodeRouter = APIRouter(
     response_model=List[SupplyModeSchema],
 )
 async def list(
-    skip: int = 0,
-    limit: int = 100,
+    start: int = 0,
+    size: int = 100,
     supplymodeService: SupplyModeService = Depends(),
 ):
-    return await supplymodeService.list(skip, limit)
-
+    return await supplymodeService.list(start, size)
 
 # get supply mode route
 @supplymodeRouter.get(
@@ -55,14 +55,12 @@ async def get(
         )
     return supplymode
 
-
 # post supply mode route
 @supplymodeRouter.post(
     "/",
     summary="Creation router a supply mode",
     description="This router allows to create a supply mode",
-    response_model=List[CreateSupplyMode],
-    dependencies=[Depends(JWTBearer())]
+    response_model=List[CreateSupplyMode]
 )
 async def create(
     data: List[SupplyModeInput],
@@ -70,18 +68,17 @@ async def create(
 ):
     return await supplymodeService.create(data=data)
 
-
 # update supply mode route
 @supplymodeRouter.put(
     "/{code}",
     summary="Update router a supply mode",
     description="This router allows to update a supply mode",
-    response_model=SupplyModeSchema,
-    dependencies=[Depends(JWTBearer())]
+    response_model=SupplyModeSchema
 )
 async def update(
     code: int,
     data: SupplyModeUpdate,
     supplymodeService: SupplyModeService = Depends(),
+    tokendata: dict = Depends(JWTBearer())
 ):
-    return await supplymodeService.update(code=code, data=data)
+    return await supplymodeService.update(code=code, tokendata=tokendata, data=data)
