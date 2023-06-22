@@ -124,7 +124,7 @@ class TransformerRepo:
     def verif_duplicate(self, name: str, req: str = "True") -> [TransformerModel]:
         stmt = (
             select(TransformerModel)
-            .filter(TransformerModel.name.ilike(name))
+            .filter(TransformerModel.infos['name'].as_string().ilike(name))
             .filter(eval(req))
         )
         return self.db.scalars(stmt).all()

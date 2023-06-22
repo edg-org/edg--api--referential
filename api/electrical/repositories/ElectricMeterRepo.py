@@ -69,16 +69,16 @@ class ElectricMeterRepo:
             .values(**data)
         )
         self.db.commit()
-        return self.getbycode(number=number)
+        return self.getbycode(number=data['meter_number'])
 
     # delete electric meter function
     def delete(self, meter: ElectricMeterModel) -> None:
         self.db.delete(meter)
         self.db.commit()
-    def verif_duplicate(self, name: str, req: str = "True") -> [ElectricMeterModel]:
+    def verif_duplicate(self, meter_number: str, req: str = "True") -> [ElectricMeterModel]:
         stmt = (
             select(ElectricMeterModel)
-            .filter(ElectricMeterModel.name.ilike(name))
+            .filter(ElectricMeterModel.meter_number.ilike(meter_number))
             .filter(eval(req))
         )
         return self.db.scalars(stmt).all()

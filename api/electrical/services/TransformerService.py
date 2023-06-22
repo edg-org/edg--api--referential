@@ -7,6 +7,7 @@ from api.ageographical.repositories.AreaRepo import AreaRepo
 from api.ageographical.repositories.CityRepo import CityRepo
 from api.electrical.models.TransformerModel import TransformerModel
 from api.electrical.repositories.TransformerRepo import TransformerRepo
+from api.electrical.repositories.FixationTypeRepo import FixationTypeRepo
 from api.tools.Helper import transformer_basecode, generate_code, build_log
 from api.electrical.repositories.EnergySupplyLineRepo import EnergySupplyLineRepo
 from api.electrical.schemas.TransformerSchema import (
@@ -177,15 +178,27 @@ class TransformerService:
                 detail="Transformer not found",
             )
 
-        #area_id = old_data["area_id"]
-        #if (hasattr(data.infos, "area_code") and data.infos.area_code is not None):
-        #    area_id = AreaRepo.getidbycode(self.supply, data.infos.area_code)
-            
-        #data.area_id = area_id
-        #data.city_id = CityRepo.getidbycode(self.transformer, data.infos.city_code)
-        #data.supply_line_id = EnergySupplyLineRepo.getbycode(self.transformer, data.infos.supply_line_code).id
-    
-        current_data = jsonable_encoder(self.transformer.update(code=code, data=data.dict()))
+        line_type_id, fixation_type_id, area_id = 0, 0, 0
+        if (hasattr(data.infos, "fixation_type") and data.infos.fixation_type is not None):
+            try:
+                fixation_type_id = FixationTypeRepo.getbyname(self.transformer, data.infos.fixation_type).id
+            except Exception as e:
+                raise HTTPException(status_code=404, detail="Fixation Type not found")
+
+        if (hasattr(data.infos, "area_code") and data.infos.area_code is not None):
+            try:
+                area_id = AreaRepo.getidbycode(self.transformer, data.infos.area_code)
+            except Exception as e:
+                raise HTTPException(status_code=404, detail="Area not found")
+
+        verif = self.transformer.verif_duplicate(data.infos.name, "TransformerModel.id != " + str(old_data['id']))
+        if len(verif) != 0:
+            raise HTTPException(status_code=405, detail={"msg": "Duplicates are not possible", "name": data.infos.name})
+
+        data = data.dict()
+        data.update({"fixation_type_id": fixation_type_id, "area_id": area_id, })
+
+        current_data = jsonable_encoder(self.transformer.update(code=code, data=data))
         logs = [await build_log(f"/transformers/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         self.log.create(logs)
         return current_data

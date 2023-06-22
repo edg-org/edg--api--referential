@@ -131,6 +131,11 @@ class ConnectionPoleService:
         #
         # if (hasattr(data.infos, "transformer_code") and data.infos.transformer_code is not None):
         #     data.transformer_id = TransformerRepo.getidbycode(self.pole, data.infos.transformer_code)
+
+        verif = self.pole.verif_duplicate(data.infos.name, "ConnectionPoleModel.id != " + str(old_data['id']))
+        if len(verif) != 0:
+            raise HTTPException(status_code=405, detail={"msg": "Duplicates are not possible", "name": data.infos.name})
+
             
         current_data = jsonable_encoder(self.pole.update(number=number, data=data.dict()))
         logs = [await build_log(f"/connectionpoles/{number}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]

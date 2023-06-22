@@ -127,7 +127,7 @@ class ConnectionPoleRepo:
     def verif_duplicate(self, name: str, req: str = "True") -> [ConnectionPoleModel]:
         stmt = (
             select(ConnectionPoleModel)
-            .filter(ConnectionPoleModel.name.ilike(name))
+            .filter(ConnectionPoleModel.infos['name'].as_string().ilike(name))
             .filter(eval(req))
         )
         return self.db.scalars(stmt).all()

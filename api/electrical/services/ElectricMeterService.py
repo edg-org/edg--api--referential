@@ -58,7 +58,6 @@ class ElectricMeterService:
             meter = CreateElectricMeter(
                 meter_number=item.meter_number,
                 meter_type_id=MeterTypeRepo.getbyname(self.meter, item.infos.meter_type).id,
-                # supply_mode_id=1,
                 supply_mode_id=SupplyModeRepo.getbyname(self.meter, item.infos.supply_mode).id,
                 infos=item.infos
             )
@@ -74,14 +73,28 @@ class ElectricMeterService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Electric Meter not found",
             )
-        
-        # if (hasattr(data.infos, "meter_type") and data.infos.meter_type is not None):
-        #     data.meter_type_id = MeterTypeRepo.getbyname(self.meter, data.infos.meter_type).id
-        #
-        # if (hasattr(data.infos, "power_mode") and data.infos.power_mode is not None):
-        #     data.power_mode_id = SupplyModeRepo.getbyname(self.meter, data.infos.power_mode).id
-            
-        current_data = jsonable_encoder(self.meter.update(number=number, data=data.dict()))
+
+        meter_type_id, supply_mode_id = 0, 0
+        if (hasattr(data.infos, "meter_type") and data.infos.meter_type is not None):
+            try:
+                meter_type_id = MeterTypeRepo.getbyname(self.meter, data.infos.meter_type).id
+            except Exception as e:
+                raise HTTPException(status_code = 404, detail = "Meter Type not found")
+
+        if (hasattr(data.infos, "supply_mode") and data.infos.supply_mode is not None):
+            try:
+                supply_mode_id = SupplyModeRepo.getbyname(self.meter, data.infos.supply_mode).id
+            except Exception as e:
+                raise HTTPException(status_code = 404, detail = "Supply Mode not found")
+
+        verif = self.meter.verif_duplicate(data.meter_number, "ElectricMeterModel.id != " + str(old_data['id']))
+        if len(verif) != 0:
+            raise HTTPException(status_code=405, detail={"msg": "Duplicates are not possible", "meter_number ": data.meter_number})
+
+        data = data.dict()
+        data.update({"meter_type_id": meter_type_id, "supply_mode_id": supply_mode_id, })
+
+        current_data = jsonable_encoder(self.meter.update(number=number, data=data))
         logs = [await build_log(f"/meters/{number}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         self.log.create(logs)
         return current_data

@@ -7,6 +7,7 @@ from api.ageographical.repositories.CityRepo import CityRepo
 from api.ageographical.repositories.AreaRepo import AreaRepo
 from api.tools.Helper import generate_code, energy_supply_basecode, build_log
 from api.electrical.repositories.SupplyLineTypeRepo import SupplyLineTypeRepo
+from api.electrical.repositories.VoltageTypeRepo import VoltageTypeRepo
 from api.electrical.models.EnergySupplyLineModel import EnergySupplyLineModel
 from api.electrical.repositories.EnergySupplyLineRepo import EnergySupplyLineRepo
 from api.electrical.schemas.EnergySupplyLineSchema import (
@@ -166,17 +167,34 @@ class EnergySupplyLineService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Energy Supply Line not found",
             )
-        
-        # if (hasattr(data.infos, "line_type") and data.infos.line_type is not None):
-        #     data.line_type_id = SupplyLineTypeRepo.getbyname(self.energysupply, data.infos.line_type).id
-        #
-        # if (hasattr(data.infos, "departure_city_code") and data.infos.departure_city_code is not None):
-        #     data.departure_city_id = CityRepo.getidbycode(self.energysupply, data.infos.departure_city_code)
+
+        line_type_id, voltage_type_id, departure_area_id = 0, 0, 0
+        if (hasattr(data.infos, "line_type") and data.infos.line_type is not None):
+            try:
+                line_type_id = SupplyLineTypeRepo.getbyname(self.energysupply, data.infos.line_type).id
+            except Exception as e:
+                raise HTTPException(status_code = 404, detail = "Supply Line Type not found")
+
+        if (hasattr(data.infos, "voltage_type") and data.infos.voltage_type is not None):
+            try:
+                voltage_type_id = VoltageTypeRepo.getbyname(self.energysupply, data.infos.voltage_type).id
+            except Exception as e:
+                raise HTTPException(status_code = 404, detail = "Voltage Type not found")
+
+        if (hasattr(data.infos, "departure_area_code") and data.infos.departure_area_code is not None):
+            try:
+                departure_area_id = AreaRepo.getidbycode(self.energysupply, data.infos.departure_area_code)
+            except Exception as e:
+                raise HTTPException(status_code = 404, detail = "Area not found")
+
         verif = self.energysupply.verif_duplicate(data.infos.name, "EnergySupplyLineModel.id != " + str(old_data['id']))
         if len(verif) != 0:
             raise HTTPException(status_code=405, detail={"msg": "Duplicates are not possible", "name": data.infos.name})
 
-        current_data = jsonable_encoder(self.energysupply.update(code=code, data=data.dict()))
+        data = data.dict()
+        data.update({"line_type_id": line_type_id, "voltage_type_id": voltage_type_id, "departure_area_id": departure_area_id, })
+
+        current_data = jsonable_encoder(self.energysupply.update(code=code, data=data))
         logs = [await build_log(f"/supplylines/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         self.log.create(logs)
         return current_data
@@ -201,8 +219,8 @@ class EnergySupplyLineService:
             deleted_at = deleted_at
         )
         current_data = jsonable_encoder(self.transformer.update(code=code, data=data))
-        logs = [build_log(f"/supplylines/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
-        await self.log.create(logs)
+        logs = [await build_log(f"/supplylines/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        self.log.create(logs)
         return HTTPException(status_code=status.HTTP_200_OK, detail=message)
     
     # delete energy supply line function

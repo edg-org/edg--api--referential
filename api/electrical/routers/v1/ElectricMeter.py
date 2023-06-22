@@ -22,7 +22,6 @@ meterRouter = APIRouter(
     tags=["Electric Meters"],
 )
 
-
 # get all electric meter route
 @meterRouter.get(
     "/",

@@ -124,6 +124,7 @@ class EnergySupplyLineRepo:
     def delete(self, meter: EnergySupplyLineModel) -> None:
         self.db.delete(meter)
         self.db.commit()
+
     def verif_duplicate(self, name: str, req: str = "True") -> [EnergySupplyLineModel]:
         stmt = (
             select(EnergySupplyLineModel)
