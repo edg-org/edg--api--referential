@@ -1,9 +1,12 @@
 from fastapi.openapi.models import Response
+from fastapi import HTTPException, status
+import  requests
+
 
 class RequestMaster:
-
-    @classmethod
-    async def generic_request_query(cls, url: str, token: str) -> Response:
+    # @classmethod
+    @staticmethod
+    async def generic_request_query(url: str, token: str) -> Response:
         header = {
             "Authorization": token
         }

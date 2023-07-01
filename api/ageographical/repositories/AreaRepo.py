@@ -2,7 +2,7 @@ from typing import List
 from sqlalchemy.orm import Session
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from sqlalchemy import insert, update, func, and_
+from sqlalchemy import insert, update, func, and_, select
 from api.ageographical.models.AreaModel import AreaModel
 from api.ageographical.schemas.AreaSchema import CreateArea
 
@@ -182,3 +182,11 @@ class AreaRepo:
     def delete(self, area: AreaModel) -> None:
         self.db.delete(area)
         self.db.commit()
+
+    def verif_duplicate(self, **kwargs) -> [AreaModel]:
+        stmt = (
+            select(AreaModel)
+            .filter(AreaModel.infos['name'].as_string().ilike(kwargs['name']), AreaModel.city_id == kwargs['city_id'])
+            .filter(eval(kwargs['req']))
+        )
+        return self.db.scalars(stmt).all()

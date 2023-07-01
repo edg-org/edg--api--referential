@@ -30,8 +30,8 @@ class AreaUpdateInfos(BaseSchema):
     area_type: Optional[str]
     city_code: Optional[int]
     is_same_zipcode: bool = False
-    agency_code: Optional[int] = None
-    hierarchical_area_code: Optional[int] = None
+    agency_code: Optional[int]
+    hierarchical_area_code: Optional[int]
     coordinates: Optional[AreaCoordinates]
 
 class AreaSchema(BaseSchema):
@@ -50,8 +50,7 @@ class AreaSchema(BaseSchema):
     
     class Config:
         orm_mode = True
- 
- #       
+
 class CreateArea(AreaSchema):
     class Config:
         fields_to_hide = {

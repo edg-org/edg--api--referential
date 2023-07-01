@@ -13,7 +13,7 @@ from api.ageographical.schemas.AreaSchema import (
     AreaUpdate,
     CreateArea,
 )
-
+from sqlalchemy import null
 
 class AreaService:
     log: LogRepo
@@ -232,8 +232,37 @@ class AreaService:
         #             step_zipcode +=1
         #             maxzipcode = AreaRepo.maxzipcodebycity(city_id=city_id).zipcode
         #             data.zipcode = generate_zipcode(maxzipcode, step_zipcode)
-        
-        current_data = jsonable_encoder(self.area.update(code=code, data=data.dict()))
+
+        area_type_id, city_id, hierarchical_area_id, hierarchical_area_code = 0, 0, None, 0
+        if (hasattr(data.infos, "city_code") and data.infos.city_code is not None):
+            try:
+                city_id = CityRepo.getidbycode(self.area, data.infos.city_code)
+            except Exception as e:
+                raise HTTPException(status_code=404, detail="City not found")
+        req = "AreaModel.id != " + str(old_data['id'])
+
+        if (hasattr(data.infos, "area_type") and data.infos.area_type is not None):
+            try:
+                area_type_id = AreaTypeRepo.getbyname(self.area, data.infos.area_type).id
+            except Exception as e:
+                raise HTTPException(status_code=404, detail="City Type not found")
+
+        if (hasattr(data.infos, "hierarchical_area_code") and data.infos.hierarchical_area_code is not None):
+            try:
+                area_item = AreaRepo.getbycode(self.area, data.infos.hierarchical_area_code)
+                hierarchical_area_id, hierarchical_area_code = area_item.id, area_item.code
+            except Exception as e:
+                raise HTTPException(status_code=404, detail="Area hierarchical not found")
+
+        verif = self.area.verif_duplicate(name=data.infos.name, city_id=city_id, req=req)
+        if len(verif) != 0:
+            raise HTTPException(status_code=405, detail={"msg": "Duplicates are not possible", "name": data.infos.name})
+
+        data = data.dict()
+        data.update({"area_type_id": area_type_id, "city_id": city_id, "hierarchical_area_id": hierarchical_area_id, })
+        data['infos'].update({"hierarchical_area_code": int(hierarchical_area_code)})
+
+        current_data = jsonable_encoder(self.area.update(code=code, data=data))
         logs = [await build_log(f"/areas/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         self.log.create(logs)
         return current_data

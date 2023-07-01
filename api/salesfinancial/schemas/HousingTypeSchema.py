@@ -29,5 +29,5 @@ class HousingTypeInput(CreateHousingType):
         fields_to_hide = {"code"}
 
 #
-class HousingTypeUpdate(HousingTypeInput):
+class HousingTypeUpdate(CreateHousingType):
     pass

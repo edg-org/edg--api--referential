@@ -99,7 +99,21 @@ class RegionService:
                 detail="Administrative Region not found",
             )
 
-        current_data = jsonable_encoder(self.region.update(code, data=data.dict()))
+        zone_id = 0
+        if (hasattr(data.infos, "natural_zone") and data.infos.natural_zone is not None):
+            try:
+                zone_id = ZoneRepo.getbyname(self.region, data.infos.natural_zone).id
+            except Exception as e:
+                raise HTTPException(status_code=404, detail="Natural zone not found")
+
+        verif = self.region.verif_duplicate(data.name, "RegionModel.id != " + str(old_data['id']))
+        if len(verif) != 0:
+            raise HTTPException(status_code=405, detail={"msg": "Duplicates are not possible", "name": data.name})
+
+        data = data.dict()
+        data.update({"zone_id": zone_id, })
+
+        current_data = jsonable_encoder(self.region.update(code, data=data))
         logs = [await build_log(f"/regions/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return current_data

@@ -125,19 +125,28 @@ class ConnectionPoleService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Electric Meter not found",
             )
-        
-        # if (hasattr(data.infos, "area_code") and data.infos.area_code is not None):
-        #     data.area_id = AreaRepo.getidbycode(self.pole, data.infos.area_code)
-        #
-        # if (hasattr(data.infos, "transformer_code") and data.infos.transformer_code is not None):
-        #     data.transformer_id = TransformerRepo.getidbycode(self.pole, data.infos.transformer_code)
+
+        transformer_id, area_id = 0, 0
+        if (hasattr(data.infos, "area_code") and data.infos.area_code is not None):
+            try:
+                area_id = AreaRepo.getidbycode(self.pole, data.infos.area_code)
+            except Exception as e:
+                raise HTTPException(status_code=404, detail="Area not found")
+
+        if (hasattr(data.infos, "transformer_code") and data.infos.transformer_code is not None):
+            try:
+                transformer_id = TransformerRepo.getidbycode(self.pole, data.infos.transformer_code)
+            except Exception as e:
+                raise HTTPException(status_code=404, detail="Transformer not found")
 
         verif = self.pole.verif_duplicate(data.infos.name, "ConnectionPoleModel.id != " + str(old_data['id']))
         if len(verif) != 0:
             raise HTTPException(status_code=405, detail={"msg": "Duplicates are not possible", "name": data.infos.name})
 
+        data = data.dict()
+        data.update({"transformer_id": transformer_id, "area_id": area_id, })
             
-        current_data = jsonable_encoder(self.pole.update(number=number, data=data.dict()))
+        current_data = jsonable_encoder(self.pole.update(number=number, data=data))
         logs = [await build_log(f"/connectionpoles/{number}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         self.log.create(logs)
         return current_data

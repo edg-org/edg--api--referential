@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, Cookie
 
 from api.metadata.Tags import Tags
 from api.configs.BaseModel import init
@@ -39,6 +39,7 @@ from api.electrical.routers.v1.MeterDeliveryPoint import meterdeliveryRouter
 from api.logs.routers.v1.Log import logRouter
 
 from api.tools.JWTBearer import JWTBearer
+
 # Application Environment Configuration
 env = get_env_var()
 
@@ -48,7 +49,7 @@ app = FastAPI(
     description=env.app_desc,
     version="0.0." + env.api_version,
     openapi_tags=Tags,
-    # dependencies=[Depends(JWTBearer())]
+    # dependencies=[Depends(JWTBearer())],
 )
 
 # Add Routers

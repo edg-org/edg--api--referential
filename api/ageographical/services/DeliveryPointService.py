@@ -147,7 +147,23 @@ class DeliveryPointService:
                 detail="Delivery Point not found",
             )
 
-        current_data = jsonable_encoder(self.deliverypoint.update(number, data=data.dict()))
+        pole_id, area_id = 0, 0
+        if (hasattr(data.infos, "area_code") and data.infos.area_code is not None):
+            try:
+                area_id = AreaRepo.getidbycode(self.deliverypoint, data.infos.area_code)
+            except Exception as e:
+                raise HTTPException(status_code=404, detail="Area not found")
+
+        if (hasattr(data.infos, "pole_number") and data.infos.pole_number is not None):
+            try:
+                pole_id = ConnectionPoleRepo.getbynumber(self.deliverypoint, data.infos.pole_number).id
+            except Exception as e:
+                raise HTTPException(status_code=404, detail="Connection pole  not found")
+
+        data = data.dict()
+        data.update({"pole_id": pole_id, "area_id": area_id, })
+
+        current_data = jsonable_encoder(self.deliverypoint.update(number, data=data))
         logs = [await build_log(f"/deliverypoints/{number}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return current_data

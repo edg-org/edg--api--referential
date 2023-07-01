@@ -1,6 +1,6 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func, update
+from sqlalchemy import insert, func, update, select
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
 from api.ageographical.models.AgencyModel import AgencyModel
@@ -108,3 +108,10 @@ class AgencyRepo:
     def delete(self, agency: AgencyModel) -> None:
         self.db.delete(agency)
         self.db.commit()
+    def verif_duplicate(self, name: str, req: str = "True") -> [AgencyModel]:
+        stmt = (
+            select(AgencyModel)
+            .filter(AgencyModel.infos['name'].as_string().ilike(name))
+            .filter(eval(req))
+        )
+        return self.db.scalars(stmt).all()

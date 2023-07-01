@@ -2,7 +2,7 @@ from typing import List
 from sqlalchemy.orm import Session
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
-from sqlalchemy import insert, func, and_, or_, Unicode, update
+from sqlalchemy import insert, func, and_, or_, Unicode, update, select
 from api.ageographical.models.CityModel import CityModel
 from api.ageographical.schemas.CitySchema import CreateCity, CityUpdate, CitySearchParams
 
@@ -171,3 +171,19 @@ class CityRepo:
     def delete(self, city: CityModel) -> None:
         self.db.delete(city)
         self.db.commit()
+
+    def verif_duplicate(self, **kwargs) -> [CityModel]:
+        stmt = (
+            select(CityModel)
+            .filter(CityModel.infos['name'].as_string().ilike(kwargs['name']), CityModel.prefecture_id == kwargs['prefecture_id'])
+            .filter(eval(kwargs['req']))
+        )
+        return self.db.scalars(stmt).all()
+
+    # def verif_duplicate(self, name: str, req: str = "True") -> [CityModel]:
+    #     stmt = (
+    #         select(CityModel)
+    #         .filter(CityModel.infos['name'].as_string().ilike(name))
+    #         .filter(eval(req))
+    #     )
+    #     return self.db.scalars(stmt).all()

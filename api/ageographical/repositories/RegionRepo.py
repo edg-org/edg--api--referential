@@ -2,7 +2,7 @@ from typing import List
 from fastapi import Depends
 from sqlalchemy.orm import Session
 from api.configs.Database import get_db
-from sqlalchemy import insert, update, func
+from sqlalchemy import insert, update, func, select
 from fastapi.encoders import jsonable_encoder
 from api.ageographical.models.RegionModel import RegionModel
 from api.ageographical.schemas.RegionSchema import CreateRegion
@@ -117,3 +117,11 @@ class RegionRepo:
     def delete(self, region: RegionModel) -> None:
         self.db.delete(region)
         self.db.commit()
+
+    def verif_duplicate(self, name: str, req: str = "True") -> [RegionModel]:
+        stmt = (
+            select(RegionModel)
+            .filter(RegionModel.name.ilike(name))
+            .filter(eval(req))
+        )
+        return self.db.scalars(stmt).all()

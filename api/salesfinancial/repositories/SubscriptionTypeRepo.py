@@ -82,7 +82,8 @@ class SubscriptionTypeRepo:
         self.db.delete(subscription)
         self.db.commit()
 
-    def verif_duplicate(self, name: str, req: str = "True") -> [SubscriptionTypeModel]:
+    def \
+            verif_duplicate(self, name: str, req: str = "True") -> [SubscriptionTypeModel]:
         stmt = (
             select(SubscriptionTypeModel)
             .filter(SubscriptionTypeModel.name.ilike(name))

@@ -144,7 +144,34 @@ class CityService:
         # if (hasattr(data.infos, "city_level") and data.infos.city_level is not None):
         #     data.city_level_id = CityLevelRepo.getbyname(self.city, data.infos.city_level).id
 
-        current_data = jsonable_encoder(self.city.update(code=code, data=data.dict()))
+        prefecture_id, city_type_id, city_level_id = 0, 0, 0
+        if (hasattr(data.infos, "prefecture") and data.infos.prefecture is not None):
+            try:
+                prefecture_id = PrefectureRepo.getbyname(self.city, data.infos.prefecture).id
+            except Exception as e:
+                raise HTTPException(status_code=404, detail="Prefecture not found")
+        req = "CityModel.id != " + str(old_data['id'])
+
+        if (hasattr(data.infos, "city_type") and data.infos.city_type is not None):
+            try:
+                city_type_id = CityTypeRepo.getbyname(self.city, data.infos.city_type).id
+            except Exception as e:
+                raise HTTPException(status_code=404, detail="City Type not found")
+
+        if (hasattr(data.infos, "city_level") and data.infos.city_level is not None):
+            try:
+                city_level_id = CityLevelRepo.getbyname(self.city, data.infos.city_level).id
+            except Exception as e:
+                raise HTTPException(status_code=404, detail="City Level not found")
+
+        verif = self.city.verif_duplicate(name=data.infos.name, prefecture_id=prefecture_id, req=req)
+        if len(verif) != 0:
+            raise HTTPException(status_code=405, detail={"msg": "Duplicates are not possible", "name": data.infos.name})
+
+        data = data.dict()
+        data.update({"prefecture_id": prefecture_id, "city_type_id": city_type_id, "city_level_id": city_level_id, })
+
+        current_data = jsonable_encoder(self.city.update(code=code, data=data))
         logs = [await build_log(f"/cities/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return current_data

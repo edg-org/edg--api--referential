@@ -178,7 +178,7 @@ class TransformerService:
                 detail="Transformer not found",
             )
 
-        line_type_id, fixation_type_id, area_id = 0, 0, 0
+        fixation_type_id, area_id = 0, 0
         if (hasattr(data.infos, "fixation_type") and data.infos.fixation_type is not None):
             try:
                 fixation_type_id = FixationTypeRepo.getbyname(self.transformer, data.infos.fixation_type).id

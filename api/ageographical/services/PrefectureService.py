@@ -89,9 +89,21 @@ class PrefectureService:
                 detail="Prefecture not found",
             )
 
-        # if (hasattr(data.infos, "region") and data.infos.region is not None):
-        #     pass
-        current_data = jsonable_encoder(self.prefecture.update(code=code, data=data.dict()))
+        region_id = 0
+        if (hasattr(data.infos, "region") and data.infos.region is not None):
+            try:
+                region_id = RegionRepo.getbyname(self.prefecture, data.infos.region).id
+            except Exception as e:
+                raise HTTPException(status_code=404, detail="Region not found")
+
+        verif = self.prefecture.verif_duplicate(data.name, "PrefectureModel.id != " + str(old_data['id']))
+        if len(verif) != 0:
+            raise HTTPException(status_code=405, detail={"msg": "Duplicates are not possible", "name": data.name})
+
+        data = data.dict()
+        data.update({"region_id": region_id, })
+
+        current_data = jsonable_encoder(self.prefecture.update(code=code, data=data))
         logs = [await build_log(f"/prefectures/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return current_data

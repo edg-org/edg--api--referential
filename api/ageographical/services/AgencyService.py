@@ -86,24 +86,6 @@ class AgencyService:
         return self.agency.create(data=agencylist)
 
     # update agency function
-    # async def update(self, code: int, data: AgencyUpdate) -> AgencyModel:
-    #     count = self.agency.countbycode(code=code)
-    #     if count == 0:
-    #         raise HTTPException(
-    #             status_code=status.HTTP_404_NOT_FOUND,
-    #             detail="Agency not found",
-    #         )
-    #
-    #     agency = CreateAgency(
-    #         code = code,
-    #         city_id = CityRepo.getidbycode(self.agency, data.infos.city_code),
-    #         infos = data.infos
-    #     )
-    #     agencydict = agency.dict(exclude_unset=True)
-    #     for key, val in agencydict.items():
-    #         setattr(agency, key, val)
-    #     return self.agency.update(agency)
-
     async def update(self, code: int, data: AgencyUpdate) -> AgencyModel:
         old_data = jsonable_encoder(self.agency.getbycode(code=code))
         if old_data is None:
@@ -112,13 +94,22 @@ class AgencyService:
                 detail="Agency not found",
             )
 
-        # if (hasattr(data.infos, "city_type") and data.infos.city_type is not None):
-        #     data.city_type_id = CityTypeRepo.getbyname(self.agency, data.infos.city_type).id
-        #
-        # if (hasattr(data.infos, "city_level") and data.infos.city_level is not None):
-        #     data.city_level_id = CityLevelRepo.getbyname(self.agency, data.infos.city_level).id
+        city_id = 0
 
-        current_data = jsonable_encoder(self.agency.update(code=code, data=data.dict()))
+        if (hasattr(data.infos, "city_code") and data.infos.city_code is not None):
+            try:
+                city_id = CityRepo.getidbycode(self.agency, data.infos.city_code)
+            except Exception as e:
+                raise HTTPException(status_code=404, detail="City not found")
+
+        verif = self.agency.verif_duplicate(data.infos.name, "AgencyModel.id != " + str(old_data['id']))
+        if len(verif) != 0:
+            raise HTTPException(status_code=405, detail={"msg": "Duplicates are not possible", "name": data.infos.name})
+
+        data = data.dict()
+        data.update({"city_id": city_id, })
+
+        current_data = jsonable_encoder(self.agency.update(code=code, data=data))
         logs = [await build_log(f"/agency/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         await self.log.create(logs)
         return current_data

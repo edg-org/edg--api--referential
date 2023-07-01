@@ -24,7 +24,8 @@ class AreaModel(EntityMeta):
     code = Column(BIGINT(unsigned=True), index=True, unique=True, nullable=False)
     city_id = Column(SMALLINT(unsigned=True), ForeignKey("cities.id"), nullable=False)
     agency_id = Column(SMALLINT(unsigned=True), ForeignKey("agencies.id"), nullable=True)
-    hierarchical_area_id = Column(MEDIUMINT(unsigned=True), ForeignKey("areas.id"), nullable=True)
+    # hierarchical_area_id = Column(MEDIUMINT(unsigned=True), ForeignKey("areas.id", onupdate="SET NULL", ondelete="SET NULL"), nullable=True)
+    hierarchical_area_id = Column(MEDIUMINT(unsigned=True), nullable=True)
     area_type_id = Column(TINYINT(unsigned=True), ForeignKey("area_types.id"), nullable=False)
     zipcode = Column(String(5), index=True, unique=False, nullable=False)
     infos = Column(JSON, nullable=False)
@@ -36,7 +37,6 @@ class AreaModel(EntityMeta):
     city = relationship("CityModel", back_populates="areas")
     agency = relationship("AgencyModel", back_populates="areas")
     area_type = relationship("AreaTypeModel", back_populates="areas")
-
 
     transformers = relationship("TransformerModel", back_populates="area")
     delivery_points = relationship("DeliveryPointModel", back_populates="area")

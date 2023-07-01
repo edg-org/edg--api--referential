@@ -1,6 +1,6 @@
 from typing import List
 from api.configs.Environment import get_env_var
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Cookie
 from api.salesfinancial.models.HousingTypeModel import HousingTypeModel
 from api.salesfinancial.repositories.HousingTypeRepo import HousingTypeRepo
 from api.salesfinancial.schemas.HousingTypeSchema import CreateHousingType, HousingTypeUpdate
@@ -11,6 +11,7 @@ from api.logs.repositories.LogRepo import LogRepo
 class HousingTypeService:
     housingtype: HousingTypeRepo
     log: LogRepo
+    # username: str = Cookie(None)
 
     def __init__(
         self, housingtype: HousingTypeRepo = Depends(), log: LogRepo = Depends(),
@@ -65,7 +66,6 @@ class HousingTypeService:
 
         housingtype = self.housingtype.verif_duplicate(name, req)
 
-
         return self.housingtype.verif_duplicate(name=name)
         # return self.housingtype.verif_duplicate(name= name, req=req)
 
@@ -83,7 +83,7 @@ class HousingTypeService:
         #
         # return ref_natural_region
 
-    async def update(self, code: int, data: HousingTypeUpdate) -> HousingTypeModel:
+    async def update(self, code: int, data: HousingTypeUpdate, username: str = Cookie(None)) -> HousingTypeModel:
         old_data = jsonable_encoder(self.housingtype.getbycode(code=code))
         if old_data is None:
             raise HTTPException(
@@ -96,7 +96,9 @@ class HousingTypeService:
             raise HTTPException(status_code=405, detail={"msg": "Duplicates are not possible", "name": data.name})
 
         current_data = jsonable_encoder(self.housingtype.update(code=code, data=data.dict()))
-        logs = [await build_log(f"/housingtype/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
+        print("+++++++++++++++++++++++++++++ username token -----------------------------------------, ", username)
+        logs = [await build_log(f"/housingtype/{code}", "PUT", "username", old_data, current_data)]
+        # logs = [await build_log(f"/housingtype/{code}", "PUT", "diatas2@gmail.com", old_data, current_data)]
         self.log.create(logs)
         return current_data
 

@@ -111,7 +111,25 @@ class SubscriptionTypeService:
         if len(verif) != 0:
             raise HTTPException(status_code=405, detail={"msg": "Duplicates are not possible", "name": data.name})
 
-        current_data = jsonable_encoder(self.subscriptiontype.update(code=code, data=data.dict()))
+
+
+        supply_mode_id, tracking_type_id = 0, 0
+        if (hasattr(data.infos, "supply_mode") and data.infos.supply_mode is not None):
+            try:
+                supply_mode_id = SupplyModeRepo.getidbyname(self.subscriptiontype, data.infos.supply_mode)
+            except Exception as e:
+                raise HTTPException(status_code=404, detail="Supply Mode not found")
+
+        if (hasattr(data.infos, "tracking_type") and data.infos.tracking_type is not None):
+            try:
+                tracking_type_id = TrackingTypeRepo.getidbyname(self.subscriptiontype, data.infos.tracking_type)
+            except Exception as e:
+                raise HTTPException(status_code=404, detail="Tracking Type  not found")
+
+        data = data.dict()
+        data.update({"supply_mode_id": supply_mode_id, "tracking_type_id": tracking_type_id, })
+
+        current_data = jsonable_encoder(self.subscriptiontype.update(code=code, data=data))
         logs = [await build_log(f"/subscriptiontype/{code}", "PUT", "oussou.diakite@gmail.com", old_data, current_data)]
         self.log.create(logs)
         return current_data

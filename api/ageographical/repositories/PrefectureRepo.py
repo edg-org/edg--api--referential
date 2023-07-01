@@ -1,6 +1,6 @@
 from typing import List
 from sqlalchemy.orm import Session
-from sqlalchemy import insert, func, update
+from sqlalchemy import insert, func, update, select
 from fastapi import Depends, encoders
 from api.configs.Database import get_db
 from api.ageographical.models.PrefectureModel import PrefectureModel
@@ -126,3 +126,11 @@ class PrefectureRepo:
     def delete(self, prefecture: PrefectureModel) -> None:
         self.db.delete(prefecture)
         self.db.commit()
+
+    def verif_duplicate(self, name: str, req: str = "True") -> [PrefectureModel]:
+        stmt = (
+            select(PrefectureModel)
+            .filter(PrefectureModel.name.ilike(name))
+            .filter(eval(req))
+        )
+        return self.db.scalars(stmt).all()
