@@ -38,6 +38,8 @@ from api.electrical.routers.v1.MeterDeliveryPoint import meterdeliveryRouter
 
 from api.logs.routers.v1.Log import logRouter
 
+from fastapi.middleware.cors import CORSMiddleware
+
 from api.tools.JWTBearer import JWTBearer
 
 # Application Environment Configuration
@@ -50,6 +52,15 @@ app = FastAPI(
     version="0.0." + env.api_version,
     openapi_tags=Tags,
     # dependencies=[Depends(JWTBearer())],
+)
+origins = ["http://localhost:3000", "http://localhost:5000", "*",]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Add Routers
